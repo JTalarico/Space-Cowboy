@@ -1,7 +1,9 @@
 build/
+Debug/
 doc/
 libs/
 space_cowboy
+space_cowboy.exe
 
 
 # Created by https://www.gitignore.io/api/linux,jetbrains,windows,vim,visualstudio

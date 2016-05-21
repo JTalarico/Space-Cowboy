@@ -8,7 +8,7 @@ project(space-cowboy)
 set(TARGET space_cowboy)
 
 # Check compiler and pass compiler flags.
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
     set(OPTIMIZATION -O3)
     set(STANDARD -std=c++14)
     set(WARNINGS -Weverything)
@@ -19,7 +19,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
                        -Wno-missing-braces \
                        -Wno-padded")
     set(FLAGS "${OPTIMIZATION} ${STANDARD} ${WARNINGS} ${WARNINGS_OMIT}")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
     set(OPTIMIZATION -O3)
     set(STANDARD -std=c++14)
     set(WARNINGS "-Wall \
@@ -43,7 +43,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
                   -Wswitch-default \
                   -Wundef")
     set(FLAGS "${OPTIMIZATION} ${STANDARD} ${WARNINGS}")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     add_definitions(-D_USE_MATH_DEFINES)
     set(FLAGS "/Za")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs)
@@ -67,6 +67,7 @@ if (UNIX)
 elseif (WIN32)
     link_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs)
     target_link_libraries(${TARGET}
+            opengl32.lib
             ${CMAKE_CURRENT_SOURCE_DIR}/libs/GL/glew32.lib
             ${CMAKE_CURRENT_SOURCE_DIR}/libs/GLFW/glfw3dll.lib)
 endif ()

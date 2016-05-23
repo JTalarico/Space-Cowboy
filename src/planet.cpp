@@ -8,15 +8,15 @@
 namespace {
 // Shader program file paths.
 /** Path to vertex shader source code. */
-constexpr char VERTEX_SHADER_PATH[]   = "shaders/vertex.shader";
+constexpr char VERTEX_SHADER_PATH[]   = "shaders/planet_vertex.shader";
 /** Path to fragment shader source code. */
-constexpr char FRAGMENT_SHADER_PATH[] = "shaders/fragment.shader";
+constexpr char FRAGMENT_SHADER_PATH[] = "shaders/planet_fragment.shader";
 
 // Sphere properties.
 /** Number of lines of latitude. */
-constexpr unsigned int NLATITUDE  = 120;
+constexpr unsigned int N_LATITUDE  = 120;
 /** Number of lines of longitude. */
-constexpr unsigned int NLONGITUDE = 240;
+constexpr unsigned int N_LONGITUDE = 240;
 }
 
 // Constructors.
@@ -29,7 +29,7 @@ Planet::Planet() :
 		mOrbitalAngularVelocity(),
 		mTimeLastStateUpdate(glfwGetTime()) {
 	// Load the vertex and index data from Sphere object.
-	Sphere sphere(1.0f, NLATITUDE, NLONGITUDE);
+	Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE);
 	mVertices = sphere.vertices;
 	mIndices  = sphere.indices;
 
@@ -147,10 +147,10 @@ void Planet::setAngularVelocity(float angularVelocity_x, float angularVelocity_y
 }
 
 void Planet::setColour(GLfloat r, GLfloat g, GLfloat b) const {
-	// Get "setColour" uniform location, enable program, set uniform value, and disable program.
-	GLint objColourUniformLocation = mProgram.getUniformLocation("setColour");
+	// Get "objectColour" uniform location, enable program, set uniform value, and disable program.
+	GLint objectColourUniformLocation = mProgram.getUniformLocation("objectColour");
 	mProgram.enable();
-	glUniform3f(objColourUniformLocation, r, g, b);
+	glUniform3f(objectColourUniformLocation, r, g, b);
 	mProgram.disable();
 }
 
@@ -159,10 +159,10 @@ void Planet::setColour(const std::array<GLfloat, 3>& colour) const {
 }
 
 void Planet::setOpacity(GLfloat alpha) const {
-	// Get "setOpacity" uniform location, enable program, set uniform value, and disable program.
-	GLint objOpacityUniformLocation = mProgram.getUniformLocation("setOpacity");
+	// Get "objectOpacity" uniform location, enable program, set uniform value, and disable program.
+	GLint objectOpacityUniformLocation = mProgram.getUniformLocation("objectOpacity");
 	mProgram.enable();
-	glUniform1f(objOpacityUniformLocation, alpha);
+	glUniform1f(objectOpacityUniformLocation, alpha);
 	mProgram.disable();
 }
 

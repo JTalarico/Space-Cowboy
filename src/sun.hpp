@@ -32,19 +32,19 @@ public:
 	Sun();
 
 	/**
-	 * Copies a sun's transformation matrices but creates a unique shader program.
+	 * Copy constructor is disabled as OpenGL does not permit the shallow copying of buffer objects.
 	 */
-	Sun(const Sun& other);
+	Sun(const Sun& other) = delete;
 
 	/**
-	 * Copies a sun's transformation matrices.
+	 * Copy assignment operator is disabled as OpenGL does not permit the shallow copying of buffer
+	 * objects.
 	 */
-	Sun& operator=(const Sun& other);
+	Sun& operator=(const Sun& other) = delete;
 
 	// Destructors.
 	/**
-	 * Destroys the vertex array object, vertex buffer object, and element buffer object if there
-	 * are no more suns remaining.
+	 * Destroys the vertex array object, vertex buffer object, and element buffer object.
 	 */
 	~Sun();
 
@@ -103,21 +103,17 @@ public:
 	/** Scale matrix. */
 	glm::mat4 mScale;
 
-	// Static data members.
-	/** Number of suns that have been created. */
-	static int sNSuns;
-
 	/** Reference ID of vertex array buffer. */
-	static GLuint sVAO;
+	GLuint sVAO;
 	/** Reference ID of vertex buffer object. */
-	static GLuint sVBO;
+	GLuint sVBO;
 	/** Reference ID of element buffer object. */
-	static GLuint sEBO;
+	GLuint sEBO;
 
-	/** Sun vertices. */
-	static std::vector<GLfloat> sVertices;
-	/** Order in which to draw the vertices. */
-	static std::vector<GLuint>  sIndices;
+	/** Number of vertices in the sun's mesh data. */
+	unsigned int mNVertices;
+	/** Number of indices in the sun's element buffer. */
+	unsigned int mNIndices;
 };
 
 #endif

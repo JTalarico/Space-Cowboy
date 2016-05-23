@@ -30,14 +30,15 @@ public:
 	Planet();
 
 	/**
-	 * Copies a planet's transformation matrices but creates a unique shader program.
+	 * Copy constructor is disabled as OpenGL does not permit the shallow copying of buffer objects.
 	 */
-	Planet(const Planet& other);
+	Planet(const Planet& other) = delete;
 
 	/**
-	 * Copies a planet's transformation matrices.
+	 * Copy assignment operator is disabled as OpenGL does not permit the shallow copying of buffer
+	 * objects.
 	 */
-	Planet& operator=(const Planet& other);
+	Planet& operator=(const Planet& other) = delete;
 
 	// Destructors.
 	/**
@@ -214,10 +215,10 @@ private:
 	/** Reference ID of element buffer object. */
 	GLuint  mEBO;
 
-	/** Mesh vertices. */
-	std::vector<GLfloat> mVertices;
-	/** Order in which to draw the mesh vertices. */
-	std::vector<GLuint>  mIndices;
+	/** Number of vertices in the planet's mesh data. */
+	unsigned int mNVertices;
+	/** Number of indices in the planet's element buffer. */
+	unsigned int mNIndices;
 
 	/** Scale matrix. */
 	glm::mat4 mScale;

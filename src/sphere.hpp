@@ -28,8 +28,10 @@ public:
 	Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude);
 
 	// Data members.
-	/** Vertices of the sphere. */
+	/** Vertices of the sphere. Each triplet of numbers is a sphere vertex. */
 	std::vector<GLfloat> vertices;
+	/** Sphere normals. Each triplet of numbers is a normal vector of a sphere vertex. */
+	std::vector<GLfloat> normals;
 	/** Order in which to render the vertices. */
 	std::vector<GLuint>  indices;
 };

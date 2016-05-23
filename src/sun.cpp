@@ -19,83 +19,54 @@ constexpr unsigned int N_LATITUDE  = 120;
 constexpr unsigned int N_LONGITUDE = 240;
 }
 
-// Initialize static data members.
-int    Sun::sNSuns = 0;
-GLuint Sun::sVAO   = 0;
-GLuint Sun::sVBO   = 0;
-GLuint Sun::sEBO   = 0;
-
-std::vector<GLfloat> Sun::sVertices;
-std::vector<GLuint>  Sun::sIndices;
-
 // Constructors.
 Sun::Sun() :
 		mProgram(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH),
 		mScale() {
-	// If no suns have been created yet, create the vertex and index data and create the vertex
-	// array buffer, vertex buffer object, and element buffer object.
-	if (sNSuns == 0) {
-		// Load vertex and index data from Sphere object.
-		Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE);
-		sVertices = sphere.vertices;
-		sIndices  = sphere.indices;
+	// Create the Sphere object which holds the sun's vertex, normal, and index data. Record the
+	// number of vertex components and indices.
+	Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE);
+	mNVertices = static_cast<unsigned int>(sphere.vertices.size());
+	mNIndices  = static_cast<unsigned int>(sphere.indices.size());
 
-		// Create vertex array buffer, vertex buffer object, and element buffer objects and bind
-		// them to current OpenGL context.
-		glGenVertexArrays(1, &sVAO);
-		glGenBuffers(1, &sVBO);
-		glGenBuffers(1, &sEBO);
-		glBindVertexArray(sVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, sVBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sEBO);
+	// Create vertex array buffer, vertex buffer object, and element buffer objects and bind
+	// them to current OpenGL context.
+	glGenVertexArrays(1, &sVAO);
+	glGenBuffers(1, &sVBO);
+	glGenBuffers(1, &sEBO);
+	glBindVertexArray(sVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, sVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sEBO);
 
-		// Pass vertex data into vertex buffer object.
-		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * sVertices.size(),
-		             static_cast<GLvoid *>(sVertices.data()), GL_STATIC_DRAW);
+	// Pass vertex data into vertex buffer object.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mNVertices,
+	             static_cast<GLvoid *>(sphere.vertices.data()), GL_STATIC_DRAW);
 
-		// Pass index data into element buffer object.
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * sIndices.size(),
-		             static_cast<GLvoid *>(sIndices.data()), GL_STATIC_DRAW);
+	// Pass index data into element buffer object.
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * mNIndices,
+	             static_cast<GLvoid *>(sphere.indices.data()), GL_STATIC_DRAW);
 
-		// Create and enable vertex attribute.
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
-		                      static_cast<GLvoid *>(0));
-		glEnableVertexAttribArray(0);
+	// Create and enable vertex attribute.
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
+	                      static_cast<GLvoid *>(0));
+	glEnableVertexAttribArray(0);
 
-		// Unbind vertex array buffer, vertex buffer object, and element buffer objects.
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
+	// Unbind vertex array buffer, vertex buffer object, and element buffer objects.
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	// Set colour and opacity.
 	setColour(palette::YELLOW);
 	setOpacity(palette::OPAQUE);
 
-	++sNSuns;
-}
-
-Sun::Sun(const Sun& other) :
-		mProgram(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH) {
-	mScale = other.mScale;
-
-	++sNSuns;
-}
-
-Sun& Sun::operator=(const Sun& other) {
-	mScale = other.mScale;
-
-	return *this;
 }
 
 // Destructors.
 Sun::~Sun() {
-	--sNSuns;
-	if (sNSuns == 0) {
-		glDeleteVertexArrays(1, &sVAO);
-		glDeleteBuffers(1, &sVBO);
-		glDeleteBuffers(1, &sEBO);
-	}
+	glDeleteVertexArrays(1, &sVAO);
+	glDeleteBuffers(1, &sVBO);
+	glDeleteBuffers(1, &sEBO);
 }
 
 // Accessor functions.
@@ -147,7 +118,7 @@ void Sun::draw(const Camera& camera) const {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sEBO);
 
 	// Draw.
-	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(sIndices.size()), GL_UNSIGNED_INT,
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mNIndices), GL_UNSIGNED_INT,
 	               static_cast<GLvoid *>(0));
 
 	// Disable program and unbind vertex array object and element buffer object.

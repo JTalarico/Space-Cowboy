@@ -36,19 +36,19 @@ Planet::Planet() :
 
 	// Combine the vertices and normals into a single vector such that each triplet of vertex
 	// components is followed by the components of the vertex's normal.
-	std::vector<GLfloat> data;
-	data.reserve(2 * mNVertices);
+	std::vector<GLfloat> vertexBufferData;
+	vertexBufferData.reserve(2 * mNVertices);
 
 	for (unsigned int i = 0; i < mNVertices; i += 3) {
 		// Vertex data.
-		data.push_back(sphere.vertices[i]);
-		data.push_back(sphere.vertices[i + 1]);
-		data.push_back(sphere.vertices[i + 2]);
+		vertexBufferData.push_back(sphere.vertices[i]);
+		vertexBufferData.push_back(sphere.vertices[i + 1]);
+		vertexBufferData.push_back(sphere.vertices[i + 2]);
 
 		// Normal data.
-		data.push_back(sphere.normals[i]);
-		data.push_back(sphere.normals[i + 1]);
-		data.push_back(sphere.normals[i + 2]);
+		vertexBufferData.push_back(sphere.normals[i]);
+		vertexBufferData.push_back(sphere.normals[i + 1]);
+		vertexBufferData.push_back(sphere.normals[i + 2]);
 	}
 
 	// Create vertex array buffer, vertex buffer object, and element buffer objects and bind them to
@@ -61,8 +61,8 @@ Planet::Planet() :
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
 
 	// Pass vertex and normal data into vertex buffer object.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * data.size(),
-	             static_cast<GLvoid *>(data.data()), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexBufferData.size(),
+	             static_cast<GLvoid *>(vertexBufferData.data()), GL_STATIC_DRAW);
 
 	// Pass index data into element buffer object.
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * mNIndices,

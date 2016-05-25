@@ -30,7 +30,6 @@ constexpr char WINDOW_TITLE[] = "Space Cowboy";
 /** Window background colour. */
 constexpr palette::rgb_t WINDOW_BG_COLOUR = palette::BLACK;
 
-
 // Camera properties.
 /** Field of view in radians. */
 constexpr float FIELD_OF_VIEW       = 0.8f;

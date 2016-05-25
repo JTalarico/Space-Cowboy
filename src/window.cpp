@@ -6,9 +6,18 @@
 #include "window.hpp"
 
 // Declare static data members.
-Camera *Window::sPCamera   = nullptr;
-double Window::sCursorXPos = 0.0;
-double Window::sCursorYPos = 0.0;
+Camera *Window::sPCamera = nullptr;
+
+double Window::sLastCursorXPos = 0;
+double Window::sLastCursorYPos = 0;
+
+double  Window::lastFrame = 0.0;
+GLfloat Window::deltaTime = 0.0f;
+
+double  Window::sMouseYaw       = -90.0;
+double  Window::sMousePitch     = 0.0;
+GLfloat Window::currentVelocity = 0.0;
+bool    Window::firstMouse      = true;
 
 // Constructors.
 Window::Window() :
@@ -26,10 +35,14 @@ Window::Window(int width, int height, const std::string& title) {
 	glfwGetFramebufferSize(mWindow, &width_pixels, &height_pixels);
 	glViewport(0, 0, static_cast<GLsizei>(width_pixels), static_cast<GLsizei>(height_pixels));
 
+	// Don't show cursor + make sure cursor cant leave window.
+	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	// Set callback functions.
 	glfwSetCursorPosCallback(mWindow, cursorCallback);
 	glfwSetKeyCallback(mWindow, keyCallback);
 	glfwSetScrollCallback(mWindow, scrollCallback);
+
 }
 
 // Destructors.
@@ -114,19 +127,40 @@ void Window::swapBuffers() const {
 
 // Helper functions.
 void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
-	// If the left mouse button is pressed, subtract the current cursor height from the cursor
-	// height in the last frame. Use this difference to adjust the camera position.
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		float deltaY = static_cast<float>(ypos - sCursorYPos);
-
-		glm::vec3 newPosition =
-				          sPCamera->position() + (ZOOM_SENSITIVITY) * deltaY * glm::vec3(0, 0, 1);
-		sPCamera->setPosition(newPosition);
+	if (firstMouse) {
+		//	Initialize cursor positions
+		sLastCursorXPos = xpos;
+		sLastCursorYPos = ypos;
+		firstMouse      = false;
 	}
 
-	// Update the cursor position.
-	sCursorXPos = xpos;
-	sCursorYPos = ypos;
+	GLfloat xoffset = xpos - sLastCursorXPos;
+	GLfloat yoffset = sLastCursorYPos - ypos; // Opposite order because y goes from bottom to left
+	// Update last cursor position
+	sLastCursorXPos = xpos;
+	sLastCursorYPos = ypos;
+
+	xoffset *= MOVE_SENSITIVITY;
+	yoffset *= MOVE_SENSITIVITY;
+
+	sMouseYaw += xoffset;
+	sMousePitch += yoffset;
+
+	// Make sure that when pitch is out of bounds, screen doesn't get flipped
+	if (sMousePitch > 89.9f) {
+		sMousePitch = 89.9f;
+	}
+	if (sMousePitch < -89.9f) {
+		sMousePitch = -89.9f;
+	}
+
+
+	glm::vec3 newCameraFront;
+	newCameraFront.x = cos(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch));
+	newCameraFront.y = sin(glm::radians(sMousePitch));
+	newCameraFront.z = sin(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch));
+	sPCamera->setCameraFront(glm::normalize(newCameraFront));
+
 }
 
 void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
@@ -135,7 +169,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 
-	// If p is pressed, objects will be rendered with points. If w is pressed, objects will be
+	// If p is pressed, objects will be rendered with points. If l is pressed, objects will be
 	// rendered with lines. If t is pressed, objects will be rendered with triangles.
 	if (key == GLFW_KEY_P and action == GLFW_PRESS) {
 		// Increase point size to make points visible.
@@ -143,12 +177,38 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 	}
 
-	if (key == GLFW_KEY_W and action == GLFW_PRESS) {
+	if (key == GLFW_KEY_L and action == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 	if (key == GLFW_KEY_T and action == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
+	// Inccrease/decrease camera move speed
+	if (key == GLFW_KEY_W and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
+		currentVelocity += VELOCITY_STEP;
+	}
+
+	if (key == GLFW_KEY_S and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
+		currentVelocity -= VELOCITY_STEP;
+	}
+
+	// Added strafing for less awkward movement
+	if (key == GLFW_KEY_A and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
+		glm::vec3 newPosition =
+				          sPCamera->position() - glm::normalize(glm::cross(sPCamera->cameraFront(),
+				                                                           sPCamera->up())) *
+				                                 (STRAFE_STEP * deltaTime);
+		sPCamera->setPosition(newPosition);
+	}
+
+	if (key == GLFW_KEY_D and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
+		glm::vec3 newPosition =
+				          sPCamera->position() + glm::normalize(glm::cross(sPCamera->cameraFront(),
+				                                                           sPCamera->up())) *
+				                                 (STRAFE_STEP * deltaTime);
+		sPCamera->setPosition(newPosition);
 	}
 }
 
@@ -157,4 +217,17 @@ void Window::scrollCallback(GLFWwindow *, double, double yoffset) {
 			          sPCamera->position() +
 			          glm::vec3(0, 0, SCROLL_SENSITIVITY * static_cast<float>(yoffset));
 	sPCamera->setPosition(newCameraPosition);
+}
+
+void Window::updateDeltaTime() {
+	GLfloat currentFrame = glfwGetTime();
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+}
+
+void Window::updatePosition() {
+	glm::vec3 newPosition =
+			          sPCamera->position() +
+			          sPCamera->cameraFront() * (currentVelocity * deltaTime);
+	sPCamera->setPosition(newPosition);
 }

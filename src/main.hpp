@@ -21,7 +21,7 @@
 
 // Window properties.
 /** Window width in pixels. */
-constexpr int  WINDOW_WIDTH   = 800;
+constexpr int  WINDOW_WIDTH   = 1300;
 /** Window height in pixels. */
 constexpr int  WINDOW_HEIGHT  = 800;
 /** Window title. */
@@ -39,7 +39,7 @@ constexpr float NEAR_CLIPPING_PLANE = 0.1f;
 constexpr float FAR_CLIPPING_PLANE  = 100.0f;
 
 /** Point camera is initially looking at. */
-const glm::vec3 INITIAL_LOOK_AT         = { 0, 0, 0 };
+const glm::vec3 INITIAL_CAMERA_FRONT    = { 0, 0, -5.0f };
 /** Initial position of camera. */
 const glm::vec3 INITIAL_CAMERA_POSITION = { 0, 0, 5.0f };
 /** Upwards direction of camera view. */

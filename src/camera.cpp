@@ -12,17 +12,17 @@ Camera::Camera() :
 		mNearClippingPlane(0.1f),
 		mFarClippingPlane(100.0f),
 		mPosition(glm::vec3(0, 0, 0)),
-		mCameraFront(glm::vec3(0, 0, -1.0f)),
+		mLookAt(glm::vec3(0, 0, -1)),
 		mUp(glm::vec3(0, 1, 0)) { }
 
 Camera::Camera(float fov, float aspectRatio, float nearClippingPlane, float farClippingPlane,
-               const glm::vec3& position, const glm::vec3& cameraFront, const glm::vec3& up) :
+               const glm::vec3& position, const glm::vec3& lookAt, const glm::vec3& up) :
 		mFOV(fov),
 		mAspectRatio(aspectRatio),
 		mNearClippingPlane(nearClippingPlane),
 		mFarClippingPlane(farClippingPlane),
 		mPosition(position),
-		mCameraFront(cameraFront),
+		mLookAt(lookAt),
 		mUp(up) { }
 
 // Accessor functions.
@@ -30,16 +30,8 @@ glm::vec3 Camera::position() const {
 	return mPosition;
 }
 
-glm::vec3 Camera::cameraFront() const {
-	return mCameraFront;
-}
-
-glm::vec3 Camera::up() const {
-	return mUp;
-}
-
 glm::mat4 Camera::view() const {
-	return glm::lookAt(mPosition, mPosition + mCameraFront, mUp);
+	return glm::lookAt(mPosition, mLookAt, mUp);
 }
 
 glm::mat4 Camera::projection() const {
@@ -67,8 +59,8 @@ void Camera::setPosition(const glm::vec3& position) {
 	mPosition = position;
 }
 
-void Camera::setCameraFront(const glm::vec3& cameraFront) {
-	mCameraFront = cameraFront;
+void Camera::setLookAt(const glm::vec3& lookAt) {
+	mLookAt = lookAt;
 }
 
 void Camera::setUp(const glm::vec3& up) {

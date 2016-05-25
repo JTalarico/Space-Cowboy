@@ -36,7 +36,7 @@ int main() {
 		// Create camera. This object sets the viewing properties such as the camera position and
 		// field of view.
 		Camera camera(FIELD_OF_VIEW, window.aspectRatio(), NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE,
-		              INITIAL_CAMERA_POSITION, INITIAL_CAMERA_FRONT, INITIAL_UP);
+		              INITIAL_CAMERA_POSITION, INITIAL_LOOK_AT, INITIAL_UP);
 
 		// Pass camera object to window.
 		window.setCamera(&camera);
@@ -54,11 +54,6 @@ int main() {
 
 		// Game loop.
 		while (not window.shouldClose()) {
-
-			// Set time difference between last and current frame
-			window.updateDeltaTime();
-			window.updatePosition();
-
 			// Clear the screen and poll for event triggers.
 			window.clear();
 			window.pollEvents();

@@ -8,14 +8,14 @@
 // Declare static data members.
 Camera *Window::sPCamera = nullptr;
 
-double Window::sLastCursorXPos = 0;
-double Window::sLastCursorYPos = 0;
+float Window::sLastCursorXPos = 0;
+float Window::sLastCursorYPos = 0;
 
-double  Window::lastFrame = 0.0;
+float  Window::lastFrame = 0.0;
 GLfloat Window::deltaTime = 0.0f;
 
-double  Window::sMouseYaw       = -90.0;
-double  Window::sMousePitch     = 0.0;
+float  Window::sMouseYaw       = -90.0;
+float  Window::sMousePitch     = 0.0;
 
 bool    Window::keysPressed[1024];
 GLfloat Window::currentVelocity = 0.0;

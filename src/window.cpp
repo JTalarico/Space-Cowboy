@@ -26,7 +26,7 @@ Window::Window() :
 
 Window::Window(int width, int height, const std::string& title) {
 	// Create window. Throw exception if window could not be created.
-	mWindow = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+	mWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 	if (not mWindow) {
 		throw std::runtime_error("Window could not be created.");
 	}

@@ -4,20 +4,21 @@
  * Implementation file for the Window class.
  */
 #include "window.hpp"
+#include <iostream>
 
 // Declare static data members.
-Camera *Window::sPCamera   = nullptr;
+Camera *Window::sPCamera = nullptr;
 
 double Window::sLastCursorXPos = 0;
 double Window::sLastCursorYPos = 0;
 
-double Window::lastFrame = 0.0;
+double  Window::lastFrame = 0.0;
 GLfloat Window::deltaTime = 0.0f;
 
-double Window::sMouseYaw = -90.0;
-double Window::sMousePitch = 0.0;
+double  Window::sMouseYaw       = -90.0;
+double  Window::sMousePitch     = 0.0;
 GLfloat Window::currentVelocity = 0.0;
-bool Window::firstMouse = true;
+bool    Window::firstMouse      = true;
 
 // Constructors.
 Window::Window() :
@@ -25,7 +26,7 @@ Window::Window() :
 
 Window::Window(int width, int height, const std::string& title) {
 	// Create window. Throw exception if window could not be created.
-	mWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+	mWindow = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), nullptr);
 	if (not mWindow) {
 		throw std::runtime_error("Window could not be created.");
 	}
@@ -127,11 +128,11 @@ void Window::swapBuffers() const {
 
 // Helper functions.
 void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
-	if (firstMouse){
+	if (firstMouse) {
 		//	Initialize cursor positions
 		sLastCursorXPos = xpos;
 		sLastCursorYPos = ypos;
-		firstMouse = false;
+		firstMouse      = false;
 	}
 
 	GLfloat xoffset = xpos - sLastCursorXPos;
@@ -143,14 +144,16 @@ void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
 	xoffset *= MOVE_SENSITIVITY;
 	yoffset *= MOVE_SENSITIVITY;
 
-	sMouseYaw   += xoffset;
+	sMouseYaw += xoffset;
 	sMousePitch += yoffset;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (sMousePitch > 89.9f)
+	if (sMousePitch > 89.9f) {
 		sMousePitch = 89.9f;
-	if (sMousePitch < -89.9f)
+	}
+	if (sMousePitch < -89.9f) {
 		sMousePitch = -89.9f;
+	}
 
 
 	glm::vec3 newCameraFront;
@@ -185,25 +188,36 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 
 	// Inccrease/decrease camera move speed
 	if (key == GLFW_KEY_W and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
-		currentVelocity+=VELOCITY_STEP;
+		if (currentVelocity < VELOCITY_CAP) {
+			currentVelocity += VELOCITY_STEP;
+		}
 	}
 
 	if (key == GLFW_KEY_S and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
-		currentVelocity-=VELOCITY_STEP;
+		if (currentVelocity > -VELOCITY_CAP) {
+			currentVelocity -= VELOCITY_STEP;
+		}
+	}
+
+	// Brake
+	if (key == GLFW_KEY_SPACE and action == GLFW_PRESS) {
+		currentVelocity = 0;
 	}
 
 	// Added strafing for less awkward movement
 	if (key == GLFW_KEY_A and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
 		glm::vec3 newPosition =
-				sPCamera->position() - glm::normalize(glm::cross(sPCamera->cameraFront(),
-																 sPCamera->up())) * (STRAFE_STEP * deltaTime);
+				          sPCamera->position() - glm::normalize(glm::cross(sPCamera->cameraFront(),
+				                                                           sPCamera->up())) *
+				                                 (STRAFE_STEP * deltaTime);
 		sPCamera->setPosition(newPosition);
 	}
 
 	if (key == GLFW_KEY_D and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
 		glm::vec3 newPosition =
-				sPCamera->position() + glm::normalize(glm::cross(sPCamera->cameraFront(),
-																 sPCamera->up())) * (STRAFE_STEP * deltaTime);
+				          sPCamera->position() + glm::normalize(glm::cross(sPCamera->cameraFront(),
+				                                                           sPCamera->up())) *
+				                                 (STRAFE_STEP * deltaTime);
 		sPCamera->setPosition(newPosition);
 	}
 }
@@ -223,6 +237,7 @@ void Window::updateDeltaTime() {
 
 void Window::updatePosition() {
 	glm::vec3 newPosition =
-			sPCamera->position() + sPCamera->cameraFront() * (currentVelocity * deltaTime);
+			          sPCamera->position() +
+			          sPCamera->cameraFront() * (currentVelocity * deltaTime);
 	sPCamera->setPosition(newPosition);
 }

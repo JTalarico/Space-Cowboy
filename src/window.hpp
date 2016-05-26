@@ -34,19 +34,19 @@ public:
      * @param title Title of the window.
      * @throws std::runtime_error if window could not be created.
      */
-	Window(int width, int height, const std::string &title);
+	Window(int width, int height, const std::string& title);
 
 	/**
 	 * Disallow copy constructor. GLFW only support deep copying of window objects, which is
 	 * dangerous since the Window destructor destroys a window's context.
 	 */
-	Window(const Window &) = delete;
+	Window(const Window&) = delete;
 
 	/**
 	 * Disallow copy assignment operator. GLFW only support deep copying of window objects, which
 	 * is dangerous since the Window destructor destroys a window's context.
 	 */
-	void operator=(const Window &) = delete;
+	void operator=(const Window&) = delete;
 
 	// Destructors.
 	/**
@@ -126,7 +126,7 @@ public:
 	 *
 	 * @param bgColour RGBA values.
 	 */
-	void setBgColour(const std::array<GLfloat, 4> &bgColour) const;
+	void setBgColour(const std::array<GLfloat, 4>& bgColour) const;
 
 	/**
 	 * Sets the window background colour in RGBA colour space.
@@ -141,7 +141,7 @@ public:
 	 * @param rgb RGB values.
 	 * @param a Alpha value.
 	 */
-	void setBgColour(const std::array<GLfloat, 3> &rgb, GLfloat a);
+	void setBgColour(const std::array<GLfloat, 3>& rgb, GLfloat a);
 
 	/**
 	 * Sets the window background colour in RGBA colour space.
@@ -171,6 +171,7 @@ public:
  	 * Updates the position to the camera based on the current velocity.
  	 */
 	void updatePosition();
+
 private:
 	// Data members.
 	/** Pointer to a GLFW window object. */
@@ -189,10 +190,10 @@ private:
 	/** Current mouse pitch */
 	static double sMousePitch;
 	/** True if this is the first tie using mouse */
-	static bool firstMouse;
+	static bool   firstMouse;
 
 	/** Time of last frame */
-	static double lastFrame;
+	static double  lastFrame;
 	/** Time difference between last and current frame */
 	static GLfloat deltaTime;
 
@@ -201,17 +202,19 @@ private:
 
 	// Callback constants.
 	/** Size of points when rendering points. */
-	static constexpr float POINT_SIZE = 3.0f;
+	static constexpr float POINT_SIZE         = 3.0f;
 	/** How far the camera moves when zooming with the cursor. */
-	static constexpr float ZOOM_SENSITIVITY = 0.02f;
+	static constexpr float ZOOM_SENSITIVITY   = 0.02f;
 	/** How far camera moves when scroll wheel is used. */
 	static constexpr float SCROLL_SENSITIVITY = 0.5f;
 	/** How much velocity increases/decreases at each button press */
-	static constexpr float VELOCITY_STEP = 0.5f;
+	static constexpr float VELOCITY_STEP      = 0.1f;
+	/** How much velocity increases/decreases at each button press */
+	static constexpr float VELOCITY_CAP       = 2.0f;
 	/** How much camera strafes with each button press */
-	static constexpr float STRAFE_STEP = 5.0f;
+	static constexpr float STRAFE_STEP        = 0.5f;
 	/** How fast camera moves when moving with the mouse */
-	static constexpr float MOVE_SENSITIVITY = 0.1f;
+	static constexpr float MOVE_SENSITIVITY   = 0.1f;
 
 	// Helper functions.
 	/**
@@ -250,4 +253,5 @@ private:
 	static void scrollCallback(GLFWwindow *, double, double yoffset);
 
 };
+
 #endif

@@ -191,7 +191,9 @@ private:
 	static double sMousePitch;
 	/** True if this is the first tie using mouse */
 	static bool   firstMouse;
-
+	/** True if ctrl is held down */
+	static bool ctrlDown;
+	static glm::vec3 oldCameraFront;
 	/** Time of last frame */
 	static double  lastFrame;
 	/** Time difference between last and current frame */

@@ -19,7 +19,8 @@ double  Window::sMouseYaw       = -90.0;
 double  Window::sMousePitch     = 0.0;
 GLfloat Window::currentVelocity = 0.0;
 bool    Window::firstMouse      = true;
-
+bool Window::ctrlDown = false;
+glm::vec3 Window::oldCameraFront = {0,0,0};
 // Constructors.
 Window::Window() :
 		mWindow(nullptr) { }
@@ -155,16 +156,18 @@ void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
 		sMousePitch = -89.9f;
 	}
 
-
 	glm::vec3 newCameraFront;
 	newCameraFront.x = cos(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch));
 	newCameraFront.y = sin(glm::radians(sMousePitch));
 	newCameraFront.z = sin(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch));
+
 	sPCamera->setCameraFront(glm::normalize(newCameraFront));
+	if (!ctrlDown)
+		oldCameraFront = newCameraFront;
 
 }
 
-void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
+void Window::keyCallback(GLFWwindow *window, int key, int, int action, int mods) {
 	// If ESC is pressed, close window.
 	if (key == GLFW_KEY_ESCAPE and action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
@@ -220,6 +223,10 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 				                                 (STRAFE_STEP * deltaTime);
 		sPCamera->setPosition(newPosition);
 	}
+	if (key == GLFW_KEY_LEFT_CONTROL and action == GLFW_PRESS)
+		ctrlDown = true;
+	if (key == GLFW_KEY_LEFT_CONTROL and action == GLFW_RELEASE)
+		ctrlDown = false;
 }
 
 void Window::scrollCallback(GLFWwindow *, double, double yoffset) {
@@ -236,8 +243,14 @@ void Window::updateDeltaTime() {
 }
 
 void Window::updatePosition() {
-	glm::vec3 newPosition =
+	glm::vec3 newPosition;
+	if (!ctrlDown)
+		newPosition =
 			          sPCamera->position() +
 			          sPCamera->cameraFront() * (currentVelocity * deltaTime);
+	else
+		newPosition =
+				          sPCamera->position() +
+				          oldCameraFront * (currentVelocity * deltaTime);
 	sPCamera->setPosition(newPosition);
 }

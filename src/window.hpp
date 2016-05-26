@@ -181,24 +181,25 @@ private:
 	static Camera *sPCamera;
 
 	/** x coordinate of last cursor. */
-	static double sLastCursorXPos;
+	static float sLastCursorXPos;
 	/** y coordinate of last cursor. */
-	static double sLastCursorYPos;
+	static float sLastCursorYPos;
 
+	/** Array that keeps track of which keys are pressed*/
+	static bool keysPressed[1024];  // No need to initialize since static bool arrays are
+									// false by default.
 	/** Current mouse yaw */
-	static double sMouseYaw;
+	static float sMouseYaw;
 	/** Current mouse pitch */
-	static double sMousePitch;
+	static float sMousePitch;
 	/** True if this is the first tie using mouse */
 	static bool   firstMouse;
-	/** True if ctrl is held down */
-	static bool ctrlDown;
+	/** Camera front used when ctrl is held down. */
 	static glm::vec3 oldCameraFront;
 	/** Time of last frame */
-	static double  lastFrame;
+	static float  lastFrame;
 	/** Time difference between last and current frame */
 	static GLfloat deltaTime;
-
 	/** Current velocity of camera (space ship). */
 	static GLfloat currentVelocity;
 
@@ -219,6 +220,13 @@ private:
 	static constexpr float MOVE_SENSITIVITY   = 0.1f;
 
 	// Helper functions.
+	/**
+	 * Called at the end of key_callback.
+	 *
+	 * Decides how the postion of the camera is affected based on which key is pressed.
+	 *
+     */
+	static void moveCamera();
 	/**
 	 * Called when the cursor moves.
 	 *

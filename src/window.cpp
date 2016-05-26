@@ -162,9 +162,11 @@ void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
 	}
 
 	glm::vec3 newCameraFront;
-	newCameraFront.x = static_cast<float> (cos(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
+	newCameraFront.x = static_cast<float> (cos(glm::radians(sMouseYaw)) *
+	                                       cos(glm::radians(sMousePitch)));
 	newCameraFront.y = static_cast<float> (sin(glm::radians(sMousePitch)));
-	newCameraFront.z = static_cast<float> (sin(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
+	newCameraFront.z = static_cast<float> (sin(glm::radians(sMouseYaw)) *
+	                                       cos(glm::radians(sMousePitch)));
 
 	sPCamera->setCameraFront(glm::normalize(newCameraFront));
 	if (!keysPressed[GLFW_KEY_LEFT_CONTROL]) {

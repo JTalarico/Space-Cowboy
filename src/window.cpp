@@ -139,8 +139,8 @@ void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
 		firstMouse      = false;
 	}
 
-	GLfloat xoffset = (float)xpos - sLastCursorXPos;
-	GLfloat yoffset = sLastCursorYPos - (float)ypos; // Opposite order because y goes from bottom to left
+	GLfloat xoffset = (float)(xpos - sLastCursorXPos);
+	GLfloat yoffset = (float)(sLastCursorYPos - ypos); // Opposite order because y goes from bottom to left
 	// Update last cursor position
 	sLastCursorXPos = (float)xpos;
 	sLastCursorYPos = (float)ypos;

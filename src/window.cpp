@@ -20,7 +20,8 @@ double  Window::sMousePitch     = 0.0;
 bool    Window::keysPressed[1024];
 GLfloat Window::currentVelocity = 0.0;
 bool    Window::firstMouse      = true;
-glm::vec3 Window::oldCameraFront = {0,0,0};
+glm::vec3 Window::oldCameraFront = { 0, 0, 0 };
+
 // Constructors.
 Window::Window() :
 		mWindow(nullptr) { }
@@ -134,16 +135,17 @@ void Window::swapBuffers() const {
 void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
 	if (firstMouse) {
 		//	Initialize cursor positions
-		sLastCursorXPos = (float)xpos;
-		sLastCursorYPos = (float)ypos;
+		sLastCursorXPos = (float) xpos;
+		sLastCursorYPos = (float) ypos;
 		firstMouse      = false;
 	}
 
-	GLfloat xoffset = (float)(xpos - sLastCursorXPos);
-	GLfloat yoffset = (float)(sLastCursorYPos - ypos); // Opposite order because y goes from bottom to left
+	GLfloat xoffset = (float) (xpos - sLastCursorXPos);
+	GLfloat yoffset = (float) (sLastCursorYPos -
+	                           ypos); // Opposite order because y goes from bottom to left
 	// Update last cursor position
-	sLastCursorXPos = (float)xpos;
-	sLastCursorYPos = (float)ypos;
+	sLastCursorXPos = (float) xpos;
+	sLastCursorYPos = (float) ypos;
 
 	xoffset *= MOVE_SENSITIVITY;
 	yoffset *= MOVE_SENSITIVITY;
@@ -160,20 +162,23 @@ void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
 	}
 
 	glm::vec3 newCameraFront;
-	newCameraFront.x = (float)(cos(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
-	newCameraFront.y = (float)(sin(glm::radians(sMousePitch)));
-	newCameraFront.z = (float)(sin(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
+	newCameraFront.x = (float) (cos(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
+	newCameraFront.y = (float) (sin(glm::radians(sMousePitch)));
+	newCameraFront.z = (float) (sin(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
 
 	sPCamera->setCameraFront(glm::normalize(newCameraFront));
-	if (!keysPressed[GLFW_KEY_LEFT_CONTROL])
+	if (!keysPressed[GLFW_KEY_LEFT_CONTROL]) {
 		oldCameraFront = newCameraFront;
+	}
 }
 
 void Window::keyCallback(GLFWwindow *window, int key, int, int action, int mods) {
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS) {
 		keysPressed[key] = true;
-	if (action == GLFW_RELEASE)
+	}
+	if (action == GLFW_RELEASE) {
 		keysPressed[key] = false;
+	}
 
 	// If ESC is pressed, close window.
 	if (keysPressed[GLFW_KEY_ESCAPE]) {
@@ -203,23 +208,26 @@ void Window::scrollCallback(GLFWwindow *, double, double yoffset) {
 }
 
 void Window::updateDeltaTime() {
-	GLfloat currentFrame = (float)glfwGetTime();
-	deltaTime = currentFrame - lastFrame;
+	GLfloat currentFrame = (float) glfwGetTime();
+	deltaTime = currentFrame - (float)lastFrame;
 	lastFrame = currentFrame;
 }
 
 void Window::updatePosition() {
 	glm::vec3 newPosition;
-	if (!keysPressed[GLFW_KEY_LEFT_CONTROL])
+	if (!keysPressed[GLFW_KEY_LEFT_CONTROL]) {
 		newPosition =
-			          sPCamera->position() +
-			          sPCamera->cameraFront() * (currentVelocity * deltaTime);
-	else
+				sPCamera->position() +
+				sPCamera->cameraFront() * (currentVelocity * deltaTime);
+	}
+	else {
 		newPosition =
-				          sPCamera->position() +
-				          oldCameraFront * (currentVelocity * deltaTime);
+				sPCamera->position() +
+				oldCameraFront * (currentVelocity * deltaTime);
+	}
 	sPCamera->setPosition(newPosition);
 }
+
 void Window::moveCamera() {
 	// Inccrease/decrease camera move speed
 	if (keysPressed[GLFW_KEY_W]) {

@@ -186,22 +186,22 @@ private:
 	static float sLastCursorYPos;
 
 	/** Array that keeps track of which keys are pressed*/
-	static bool keysPressed[1024];  // No need to initialize since static bool arrays are
-									// false by default.
+	static bool      keysPressed[1024];  // No need to initialize since static bool arrays are
+	// false by default.
 	/** Current mouse yaw */
-	static float sMouseYaw;
+	static float     sMouseYaw;
 	/** Current mouse pitch */
-	static float sMousePitch;
+	static float     sMousePitch;
 	/** True if this is the first tie using mouse */
-	static bool   firstMouse;
+	static bool      firstMouse;
 	/** Camera front used when ctrl is held down. */
 	static glm::vec3 oldCameraFront;
 	/** Time of last frame */
-	static float  lastFrame;
+	static float     lastFrame;
 	/** Time difference between last and current frame */
-	static GLfloat deltaTime;
+	static GLfloat   deltaTime;
 	/** Current velocity of camera (space ship). */
-	static GLfloat currentVelocity;
+	static GLfloat   currentVelocity;
 
 	// Callback constants.
 	/** Size of points when rendering points. */
@@ -227,6 +227,7 @@ private:
 	 *
      */
 	static void moveCamera();
+
 	/**
 	 * Called when the cursor moves.
 	 *

@@ -8,19 +8,19 @@
 // Declare static data members.
 Camera *Window::sPCamera = nullptr;
 
-float Window::sLastCursorXPos = 0;
-float Window::sLastCursorYPos = 0;
+float Window::sLastCursorXPos = 0.0f;
+float Window::sLastCursorYPos = 0.0f;
 
-float  Window::lastFrame = 0.0;
+float   Window::lastFrame = 0.0f;
 GLfloat Window::deltaTime = 0.0f;
 
-float  Window::sMouseYaw       = -90.0;
-float  Window::sMousePitch     = 0.0;
+float  Window::sMouseYaw        = -90.0f;
+float  Window::sMousePitch      = 0.0f;
 
 bool    Window::keysPressed[1024];
-GLfloat Window::currentVelocity = 0.0;
+GLfloat Window::currentVelocity = 0.0f;
 bool    Window::firstMouse      = true;
-glm::vec3 Window::oldCameraFront = { 0, 0, 0 };
+glm::vec3 Window::oldCameraFront = { 0.0f, 0.0f, 0.0f };
 
 // Constructors.
 Window::Window() :
@@ -135,17 +135,17 @@ void Window::swapBuffers() const {
 void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
 	if (firstMouse) {
 		//	Initialize cursor positions
-		sLastCursorXPos = (float) xpos;
-		sLastCursorYPos = (float) ypos;
+		sLastCursorXPos = static_cast<float>(xpos);
+		sLastCursorYPos = static_cast<float>(ypos);
 		firstMouse      = false;
 	}
 
-	GLfloat xoffset = (float) (xpos - sLastCursorXPos);
-	GLfloat yoffset = (float) (sLastCursorYPos -
-	                           ypos); // Opposite order because y goes from bottom to left
+	GLfloat xoffset = static_cast<float>(xpos) - sLastCursorXPos;
+	// Opposite order because y goes from bottom to left
+	GLfloat yoffset = sLastCursorYPos - static_cast<float>(ypos);
 	// Update last cursor position
-	sLastCursorXPos = (float) xpos;
-	sLastCursorYPos = (float) ypos;
+	sLastCursorXPos = static_cast<float>(xpos);
+	sLastCursorYPos = static_cast<float>(ypos);
 
 	xoffset *= MOVE_SENSITIVITY;
 	yoffset *= MOVE_SENSITIVITY;
@@ -162,9 +162,9 @@ void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
 	}
 
 	glm::vec3 newCameraFront;
-	newCameraFront.x = (float) (cos(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
-	newCameraFront.y = (float) (sin(glm::radians(sMousePitch)));
-	newCameraFront.z = (float) (sin(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
+	newCameraFront.x = static_cast<float> (cos(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
+	newCameraFront.y = static_cast<float> (sin(glm::radians(sMousePitch)));
+	newCameraFront.z = static_cast<float> (sin(glm::radians(sMouseYaw)) * cos(glm::radians(sMousePitch)));
 
 	sPCamera->setCameraFront(glm::normalize(newCameraFront));
 	if (!keysPressed[GLFW_KEY_LEFT_CONTROL]) {
@@ -208,8 +208,8 @@ void Window::scrollCallback(GLFWwindow *, double, double yoffset) {
 }
 
 void Window::updateDeltaTime() {
-	GLfloat currentFrame = (float) glfwGetTime();
-	deltaTime = currentFrame - (float)lastFrame;
+	GLfloat currentFrame = static_cast<float> (glfwGetTime());
+	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 }
 

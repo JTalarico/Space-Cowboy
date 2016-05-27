@@ -56,6 +56,6 @@ constexpr float PLANET_SIZE  = 0.5f;
 constexpr float ORBIT_RADIUS = 2.5f;
 
 /** Planet's angular velocity. */
-const glm::vec3 PLANET_ANGULAR_VELOCITY         = { 0, 0.0f, 0 };
+const glm::vec3 PLANET_ANGULAR_VELOCITY         = { 0, 1.0f, 0 };
 /** Planet's orbital angular velocity. */
-const glm::vec3 PLANET_ORBITAL_ANGULAR_VELOCITY = { 0, 0.0f, 0 };
+const glm::vec3 PLANET_ORBITAL_ANGULAR_VELOCITY = { 0, 1.5f, 0 };

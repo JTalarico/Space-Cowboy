@@ -14,7 +14,7 @@ constexpr char FRAGMENT_SHADER_PATH[] = "shaders/planet_fragment.shader";
 
 // Sphere properties.
 /** Number of lines of latitude. */
-constexpr unsigned int N_LATITUDE  = 120;
+constexpr unsigned int N_LATITUDE  = 240;
 /** Number of lines of longitude. */
 constexpr unsigned int N_LONGITUDE = 240;
 }

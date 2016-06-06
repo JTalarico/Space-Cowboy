@@ -14,9 +14,11 @@ constexpr char FRAGMENT_SHADER_PATH[] = "shaders/planet_fragment.shader";
 
 // Sphere properties.
 /** Number of lines of latitude. */
-constexpr unsigned int N_LATITUDE  = 240;
+constexpr unsigned int N_LATITUDE  = 256;
 /** Number of lines of longitude. */
-constexpr unsigned int N_LONGITUDE = 240;
+constexpr unsigned int N_LONGITUDE = 256;
+/** Smoothness factor*/
+constexpr float N_SMOOTHNESS = 2.0f;
 }
 
 // Constructors.
@@ -30,7 +32,7 @@ Planet::Planet() :
 		mTimeLastStateUpdate(glfwGetTime()) {
 	// Create the Sphere object which holds the planet's vertex, normal, and index data. Record
 	// the number of vertex components and indices.
-	Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE);
+	Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE, N_SMOOTHNESS);//this constructor creates an imperfect sphere for landscape
 	mNVertices = static_cast<unsigned int>(sphere.vertices.size());
 	mNIndices  = static_cast<unsigned int>(sphere.indices.size());
 

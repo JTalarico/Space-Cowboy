@@ -137,29 +137,6 @@ public:
 	                        float angularVelocity_z);
 
 	/**
-	 * Sets the colour of the Planet in RGB colour space.
-	 *
-	 * @param r Red value. Should be between 0.0 and 1.0.
-	 * @param g Green value. Should be between 0.0 and 1.0.
-	 * @param b Blue value. Should be between 0.0 and 1.0.
-	 */
-	void setColour(GLfloat r, GLfloat g, GLfloat b) const;
-
-	/**
-	 * Sets the colour of the Planet in RGB colour space.
-	 *
-	 * @param colour RGB values.
-	 */
-	void setColour(const palette::rgb_t& colour) const;
-
-	/**
-	 * Sets the opacity of the planet.
-	 *
-	 * @param alpha Alpha value of opacity.
-	 */
-	void setOpacity(GLfloat alpha) const;
-
-	/**
 	 * Sets the planet's orbital angular velocity about the world's origin.
 	 *
 	 * @param orbitalAngularVelocity Planet's new orbital angular velocity.

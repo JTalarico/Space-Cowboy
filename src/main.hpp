@@ -12,7 +12,7 @@
 #include "stars.hpp"
 #include "sun.hpp"
 #include "window.hpp"
-#include "spaceship.hpp"
+#include "planetGenerator.hpp"
 
 #include <exception>
 #include <iostream>
@@ -34,22 +34,22 @@ constexpr palette::rgb_t WINDOW_BG_COLOUR = palette::BLACK;
 
 // Camera properties.
 /** Field of view in radians. */
-constexpr float FIELD_OF_VIEW       = 0.8f;
+constexpr float FIELD_OF_VIEW       = 1.2f;
 /** Near clipping plane is the distance to the front side of the viewing frustum. */
 constexpr float NEAR_CLIPPING_PLANE = 0.1f;
 /** Far clipping plane is the distance to the far side of the viewing frustum. */
-constexpr float FAR_CLIPPING_PLANE  = 100.0f;
+constexpr float FAR_CLIPPING_PLANE  = 1000000.0f;
 
 /** Point camera is initially looking at. */
 const glm::vec3 INITIAL_CAMERA_FRONT    = { 0, 0, -5.0f };
 /** Initial position of camera. */
-const glm::vec3 INITIAL_CAMERA_POSITION = { 0, 0, 5.0f };
+const glm::vec3 INITIAL_CAMERA_POSITION = { 0, 0, 200.0f };
 /** Upwards direction of camera view. */
 const glm::vec3 INITIAL_UP              = { 0, 1.0f, 0 };
 
 // Sun properties.
 /** Size of Sun. */
-constexpr float SUN_SIZE = 1.5f;
+constexpr float SUN_SIZE = 100.5f;
 
 // Planet properties.
 /** Size of planet. */

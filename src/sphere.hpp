@@ -15,9 +15,8 @@
 #include <math.h>
 #include <iostream>
 #include <string>
-#include "glm\glm.hpp"
-
-#include "soil\SOIL.h"
+#include <glm/glm.hpp>
+#include <SOIL/SOIL.h>
 
 /**
  * Contains the mesh data required to render a sphere.

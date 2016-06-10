@@ -32,8 +32,8 @@ const float MEAN_PLANET_DISTANCE    = 10.0f * MEAN_PLANET_SIZE;
 const float SDEV_PLANET_DISTANCE    = 2.0f * MEAN_PLANET_SIZE;
 const float MIN_PLANET_ORBIT_RADIUS = 2.0f * MEAN_PLANET_SIZE;
 
-const float MEAN_ANGULAR_VELOCITY = 0.5f;
-const float SDEV_ANGULAR_VELOCITY = 0.2f;
+const float MEAN_ANGULAR_VELOCITY = 0.2f;
+const float SDEV_ANGULAR_VELOCITY = 0.1f;
 
 
 /**

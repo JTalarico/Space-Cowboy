@@ -44,7 +44,7 @@ std::vector<Planet> generatePlanets() {
 	// Change orbital angular velocity
 	for (Planet& planet : planets) {
 		planet.setOrbitalAngularVelocity(
-				{ 0, 5.0f * pow(1.0f / glm::length(planet.position()), 2.0f / 3.0f), 0 });
+				{ 0, 2.0f * pow(1.0f / glm::length(planet.position()), 2.0f / 3.0f), 0 });
 	}
 
 	// Change angular velocity

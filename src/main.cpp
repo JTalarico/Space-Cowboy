@@ -54,6 +54,9 @@ int main() {
 
 		Stars stars;
 
+		if (__gnu_linux__)
+			system("mplayer ./music/interstellar.mp3  </dev/null >/dev/null 2>&1 &");
+
 		// Game loop.
 		while (not window.shouldClose()) {
 
@@ -85,7 +88,8 @@ int main() {
 			// Swap the front and back buffers.
 			window.swapBuffers();
 		}
-
+		if (__gnu_linux__)
+			system("kill -9 $(pgrep -f \"mplayer\")");
 		return 0;
 	}
 	catch (const std::exception& e) {

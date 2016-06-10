@@ -49,17 +49,10 @@ int main() {
 		Sun sun;
 		sun.scale(SUN_SIZE);
 
-		// Create planet. Scale and translate. Set angular velocity and orbital angular velocity.
-		Planet planet;
-		planet.scale(PLANET_SIZE);
-		planet.translate(ORBIT_RADIUS, 0, 0);
-		planet.setAngularVelocity(PLANET_ANGULAR_VELOCITY);
-		planet.setOrbitalAngularVelocity(PLANET_ORBITAL_ANGULAR_VELOCITY);
+		// Create planets useing procedural generation.
+		std::vector <Planet> planets = generatePlanets();
 
 		Stars stars;
-
-		Spaceship spaceship;
-		spaceship.translate(glm::vec3(0.1f,0.1f,0.1f));
 
 		// Game loop.
 		while (not window.shouldClose()) {
@@ -78,18 +71,16 @@ int main() {
 			window.setViewport();
 
 			// Update planet's state.
-			planet.updateState();
-
-			//Update spaceship's state
-			spaceship.updateState();
+			for(Planet& planet : planets)
+				planet.updateState();
 
 			// Draw stars.
 			stars.draw(camera);
 
-			// Draw the Sun and planet and spaceship.
+			// Draw the Sun and planet.
 			sun.draw(camera);
-			planet.draw(camera);
-			spaceship.draw(camera);
+			for(const Planet& planet : planets)
+				planet.draw(camera);
 
 			// Swap the front and back buffers.
 			window.swapBuffers();

@@ -119,7 +119,7 @@ glm::vec3 Planet::angularVelocity() const {
 }
 
 glm::mat4 Planet::modelMatrix() const {
-	return mRotation * mTranslation * mScale;
+	return mTranslation * mRotation * mScale;
 }
 
 glm::vec3 Planet::orbitalAngularVelocity() const {

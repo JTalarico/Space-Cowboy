@@ -58,6 +58,9 @@ int main() {
 
 		Stars stars;
 
+		Spaceship spaceship;
+		spaceship.translate(glm::vec3(0.1f,0.1f,0.1f));
+
 		// Game loop.
 		while (not window.shouldClose()) {
 
@@ -77,12 +80,16 @@ int main() {
 			// Update planet's state.
 			planet.updateState();
 
+			//Update spaceship's state
+			spaceship.updateState();
+
 			// Draw stars.
 			stars.draw(camera);
 
-			// Draw the Sun and planet.
+			// Draw the Sun and planet and spaceship.
 			sun.draw(camera);
 			planet.draw(camera);
+			spaceship.draw(camera);
 
 			// Swap the front and back buffers.
 			window.swapBuffers();

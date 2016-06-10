@@ -26,10 +26,10 @@ const float MEAN_NUMBER_OF_PLANETS = 15.0f;
 const float SDEV_NUMBER_OF_PLANETS = 5.0f;
 
 const float MEAN_PLANET_SIZE = 120.0f;
-const float SDEV_PLANET_SIZE  = 50.0f;
+const float SDEV_PLANET_SIZE = 50.0f;
 
-const float MEAN_PLANET_DISTANCE = 10.0f * MEAN_PLANET_SIZE;
-const float SDEV_PLANET_DISTANCE = 2.0f * MEAN_PLANET_SIZE;
+const float MEAN_PLANET_DISTANCE    = 10.0f * MEAN_PLANET_SIZE;
+const float SDEV_PLANET_DISTANCE    = 2.0f * MEAN_PLANET_SIZE;
 const float MIN_PLANET_ORBIT_RADIUS = 2.0f * MEAN_PLANET_SIZE;
 
 const float MEAN_ANGULAR_VELOCITY = 0.5f;
@@ -46,8 +46,7 @@ const float SDEV_ANGULAR_VELOCITY = 0.2f;
  *
  * @return Procedurally generated planets with moons.
  */
-std::vector <Planet> generatePlanets();
-
+std::vector<Planet> generatePlanets();
 
 
 #endif

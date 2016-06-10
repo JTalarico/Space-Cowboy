@@ -235,11 +235,10 @@ private:
 	 * moving upwards, and the camera will move in the positive z direction if the cursor is moving
 	 * downwards.
 	 *
-	 * @param window Pointer to GLFW window.
 	 * @param xpos x position of cursor on screen.
 	 * @param ypos y position of cursor on screen.
 	 */
-	static void cursorCallback(GLFWwindow *window, double xpos, double ypos);
+	static void cursorCallback(GLFWwindow *, double xpos, double ypos);
 
 	/**
 	 * Called when a key is pressed.
@@ -259,9 +258,8 @@ private:
 	 * Scrolling up moves the camera along the negative z axis, while scrolling down moves the
 	 * camera along the positive z axis.
 	 *
-	 * @param yoffset Amount of scroll along y axis.
 	 */
-	static void scrollCallback(GLFWwindow *, double, double yoffset);
+	static void scrollCallback(GLFWwindow *, double, double);
 
 };
 

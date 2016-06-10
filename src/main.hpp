@@ -9,6 +9,7 @@
 #include "palette.hpp"
 #include "planet.hpp"
 #include "program.hpp"
+#include "stars.hpp"
 #include "sun.hpp"
 #include "window.hpp"
 

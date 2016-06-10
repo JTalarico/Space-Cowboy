@@ -52,6 +52,8 @@ int main() {
 		planet.setAngularVelocity(PLANET_ANGULAR_VELOCITY);
 		planet.setOrbitalAngularVelocity(PLANET_ORBITAL_ANGULAR_VELOCITY);
 
+		Stars stars;
+
 		// Game loop.
 		while (not window.shouldClose()) {
 
@@ -70,6 +72,9 @@ int main() {
 
 			// Update planet's state.
 			planet.updateState();
+
+			// Draw stars.
+			stars.draw(camera);
 
 			// Draw the Sun and planet.
 			sun.draw(camera);

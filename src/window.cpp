@@ -79,7 +79,7 @@ void Window::setCamera(Camera *pCamera) {
 	sPCamera = pCamera;
 
 	// Now that we have a camera:
-	oldCameraFront = pCamera->cameraFront();
+	oldCameraFront = pCamera->direction();
 }
 
 // OpenGL modifier functions.
@@ -132,7 +132,7 @@ void Window::swapBuffers() const {
 }
 
 // Helper functions.
-void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
+void Window::cursorCallback(GLFWwindow *, double xpos, double ypos) {
 	if (firstMouse) {
 		//	Initialize cursor positions
 		sLastCursorXPos = static_cast<float>(xpos);
@@ -161,20 +161,20 @@ void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
 		sMousePitch = -89.9f;
 	}
 
-	glm::vec3 newCameraFront;
-	newCameraFront.x = static_cast<float> (cos(glm::radians(sMouseYaw)) *
-	                                       cos(glm::radians(sMousePitch)));
-	newCameraFront.y = static_cast<float> (sin(glm::radians(sMousePitch)));
-	newCameraFront.z = static_cast<float> (sin(glm::radians(sMouseYaw)) *
-	                                       cos(glm::radians(sMousePitch)));
+	glm::vec3 newDirection;
+	newDirection.x = static_cast<float>(glm::cos(glm::radians(sMouseYaw)) *
+	                                    glm::cos(glm::radians(sMousePitch)));
+	newDirection.y = static_cast<float>(glm::sin(glm::radians(sMousePitch)));
+	newDirection.z = static_cast<float>(glm::sin(glm::radians(sMouseYaw)) *
+	                                    glm::cos(glm::radians(sMousePitch)));
 
-	sPCamera->setCameraFront(glm::normalize(newCameraFront));
+	sPCamera->setDirection(glm::normalize(newDirection));
 	if (!keysPressed[GLFW_KEY_LEFT_CONTROL]) {
-		oldCameraFront = newCameraFront;
+		oldCameraFront = newDirection;
 	}
 }
 
-void Window::keyCallback(GLFWwindow *window, int key, int, int action, int mods) {
+void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 	if (action == GLFW_PRESS) {
 		keysPressed[key] = true;
 	}
@@ -205,7 +205,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int mods)
 	moveCamera();
 }
 
-void Window::scrollCallback(GLFWwindow *, double, double yoffset) {
+void Window::scrollCallback(GLFWwindow *, double, double) {
 	// Nothing for now. May add a FOV changer
 }
 
@@ -220,7 +220,7 @@ void Window::updatePosition() {
 	if (!keysPressed[GLFW_KEY_LEFT_CONTROL]) {
 		newPosition =
 				sPCamera->position() +
-				sPCamera->cameraFront() * (currentVelocity * deltaTime);
+				sPCamera->direction() * (currentVelocity * deltaTime);
 	}
 	else {
 		newPosition =
@@ -252,7 +252,7 @@ void Window::moveCamera() {
 	// Added strafing for less awkward movement
 	if (keysPressed[GLFW_KEY_A]) {
 		glm::vec3 newPosition =
-				          sPCamera->position() - glm::normalize(glm::cross(sPCamera->cameraFront(),
+				          sPCamera->position() - glm::normalize(glm::cross(sPCamera->direction(),
 				                                                           sPCamera->up())) *
 				                                 (STRAFE_STEP * deltaTime);
 		sPCamera->setPosition(newPosition);
@@ -260,7 +260,7 @@ void Window::moveCamera() {
 
 	if (keysPressed[GLFW_KEY_D]) {
 		glm::vec3 newPosition =
-				          sPCamera->position() + glm::normalize(glm::cross(sPCamera->cameraFront(),
+				          sPCamera->position() + glm::normalize(glm::cross(sPCamera->direction(),
 				                                                           sPCamera->up())) *
 				                                 (STRAFE_STEP * deltaTime);
 		sPCamera->setPosition(newPosition);

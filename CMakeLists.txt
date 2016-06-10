@@ -63,7 +63,7 @@ set_target_properties(${TARGET} PROPERTIES
 
 # Link libraries.
 if (UNIX)
-    target_link_libraries(${TARGET} GL GLEW glfw)
+    target_link_libraries(${TARGET} GL GLEW glfw SOIL)
 elseif (WIN32)
     link_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs)
     target_link_libraries(${TARGET}

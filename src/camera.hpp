@@ -31,11 +31,11 @@ public:
 	 * @param nearClippingPlane Distance to the front side of the viewing frustum.
 	 * @param farClippingPlane Distance to the back side of the viewing frustum.
 	 * @param position Camera's position.
-	 * @param lookAt Point camera is looking at.
+	 * @param direction Direction camera is facing at.
 	 * @param up Upwards direction of camera.
 	 */
 	Camera(float fov, float aspectRatio, float nearClippingPlane, float farClippingPlane,
-	       const glm::vec3& position, const glm::vec3& cameraFront, const glm::vec3& up);
+	       const glm::vec3& position, const glm::vec3& direction, const glm::vec3& up);
 
 	// Accessor functions.
 	/** Returns the camera's position.
@@ -44,13 +44,15 @@ public:
 	 */
 	glm::vec3 position() const;
 
-	/** Returns the camera's front vector.
+	/**
+	 * Returns the direction the camera is facing.
 	 *
-	 * @return Front of camera.
+	 * @return Direction camera is facing.
 	 */
-	glm::vec3 cameraFront() const;
+	glm::vec3 direction() const;
 
-	/** Returns the camera's up vector.
+	/**
+	 * Returns the camera's up vector.
      *
      * @return Up vector of camera.
      */
@@ -107,11 +109,11 @@ public:
 	void setPosition(const glm::vec3& position);
 
 	/**
-	 * Sets the point the camera is looking at.
+	 * Sets the direction the camera is facing.
 	 *
-	 * @param lookAt Camera's new look at point.
+	 * @param direction Camera's new look at point.
 	 */
-	void setCameraFront(const glm::vec3& cameraFront);
+	void setDirection(const glm::vec3& direction);
 
 	/**
 	 * Sets the direction perpendicular to the camera's look at point and position.
@@ -132,9 +134,9 @@ private:
 
 	/** Camera position. */
 	glm::vec3 mPosition;
-	/** Point camera is facing. */
-	glm::vec3 mCameraFront;
-	/** Points in a direction perpendicular to (mPosition + mCameraFront) and mPosition. */
+	/** Direction camera is facing. */
+	glm::vec3 mDirection;
+	/** Points in a direction perpendicular to (mPosition + mDirection) and mPosition. */
 	glm::vec3 mUp;
 };
 

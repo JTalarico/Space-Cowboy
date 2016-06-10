@@ -215,6 +215,9 @@ private:
 	/** Reference ID of element buffer object. */
 	GLuint  mEBO;
 
+	/** Reference ID of vertex uv buffer. */
+	GLuint  mUV_VBO;
+
 	/** Number of vertices in the planet's mesh data. */
 	unsigned int mNVertices;
 	/** Number of indices in the planet's element buffer. */

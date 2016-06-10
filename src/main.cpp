@@ -9,7 +9,11 @@
  * Main entry point of the program.
  */
 int main() {
+
+	srand(time(NULL));//seed random num generator
+
 	try {
+
 		// Create an OpenGL context by initializing GLFW. Note that this step exploits RAII: the
 		// constructor for the GLFWGuard class calls the various GLFW initialization functions,
 		// while GLFWGuard's destructor calls glfwTerminate to terminate GLFW. This ensures that

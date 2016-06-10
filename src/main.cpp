@@ -49,12 +49,8 @@ int main() {
 		Sun sun;
 		sun.scale(SUN_SIZE);
 
-		// Create planet. Scale and translate. Set angular velocity and orbital angular velocity.
-		Planet planet;
-		planet.scale(PLANET_SIZE);
-		planet.translate(ORBIT_RADIUS, 0, 0);
-		planet.setAngularVelocity(PLANET_ANGULAR_VELOCITY);
-		planet.setOrbitalAngularVelocity(PLANET_ORBITAL_ANGULAR_VELOCITY);
+		// Create planets useing procedural generation.
+		std::vector <Planet> planets = generatePlanets();
 
 		Stars stars;
 
@@ -75,14 +71,16 @@ int main() {
 			window.setViewport();
 
 			// Update planet's state.
-			planet.updateState();
+			for(Planet& planet : planets)
+				planet.updateState();
 
 			// Draw stars.
 			stars.draw(camera);
 
 			// Draw the Sun and planet.
 			sun.draw(camera);
-			planet.draw(camera);
+			for(const Planet& planet : planets)
+				planet.draw(camera);
 
 			// Swap the front and back buffers.
 			window.swapBuffers();

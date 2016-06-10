@@ -12,6 +12,7 @@
 #include "stars.hpp"
 #include "sun.hpp"
 #include "window.hpp"
+#include "spaceship.hpp"
 
 #include <exception>
 #include <iostream>

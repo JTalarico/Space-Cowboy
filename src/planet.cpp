@@ -11,6 +11,7 @@ namespace {
 constexpr char VERTEX_SHADER_PATH[]   = "shaders/planet_vertex.shader";
 /** Path to fragment shader source code. */
 constexpr char FRAGMENT_SHADER_PATH[] = "shaders/planet_fragment.shader";
+/** Path to texture asset. */
 constexpr char TEXTURES[] = "textures/rock1.jpg";
 
 // Sphere properties.
@@ -19,7 +20,7 @@ constexpr unsigned int N_LATITUDE  = 129;
 /** Number of lines of longitude. */
 constexpr unsigned int N_LONGITUDE = 129;
 /** Smoothness factor*/
-constexpr float N_SMOOTHNESS = 1.5f;
+constexpr float N_SMOOTHNESS = 1.2f;
 }
 
 GLuint sphere_texture;

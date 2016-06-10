@@ -269,7 +269,7 @@ void Sphere::diamondSquare(std::vector<std::vector<float>> &heightMap, int x, in
 	if (stride > 0)
 	{
 		float topLeft = heightMap[x][y];
-		float topRight = heightMap[x + 2*stride][y];
+		float topRight = heightMap[x + 2 * stride][y];
 		float bottomLeft = heightMap[x][y + 2 * stride];
 		float bottomRight = heightMap[x + 2 * stride][y + 2 * stride];
 
@@ -279,10 +279,17 @@ void Sphere::diamondSquare(std::vector<std::vector<float>> &heightMap, int x, in
 		//assign midpoint value
 		heightMap[midx][midy] = static_cast <float>((topLeft + topRight + bottomLeft + bottomRight) / 4 + getRand(smoothness, iteration));
 
-		heightMap[midx + stride][midy] = (topRight + bottomRight)/2 + getRand(smoothness, iteration);
-		heightMap[midx - stride][midy] = (topLeft + bottomLeft)/2 + getRand(smoothness, iteration);
-		heightMap[midx][midy + stride] = (bottomRight + bottomLeft)/2 + getRand(smoothness, iteration);
-		heightMap[midx][midy - stride] = (topLeft + topRight)/2 + getRand(smoothness, iteration);
+
+		if (!(midx + stride == heightMap.size() - 1 || midx - stride == 0)) {
+			heightMap[midx + stride][midy] = (topRight + bottomRight) / 2 + getRand(smoothness + 1.0f, iteration);
+			heightMap[midx - stride][midy] = (topLeft + bottomLeft) / 2 + getRand(smoothness + 1.0f, iteration);
+		}
+
+		if (!(midy + stride == heightMap.size() - 1 || midy - stride == 0)) {
+			heightMap[midx][midy + stride] = (bottomLeft + bottomRight) / 2 + getRand(smoothness + 1.0f, iteration);
+			heightMap[midx][midy - stride] = (topLeft + topRight) / 2 + getRand(smoothness + 1.0f, iteration);
+		}
+
 
 		iteration++;
 		diamondSquare(heightMap, x, y, stride / 2, iteration, smoothness);

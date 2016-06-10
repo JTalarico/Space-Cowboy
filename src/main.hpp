@@ -38,7 +38,7 @@ constexpr float FIELD_OF_VIEW       = 1.2f;
 /** Near clipping plane is the distance to the front side of the viewing frustum. */
 constexpr float NEAR_CLIPPING_PLANE = 0.1f;
 /** Far clipping plane is the distance to the far side of the viewing frustum. */
-constexpr float FAR_CLIPPING_PLANE  = 10000.0f;
+constexpr float FAR_CLIPPING_PLANE  = 1000000.0f;
 
 /** Point camera is initially looking at. */
 const glm::vec3 INITIAL_CAMERA_FRONT    = { 0, 0, -5.0f };

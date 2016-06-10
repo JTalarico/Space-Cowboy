@@ -100,10 +100,6 @@ Planet::Planet() :
 
 	
 	sphere.textureSphere(TEXTURES, sphere_texture);
-
-	// Set colour and opacity.
-	setColour(palette::BLUE);
-	setOpacity(palette::OPAQUE);
 }
 
 // Destructors.
@@ -165,26 +161,6 @@ void Planet::setAngularVelocity(const glm::vec3& angularVelocity) {
 void Planet::setAngularVelocity(float angularVelocity_x, float angularVelocity_y,
                                 float angularVelocity_z) {
 	mAngularVelocity = glm::vec3(angularVelocity_x, angularVelocity_y, angularVelocity_z);
-}
-
-void Planet::setColour(GLfloat r, GLfloat g, GLfloat b) const {
-	// Get "objectColour" uniform location, enable program, set uniform value, and disable program.
-	GLint objectColourUniformLocation = mProgram.getUniformLocation("objectColour");
-	mProgram.enable();
-	glUniform3f(objectColourUniformLocation, r, g, b);
-	mProgram.disable();
-}
-
-void Planet::setColour(const std::array<GLfloat, 3>& colour) const {
-	setColour(colour[0], colour[1], colour[2]);
-}
-
-void Planet::setOpacity(GLfloat alpha) const {
-	// Get "objectOpacity" uniform location, enable program, set uniform value, and disable program.
-	GLint objectOpacityUniformLocation = mProgram.getUniformLocation("objectOpacity");
-	mProgram.enable();
-	glUniform1f(objectOpacityUniformLocation, alpha);
-	mProgram.disable();
 }
 
 void Planet::setOrbitalAngularVelocity(const glm::vec3& orbitalAngularVelocity) {

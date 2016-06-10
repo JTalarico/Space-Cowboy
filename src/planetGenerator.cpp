@@ -9,16 +9,15 @@ std::vector<Planet> generatePlanets() {
 	// Set number of planets
 	std::normal_distribution<> planetNumberDistribution(MEAN_NUMBER_OF_PLANETS,
 	                                                    SDEV_NUMBER_OF_PLANETS);
-	unsigned long              numberOfPlanets = static_cast<unsigned long>(planetNumberDistribution(
-			e2));
+
+	unsigned long numberOfPlanets = static_cast<unsigned long>(planetNumberDistribution(e2));
 
 	std::vector<Planet> planets(numberOfPlanets);
 
 	// Change Size of each planet
-	std::normal_distribution<float>    planetSizeDistribution(MEAN_PLANET_SIZE, SDEV_PLANET_SIZE);
-	for (std::vector<Planet>::iterator planet  = planets.begin();
-	     planet != planets.end(); ++planet) {
-		     planet->scale(planetSizeDistribution(e2));
+	std::normal_distribution<float> planetSizeDistribution(MEAN_PLANET_SIZE, SDEV_PLANET_SIZE);
+	for (Planet& planet : planets) {
+		planet.scale(planetSizeDistribution(e2));
 	}
 
 	// Change Color

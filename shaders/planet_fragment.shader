@@ -12,6 +12,9 @@ uniform float objectOpacity;
 
 vec3 lightColour   = vec3(1.0f);
 vec3 lightPosition = vec3(0);
+float K_c = 0.0f;
+float K_l = 0.0f;
+float K_q = 1.0f;
 
 float ambientStrength = 0.1f;
 
@@ -27,10 +30,14 @@ void main() {
 
     float diffStrength = max(dot(normal, lightDir), 0.0f);
     vec3 diffuseLight  = diffStrength * lightColour;
+
+    // Attenuation
+    float d = length(fragmentPosition - lightPosition);
+    float attenuation = 1.0f / (K_c + K_l * d + K_q * d * d);
 	
 	vec4 objectTexture = texture(planetTexture, outUV);
 
-    vec4 final_color = vec4((ambientLight + diffuseLight) * objectColour, objectOpacity); 
+    vec4 final_color = vec4((ambientLight + attenuation * diffuseLight) * objectColour, objectOpacity);
 	
 	color = final_color + objectTexture;
 }

@@ -3,7 +3,9 @@
 in vec3 fragmentPosition;
 in vec3 fragmentNormal;
 
-out vec4 colour;
+in vec2 outUV;
+
+out vec4 color;
 
 uniform vec3  objectColour;
 uniform float objectOpacity;
@@ -12,6 +14,8 @@ vec3 lightColour   = vec3(1.0f);
 vec3 lightPosition = vec3(0);
 
 float ambientStrength = 0.1f;
+
+uniform sampler2D planetTexture;
 
 void main() {
     // Ambient lighting.
@@ -23,6 +27,10 @@ void main() {
 
     float diffStrength = max(dot(normal, lightDir), 0.0f);
     vec3 diffuseLight  = diffStrength * lightColour;
+	
+	vec4 objectTexture = texture(planetTexture, outUV);
 
-    colour = vec4((ambientLight + diffuseLight) * objectColour, objectOpacity);
+    vec4 final_color = vec4((ambientLight + diffuseLight) * objectColour, objectOpacity); 
+	
+	color = final_color + objectTexture;
 }

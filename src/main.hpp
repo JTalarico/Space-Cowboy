@@ -12,8 +12,6 @@
 #include "sun.hpp"
 #include "window.hpp"
 
-#include "diamondsquare.hpp"
-
 #include <exception>
 #include <iostream>
 #include <GL/glew.h>

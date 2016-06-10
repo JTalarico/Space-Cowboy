@@ -69,7 +69,8 @@ elseif (WIN32)
     target_link_libraries(${TARGET}
             opengl32.lib
             ${CMAKE_CURRENT_SOURCE_DIR}/libs/GL/glew32.lib
-            ${CMAKE_CURRENT_SOURCE_DIR}/libs/GLFW/glfw3dll.lib)
+            ${CMAKE_CURRENT_SOURCE_DIR}/libs/GLFW/glfw3dll.lib
+			${CMAKE_CURRENT_SOURCE_DIR}/libs/soil/SOIL.lib)
 endif ()
 
 # Custom targets.

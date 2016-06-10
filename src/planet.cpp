@@ -11,15 +11,18 @@ namespace {
 constexpr char VERTEX_SHADER_PATH[]   = "shaders/planet_vertex.shader";
 /** Path to fragment shader source code. */
 constexpr char FRAGMENT_SHADER_PATH[] = "shaders/planet_fragment.shader";
+constexpr char TEXTURES[] = "textures/rock1.jpg";
 
 // Sphere properties.
 /** Number of lines of latitude. */
-constexpr unsigned int N_LATITUDE  = 256;
+constexpr unsigned int N_LATITUDE  = 129;
 /** Number of lines of longitude. */
-constexpr unsigned int N_LONGITUDE = 256;
+constexpr unsigned int N_LONGITUDE = 129;
 /** Smoothness factor*/
-constexpr float N_SMOOTHNESS = 2.0f;
+constexpr float N_SMOOTHNESS = 1.5f;
 }
+
+GLuint sphere_texture;
 
 // Constructors.
 Planet::Planet() :
@@ -51,6 +54,7 @@ Planet::Planet() :
 		vertexBufferData.push_back(sphere.normals[i]);
 		vertexBufferData.push_back(sphere.normals[i + 1]);
 		vertexBufferData.push_back(sphere.normals[i + 2]);
+
 	}
 
 	// Create vertex array buffer, vertex buffer object, and element buffer objects and bind them to
@@ -61,6 +65,14 @@ Planet::Planet() :
 	glBindVertexArray(mVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
+
+	//create uv buffer object and add data to it give in location of 2 in shaders
+	glGenBuffers(1, &mUV_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, mUV_VBO);
+	glBufferData(GL_ARRAY_BUFFER, sphere.uvs.size() * sizeof(GLfloat), &sphere.uvs.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<GLvoid *>(0));
+	glEnableVertexAttribArray(2);
+
 
 	// Pass vertex and normal data into vertex buffer object.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexBufferData.size(),
@@ -84,6 +96,9 @@ Planet::Planet() :
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	
+	sphere.textureSphere(TEXTURES, sphere_texture);
 
 	// Set colour and opacity.
 	setColour(palette::BLUE);
@@ -228,9 +243,15 @@ void Planet::draw(const Camera& camera) const {
 	glUniformMatrix4fv(mProgram.getUniformLocation("normalMatrix"), 1, GL_FALSE,
 	                   glm::value_ptr(normalMatrix));
 
+	//probably did this wrong
+	glUniform1i(mProgram.getUniformLocation("planetTexture"), 0); //tell our uniform texture sampler to sample texture unit 0
+
 	// Bind vertex array object and element buffer object to current context.
 	glBindVertexArray(mVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, mUV_VBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
+
+	glBindTexture(GL_TEXTURE_2D, sphere_texture);
 
 	// Draw.
 	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mNIndices), GL_UNSIGNED_INT,
@@ -240,4 +261,5 @@ void Planet::draw(const Camera& camera) const {
 	mProgram.disable();
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

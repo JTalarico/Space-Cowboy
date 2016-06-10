@@ -127,6 +127,14 @@ void Spaceship::setOpacity(GLfloat alpha) const {
 	mProgram.disable();
 }
 
+void Spaceship::setPosition(const glm::vec3& position) {
+	mPosition = position;
+}
+
+void Spaceship::scale(float scaleFactor) {
+	mScale = glm::scale(mScale, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
+}
+
 void Spaceship::draw(const Camera& camera) const
 {
 	// Enable program.

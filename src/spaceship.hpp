@@ -79,7 +79,22 @@ public:
 	 *
 	 * @param displacement Spaceship displacement.
 	 */
+
 	void translate(const glm::vec3& displacement);
+
+	/**
+	* Sets the spaceship's position.
+	*
+	* @param position spaceships's new position.
+	*/
+	void setPosition(const glm::vec3& position);
+
+	/**
+	* Scales the spaceship uniformly.
+	*
+	* @param scaleFactor Scale factor.
+	*/
+	void scale(float scaleFactor);
 
 	/**
 	 * Updates the spaceships state based on its state of motion.

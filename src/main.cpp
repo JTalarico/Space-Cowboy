@@ -59,8 +59,14 @@ int main() {
 		Stars stars;
 
 		Spaceship spaceship;
-		spaceship.translate(glm::vec3(0.1f,0.1f,0.1f));
+		//set spaceShip scale
+		spaceship.scale(0.1f);
+		//spaceship.translate(glm::vec3(camera.position().x, camera.position().y - 5.0f, camera.position().z - 5.0f));
+		//set the spaceships position right under camera, at same x, but lower y and z 
+		//spaceship.setPosition(glm::vec3(camera.position().x, camera.position().y-1.0f,camera.position().z-1.0f));
+		spaceship.translate(glm::vec3(0.0f,-10.0f,-10.0f));
 
+	
 		// Game loop.
 		while (not window.shouldClose()) {
 

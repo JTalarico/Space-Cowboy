@@ -8,12 +8,12 @@
 namespace {
 /** Array of file paths to the texture image for each of the skybox's faces in the following order:
  *  right, left, up, down, back, front. */
-constexpr std::array<char[27], 6> TEXTURE_FACES = { "assets/purplenebula_rt.png",
-                                                    "assets/purplenebula_lf.png",
-                                                    "assets/purplenebula_up.png",
-                                                    "assets/purplenebula_dn.png",
-                                                    "assets/purplenebula_bk.png",
-                                                    "assets/purplenebula_ft.png" };
+constexpr std::array<char *, 6> TEXTURE_FACES = { "assets/purplenebula_rt.png",
+                                                  "assets/purplenebula_lf.png",
+                                                  "assets/purplenebula_up.png",
+                                                  "assets/purplenebula_dn.png",
+                                                  "assets/purplenebula_bk.png",
+                                                  "assets/purplenebula_ft.png" };
 
 /** Path to vertex shader source code. */
 constexpr char VERTEX_SHADER_PATH[]   = "shaders/stars_vertex.shader";

@@ -21,7 +21,7 @@ GLFWGuard::GLFWGuard() {
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_SAMPLES, 8);
 		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_BLEND);
+		//glEnable(GL_BLEND);
 	}
 
 	sGLFWInitialized = true;

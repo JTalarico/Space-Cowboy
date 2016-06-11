@@ -11,6 +11,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <soil/soil.h>
 
 #include "objloader.hpp"
 #include "camera.hpp"
@@ -99,7 +100,7 @@ public:
 	/**
 	 * Updates the spaceships state based on its state of motion.
 	 */
-	void updateState();
+	void updateState(const Camera& camera);
 	/**
 	* Renders the spaceship.
 	*
@@ -113,6 +114,8 @@ public:
 	* @return Spaceship's model matrix.
 	*/
 	glm::mat4 modelMatrix() const;
+
+	void rotateShip();
 
 private:
 	// Data members.
@@ -128,6 +131,10 @@ private:
 
 	/** Reference ID of vertex uv buffer. */
 	GLuint  mUV_VBO;
+
+	GLuint mN_VBO;
+	/**Reference ID of ship texture*/
+	GLuint ship_texture;
 
 	/** Number of vertices in the planet's mesh data. */
 	unsigned int mNVertices;
@@ -148,6 +155,9 @@ private:
 	glm::vec3 mVelocity;
 	/** Time in seconds of last frame. */
 	double    mTimeLastFrame;
+
+	glm::vec3 mOldCamDir;
+	glm::vec3 mNewCamDir;
 
 	
 	

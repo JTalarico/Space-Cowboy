@@ -3,8 +3,8 @@
 *
 * Interface file for the spacecowboy class.
 */
-#ifndef SPACE_COWBOY_SPACESHIP_HPP
-#define SPACE_COWBOY_SPACESHIP_HPP
+#ifndef SPACE_COWBOY_SPACECOWBOY_HPP
+#define SPACE_COWBOY_SPACECOWBOY_HPP
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

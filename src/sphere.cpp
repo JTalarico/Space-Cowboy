@@ -324,7 +324,7 @@ void Sphere::textureSphere(const char* textSrc, GLuint &sphere_texture)
 	glGenTextures(1, &sphere_texture);
 	glBindTexture(GL_TEXTURE_2D, sphere_texture); //bind this texture to the currently bound texture unit
 
-												// Set the texture wrapping parameters
+	// Set the texture wrapping parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
 	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)

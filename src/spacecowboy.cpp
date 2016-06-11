@@ -13,7 +13,7 @@ namespace {
 	constexpr char FRAGMENT_SHADER_PATH[] = "shaders/spacecowboy_fragment.shader";
 	/** Path to object files. */
 	constexpr char SPACECOWBOY_ALIEN[] = "assets/Alien.obj";
-	constexpr char SPACECOWBOY_DEADPOOL[] = "assets/DeadPool.obj";
+	constexpr char SPACECOWBOY_DEADPOOL[] = "assets/Deadpool/DeadPool.obj";
 }
 
 // Constructors.
@@ -101,7 +101,7 @@ void Spacecowboy::updateState() {
 	double currentTime = glfwGetTime();
 	float  deltaT = static_cast<float>(currentTime - mTimeLastFrame);
 
-	//mPosition += deltaT * mVelocity;
+	mPosition += deltaT * mVelocity;
 
 	mTimeLastFrame = currentTime;
 }
@@ -155,7 +155,7 @@ void Spacecowboy::draw(const Camera& camera) const
 	glUniformMatrix4fv(mProgram.getUniformLocation("normalMatrix"), 1, GL_FALSE,
 		glm::value_ptr(normalMatrix));
 
-	//glUniform1i(mProgram.getUniformLocation("planetTexture"), 0); //tell our uniform texture sampler to sample texture unit 0
+	//glUniform1i(mProgram.getUniformLocation("spacecowboyTexture"), 0); //tell our uniform texture sampler to sample texture unit 0
 
 	// Bind vertex array object and element buffer object to current context.
 	glBindVertexArray(mVAO);

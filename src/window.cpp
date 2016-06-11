@@ -39,7 +39,7 @@ Window::Window(int width, int height, const std::string& title) {
 	glViewport(0, 0, static_cast<GLsizei>(width_pixels), static_cast<GLsizei>(height_pixels));
 
 	// Don't show cursor + make sure cursor cant leave window.
-	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	// Set callback functions.
 	glfwSetCursorPosCallback(mWindow, cursorCallback);

@@ -55,8 +55,9 @@ int main() {
 		Stars stars;
 
 		Spaceship spaceship;
+		//spaceship.rotateShip();
 
-		Spacecowboy spacecowboy;
+		//Spacecowboy spacecowboy;
 
 		// Game loop.
 		while (not window.shouldClose()) {
@@ -79,8 +80,8 @@ int main() {
 				planet.updateState();
 
 			// Update spaceships's and spacecowboy's state.
-			spaceship.updateState();
-			spacecowboy.updateState();
+			spaceship.updateState(camera);
+			//spacecowboy.updateState();
 
 			// Draw stars.
 			stars.draw(camera);
@@ -89,8 +90,9 @@ int main() {
 			sun.draw(camera);
 			for(const Planet& planet : planets)
 				planet.draw(camera);
+			
 			spaceship.draw(camera);
-			spacecowboy.draw(camera);
+			//spacecowboy.draw(camera);
 			
 			// Swap the front and back buffers.
 			window.swapBuffers();

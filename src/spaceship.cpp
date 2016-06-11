@@ -33,6 +33,7 @@ Spaceship::Spaceship() :
 	std::vector<glm::vec2> UVs;
 	
 	mOldCamDir = glm::vec3(0.0f, 0.0f, -1.0f);
+	mRotation = glm::rotate(glm::mat4(1.0f), -3.14159f / 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	loadOBJ(DARK_FIGHTER_6, vertices, normals, UVs);
 
@@ -141,15 +142,13 @@ void Spaceship::updateState(const Camera& camera) {
 
 	glm::vec3 axisOfRotation = glm::cross(camDir, mOldCamDir);
 	
-	mRotation = glm::rotate(glm::mat4(1.0f), -3.14159f / 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 				
-				//+ glm::rotate(mRotation,theta, axisOfRotation);
 
 	if (camDir != mOldCamDir) {
 		
 		std::cout << theta << std::endl;
 		
-		mRotation += glm::rotate(glm::mat4(1.0f), theta, axisOfRotation);
+		mRotation *= glm::rotate(glm::mat4(1.0f), theta, -axisOfRotation);
 	}
 
 

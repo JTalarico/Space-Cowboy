@@ -26,7 +26,7 @@ Spacecowboy::Spacecowboy() :
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
 
-	loadOBJ(SPACECOWBOY_ALIEN, vertices, normals, UVs);
+	loadOBJ(SPACECOWBOY_DEADPOOL, vertices, normals, UVs);
 
 	mNVertices = static_cast<unsigned int>(vertices.size());
 

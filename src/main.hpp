@@ -13,6 +13,8 @@
 #include "sun.hpp"
 #include "window.hpp"
 #include "planetGenerator.hpp"
+#include "spacecowboy.hpp"
+#include "spaceship.hpp"
 
 #include <exception>
 #include <iostream>

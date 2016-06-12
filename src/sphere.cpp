@@ -209,6 +209,7 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude) {
 	vertices.reserve(3 * nLatitude * nLongitude);
 	normals.reserve(3 * nLatitude * nLongitude);
 	indices.reserve(6 * nLatitude * nLongitude);
+	uvs.reserve(2 * nLatitude * nLongitude);
 
 	// deltaTheta is the angle between lines of latitude. deltaPhi is the angle between lines of
 	// longitude.
@@ -237,6 +238,10 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude) {
 			normals.push_back(n_x);
 			normals.push_back(n_y);
 			normals.push_back(n_z);
+
+			//create UVS here, why normals pushed back n_x vs x for vertices, which to push here?
+			uvs.push_back(static_cast <float> (rand()) / static_cast <float>(RAND_MAX));
+			uvs.push_back(static_cast <float> (rand()) / static_cast <float>(RAND_MAX));
 		}
 	}
 
@@ -257,7 +262,6 @@ float Sphere::getRand(float smoothness, int iteration)
 {
 	float r = static_cast <float> (rand()) / static_cast <float>(RAND_MAX);
 	float randNum = static_cast <float> ((1.0 * r - 0.5) /pow(smoothness,iteration)/10);
-	//std::cout << randNum << std::endl;
 	return randNum;
 }
 
@@ -340,5 +344,8 @@ void Sphere::textureSphere(const char* textSrc, GLuint &sphere_texture)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sphere_texture_width, sphere_texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, sphere_image);
 
 	SOIL_free_image_data(sphere_image); //free resources
+
+										//unbind for safety
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 

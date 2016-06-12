@@ -45,6 +45,8 @@ int main() {
 		// Pass camera object to window.
 		window.setCamera(&camera);
 
+		Stars stars;
+
 		// Create Sun. Scale.
 		Sun sun;
 		sun.scale(SUN_SIZE);
@@ -52,12 +54,10 @@ int main() {
 		// Create planets useing procedural generation.
 		std::vector <Planet> planets = generatePlanets();
 
-		Stars stars;
-
+		
 		Spaceship spaceship;
-		//spaceship.rotateShip();
 
-		//Spacecowboy spacecowboy;
+		Spacecowboy spacecowboy;
 
 		// Game loop.
 		while (not window.shouldClose()) {
@@ -75,25 +75,60 @@ int main() {
 			camera.setAspectRatio(window.aspectRatio());
 			window.setViewport();
 
+
+			// Update all Positions and states of Objects in the game
+
 			// Update planet's state.
 			for(Planet& planet : planets)
 				planet.updateState();
 
 			// Update spaceships's and spacecowboy's state.
 			spaceship.updateState(camera);
-			//spacecowboy.updateState();
+			spacecowboy.updateState(camera);
 
+			//Check for collisions with planets
+			for (Planet& planet : planets) {
+				if (planet.planetCollision(camera)) {
+
+					window.setCollisison(true);
+					window.setBounce(glm::normalize(glm::vec3(camera.position() - planet.position())*2.0f));
+					break;
+				}
+				window.setCollisison(false);
+			}
+
+			// Test for sun collision
+			if (sun.sunCollision(camera)) {
+				window.setCollisison(true);
+				window.setBounce(glm::normalize(glm::vec3(camera.position()) * 2.0f));
+			}
+
+			
+			
 			// Draw stars.
 			stars.draw(camera);
 
-			// Draw the Sun and planets, and spaceship and spacecowboy.
+			// Sun and Planets created from same sphere algorithm therefore same culling orientation
+			glEnable(GL_CULL_FACE);
+			glFrontFace(GL_CW);
+			
+			// Draw the Sun.
 			sun.draw(camera);
+			
+			// Draw the planets.
 			for(const Planet& planet : planets)
 				planet.draw(camera);
 			
+			//Assets (Space Ship & DeadPool) loaded with a CCW orientation
+			glFrontFace(GL_CCW);
+
+			// Draw the spaceship.
 			spaceship.draw(camera);
-			//spacecowboy.draw(camera);
 			
+			// Draw the spacecowboy.
+			spacecowboy.draw(camera);
+	
+		
 			// Swap the front and back buffers.
 			window.swapBuffers();
 		}

@@ -12,72 +12,100 @@ namespace {
 	/** Path to fragment shader source code. */
 	constexpr char FRAGMENT_SHADER_PATH[] = "shaders/spacecowboy_fragment.shader";
 	/** Path to object files. */
-	constexpr char SPACECOWBOY_ALIEN[] = "assets/Alien.obj";
-	constexpr char SPACECOWBOY_DEADPOOL[] = "assets/Deadpool/DeadPool.obj";
+	constexpr char SPACECOWBOY_ALIEN_OBJ[] = "assets/Alien.obj";
+	constexpr char SPACECOWBOY_DEADPOOL_OBJ[] = "assets/Deadpool/DeadPool.obj";
+	constexpr char SPACECOWBOY_DEADPOOL_PNG[] = "assets/Deadpool/deadpool_tex01_bm.png";
 }
 
 // Constructors.
 Spacecowboy::Spacecowboy() :
 	mProgram(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH),
 	mPosition(),
+	mScale(),
+	mRotation(),
+	mTranslation(),
+	mVelocity(),
 	mTimeLastFrame(glfwGetTime()) {
 
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
 
-	loadOBJ(SPACECOWBOY_DEADPOOL, vertices, normals, UVs);
-
-	mNVertices = static_cast<unsigned int>(vertices.size());
-
+	loadOBJ(SPACECOWBOY_DEADPOOL_OBJ, vertices, normals, UVs);
 
 	// Create vertex array buffer, vertex buffer object, and element buffer objects and bind them to
 	// current OpenGL context.
+
+	mNVertices = static_cast<unsigned int>(vertices.size());
+
+	//Generate all needed IDs
 	glGenVertexArrays(1, &mVAO);
 	glGenBuffers(1, &mVBO);
-	glGenBuffers(1, &mEBO);
-	glBindVertexArray(mVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-
-	//create uv buffer object and add data to it give in location of 2 in shaders
 	glGenBuffers(1, &mUV_VBO);
+	glGenBuffers(1, &mN_VBO);
+
+	//Bind the VAO
+	glBindVertexArray(mVAO);
+
+	// Bind and buffer the Vertices into the VBO and enable position 0
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), reinterpret_cast<GLvoid *>(0));
+	glEnableVertexAttribArray(0);
+
+	// Bind and buffer the normals into the normal VBO and put at location 1
+	glBindBuffer(GL_ARRAY_BUFFER, mN_VBO);
+	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * normals.size(), &normals.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), reinterpret_cast<GLvoid *>(0));
+	glEnableVertexAttribArray(1);
+
+
+	// Bind and buffer the UVs into the UV VBO at location 2
 	glBindBuffer(GL_ARRAY_BUFFER, mUV_VBO);
-	glBufferData(GL_ARRAY_BUFFER, UVs.size() * sizeof(GLfloat), &UVs.front(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 2 * UVs.size() * sizeof(GLfloat), &UVs.front(), GL_STATIC_DRAW);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<GLvoid *>(0));
 	glEnableVertexAttribArray(2);
 
-	// Pass vertex data into vertex buffer object.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(),
-		static_cast<GLvoid *>(vertices.data()), GL_STATIC_DRAW);
-
-	// Create and enable vertex attribute for vertex data.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
-		reinterpret_cast<GLvoid *>(0));
-	glEnableVertexAttribArray(0);
-
-	// Pass vertex data into vertex buffer object.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * normals.size(),
-		static_cast<GLvoid *>(normals.data()), GL_STATIC_DRAW);
-
-	// Create and enable vertex attribute for normal data.
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
-		reinterpret_cast<GLvoid *>(0));
-	glEnableVertexAttribArray(1);
-
-	// Unbind vertex array buffer, vertex buffer object, and element buffer objects.
+	//Unbind everything for safety
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	setColour(palette::RED);
+	//generate texture here
+	glActiveTexture(GL_TEXTURE0); //select texture unit 1
+
+	glGenTextures(1, &spacecowboy_texture);
+	glBindTexture(GL_TEXTURE_2D, spacecowboy_texture); //bind this texture to the currently bound texture unit
+
+	// Set the texture wrapping parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+
+	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// Set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Load image, create texture and generate mipmaps
+	int spacecowboy_texture_width, spacecowboy_texture_height;
+	unsigned char* spacecowboy_image = SOIL_load_image(SPACECOWBOY_DEADPOOL_PNG, &spacecowboy_texture_width, &spacecowboy_texture_height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, spacecowboy_texture_width, spacecowboy_texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, spacecowboy_image);
+
+	SOIL_free_image_data(spacecowboy_image); //free resources
+
+	//unbind for safety
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//setColour(palette::RED);
 	setOpacity(palette::OPAQUE);
+
+	scale(0.1);
 
 }
 
 // Accessor functions.
 glm::vec3 Spacecowboy::position() const {
-	return mPosition;
+	return glm::vec3(mTranslation[3]);
 }
 
 glm::vec3 Spacecowboy::velocity() const {
@@ -94,14 +122,22 @@ void Spacecowboy::setVelocity(const glm::vec3& velocity) {
 }
 
 void Spacecowboy::translate(const glm::vec3& displacement) {
-	mPosition += displacement;
+	mTranslation = glm::translate(mTranslation, displacement);
 }
 
-void Spacecowboy::updateState() {
+void Spacecowboy::updateState(const Camera& camera) {
 	double currentTime = glfwGetTime();
 	float  deltaT = static_cast<float>(currentTime - mTimeLastFrame);
 
-	mPosition += deltaT * mVelocity;
+	glm::vec3 oldPosition = position();
+
+	glm::vec3 camDir = camera.direction();
+	glm::vec3 camPos = camera.position();
+
+	glm::vec3 newPosition = glm::vec3(camPos.x, camPos.y, camPos.z) + glm::vec3(20 * camDir.x, 20 * camDir.y, 20 * camDir.z);
+	mTranslation = glm::translate(mTranslation, -oldPosition);
+	mTranslation = glm::translate(mTranslation, newPosition);
+
 
 	mTimeLastFrame = currentTime;
 }
@@ -155,22 +191,22 @@ void Spacecowboy::draw(const Camera& camera) const
 	glUniformMatrix4fv(mProgram.getUniformLocation("normalMatrix"), 1, GL_FALSE,
 		glm::value_ptr(normalMatrix));
 
-	//glUniform1i(mProgram.getUniformLocation("spacecowboyTexture"), 0); //tell our uniform texture sampler to sample texture unit 0
+	glUniform1i(mProgram.getUniformLocation("spacecowboyTexture"), 0); //tell our uniform texture sampler to sample texture unit 2
 
 	// Bind vertex array object and element buffer object to current context.
 	glBindVertexArray(mVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, mUV_VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-
-	//glBindTexture(GL_TEXTURE_2D, sphere_texture); // replace with spaceships texture, create function?
+	//glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, spacecowboy_texture); 
 
 	// Draw.
-	//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mNIndices), GL_UNSIGNED_INT,static_cast<GLvoid *>(0));
+
 	glDrawArrays(GL_TRIANGLES, 0, mNVertices);
+
+	
 
 	// Disable program and unbind vertex array object and element buffer object.
 	mProgram.disable();
 	glBindVertexArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

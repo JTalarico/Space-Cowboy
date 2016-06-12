@@ -1,8 +1,8 @@
 /**
- * @file spaceship.cpp
- *
- * Implementation file for the Spaceship class.
- */
+* @file spaceship.cpp
+*
+* Implementation file for the Spaceship class.
+*/
 #include "spaceship.hpp"
 #include <iostream>
 namespace {
@@ -12,28 +12,30 @@ namespace {
 	/** Path to fragment shader source code. */
 	constexpr char FRAGMENT_SHADER_PATH[] = "shaders/spaceship_fragment.shader";
 	/** Path to object files. */
-	constexpr char AERO4_FILE[] = "assets/aero4.obj"; 
+	constexpr char AERO4_FILE[] = "assets/aero4.obj";
 	constexpr char DARK_FIGHTER_6[] = "assets/dark_fighter_6/dark_fighter_6.obj";
 }
 
 // Constructors.
 Spaceship::Spaceship() :
-		mProgram(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH),
-		mPosition(),
-		mScale(),
-		mRotation(),
-		mTranslation(),
-		mVelocity(),
-		mOldCamDir(),
-		mNewCamDir(),
-		mTimeLastFrame(glfwGetTime()) { 
-	
+	mProgram(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH),
+	mPosition(),
+	mScale(),
+	mRotation(),
+	mTranslation(),
+	mVelocity(),
+	mOldCamDir(),
+	mNewCamDir(),
+	mTimeLastFrame(glfwGetTime()) {
+
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
-	
+
 	mOldCamDir = glm::vec3(0.0f, 0.0f, -1.0f);
 	mRotation = glm::rotate(glm::mat4(1.0f), -3.14159f / 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	scale(0.2f);
 
 	loadOBJ(DARK_FIGHTER_6, vertices, normals, UVs);
 
@@ -42,36 +44,36 @@ Spaceship::Spaceship() :
 
 	// Create vertex array buffer, vertex buffer object, and element buffer objects and bind them to
 	// current OpenGL context.
-	
-	
+
+
 	//Generate all needed IDs
 	glGenVertexArrays(1, &mVAO);
 	glGenBuffers(1, &mVBO);
 	glGenBuffers(1, &mUV_VBO);
 	glGenBuffers(1, &mN_VBO);
-	
+
 	//Bind the VAO
 	glBindVertexArray(mVAO);
-	
+
 	// Bind and buffer the Vertices into the VBO and enable position 0
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-	glBufferData(GL_ARRAY_BUFFER, 3*sizeof(GLfloat) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),reinterpret_cast<GLvoid *>(0));
+	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), reinterpret_cast<GLvoid *>(0));
 	glEnableVertexAttribArray(0);
 
 	// Bind and buffer the normals into the normal VBO and put at location 1
 	glBindBuffer(GL_ARRAY_BUFFER, mN_VBO);
-	glBufferData(GL_ARRAY_BUFFER, 3*sizeof(GLfloat) * normals.size(), &normals.front(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * normals.size(), &normals.front(), GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), reinterpret_cast<GLvoid *>(0));
 	glEnableVertexAttribArray(1);
 
 
 	// Bind and buffer the UVs into the UV VBO at location 2
 	glBindBuffer(GL_ARRAY_BUFFER, mUV_VBO);
-	glBufferData(GL_ARRAY_BUFFER, 2*UVs.size() * sizeof(GLfloat), &UVs.front(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 2 * UVs.size() * sizeof(GLfloat), &UVs.front(), GL_STATIC_DRAW);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<GLvoid *>(0));
 	glEnableVertexAttribArray(2);
-		
+
 	//Unbind everything for safety
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -98,8 +100,8 @@ Spaceship::Spaceship() :
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ship_texture_width, ship_texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, ship_image);
 
 	SOIL_free_image_data(ship_image); //free resources
-	
-	//setColour(palette::BLUE);
+
+									  //setColour(palette::BLUE);
 	setOpacity(palette::OPAQUE);
 
 }
@@ -127,40 +129,92 @@ void Spaceship::translate(const glm::vec3& displacement) {
 }
 
 void Spaceship::updateState(const Camera& camera) {
-	double currentTime = glfwGetTime();
-	float  deltaT      = static_cast<float>(currentTime - mTimeLastFrame);
-	glm::vec3 oldPosition = position();//should get current pos
-	
+
+	// Position the ship in front of the camera
+	glm::vec3 oldPosition = position();
+
 	glm::vec3 camDir = camera.direction();
 	glm::vec3 camPos = camera.position();
-	
-	glm::vec3 newPosition = glm::vec3(camPos.x,camPos.y-8.0f, camPos.z) + glm::vec3(80*camDir.x,80*camDir.y, 80*camDir.z);
+
+	glm::vec3 newPosition = glm::vec3(camPos.x, camPos.y - 4.0f, camPos.z) + glm::vec3(25 * camDir.x, 25 * camDir.y, 25 * camDir.z);
 	mTranslation = glm::translate(mTranslation, -oldPosition);
 	mTranslation = glm::translate(mTranslation, newPosition);
 
-	float theta = glm::acos(glm::dot(camDir, mOldCamDir)/(glm::length(camDir))/glm::length(mOldCamDir));
+	// Rotate the ship so it points in the camera direction
 
-	glm::vec3 axisOfRotation = glm::cross(camDir, mOldCamDir);
-	
-				
+	pointNose(camera);
 
-	if (camDir != mOldCamDir) {
-		
-		std::cout << theta << std::endl;
-		
-		mRotation *= glm::rotate(glm::mat4(1.0f), theta, -axisOfRotation);
-	}
+}
 
+void Spaceship::pointNose(const Camera& camera) {
+
+	// The space ship is loaded pointing in the negative X direction due to object File
+	glm::vec3 spaceShipDir = glm::vec3(-1.0f, 0.0f, 0.0f);
+
+	//Useful Values variable that will come up often
+	glm::vec3 camDir = camera.direction();
+	glm::mat4 identity = glm::mat4(1.0f);
+
+	// Our first goal is to find the rotation on the XZ plane, to do so we map the camera direction to the xz plane and find the angle theta
+
+	float xzDot = glm::dot(spaceShipDir, glm::vec3(camDir.x, 0.0f, camDir.z));
+	float xzLength = glm::length(glm::vec3(camDir.x, 0.0f, camDir.z));
+	float theta = glm::acos(xzDot / xzLength);
+
+	// Next we can define the first rotation realising the dot product will never let us rotate more than 180 degrees, we adjust for the
+	// two halves of the xz plane
+	glm::mat4 rotation1;
+	if (camDir.z < 0)
+		rotation1 = glm::rotate(identity, theta, glm::vec3(0.0f, -1.0f, 0.0f));
+	else
+		rotation1 = glm::rotate(identity, theta, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	// We find the angle between the xz plane and the camera direction using the dot product between the camera direction and its mapping on the xz plane
+	// The axis of rotation will be the cross product between the two
+	glm::vec3 xzProjection = glm::vec3(camDir.x, 0.0f, camDir.z);
+	glm::vec3 rotationAxis = glm::cross(camDir, xzProjection);
+
+	// Similar to above
+	float dot = glm::dot(camDir, xzProjection);
+	float xzpLength = glm::length(xzProjection);
+	float camLength = glm::length(camDir);
+	float phi = glm::acos(dot / (xzpLength*camLength));
+
+	// Adjust the rotation accordingly
+	glm::mat4 rotation2;
+	if (camDir.y > 0)
+		rotation2 = glm::rotate(identity, phi, -rotationAxis);
+	else
+		rotation2 = glm::rotate(identity, -phi, rotationAxis);
+
+
+	// The rotation matrix needed for the model is the combination of these two Rotations
+
+	mRotation = rotation2 * rotation1;
+
+	//---------------------Here an attempt was made for Tilt. -----------------------
+	/*
+	//Here we will add tilt to the glide of the ship
+
+	glm::vec3 oldXZ = glm::vec3(mOldCamDir.x, 0.0f, mOldCamDir.z);
+
+	float tiltDot = glm::dot(xzProjection, oldXZ);
+	float oldLength = glm::length(oldXZ);
+
+	float psi = glm::acos(tiltDot / (xzpLength*oldLength));
+
+	glm::mat4 rotation3 = glm::rotate(identity, psi, -camDir);
+
+	mRotation = rotation3 * rotation2 * rotation1;
+
+	std::cout << psi << std::endl;
 
 	mOldCamDir = camDir;
+	*/
 
-	mTimeLastFrame = currentTime;
 }
 
-void Spaceship::rotateShip()
-{
-	mRotation = glm::rotate(glm::mat4(1.0f), -3.14159f / 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-}
+
 
 void Spaceship::setColour(GLfloat r, GLfloat g, GLfloat b) const {
 	// Get "objectColour" uniform location, enable program, set uniform value, and disable program.
@@ -214,20 +268,20 @@ void Spaceship::draw(const Camera& camera) const
 
 	glUniform1i(mProgram.getUniformLocation("shipTexture"), 0); //tell our uniform texture sampler to sample texture unit 0
 
-// Bind vertex array object and element buffer object to current context.
+																// Bind vertex array object and element buffer object to current context.
 	glBindVertexArray(mVAO);
 
 	glBindTexture(GL_TEXTURE_2D, ship_texture); // replace with spaceships texture, create function?
-	
 
-	// Draw.
-	//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mNIndices), GL_UNSIGNED_INT,static_cast<GLvoid *>(0));
+
+												// Draw.
+												//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mNIndices), GL_UNSIGNED_INT,static_cast<GLvoid *>(0));
 	glDrawArrays(GL_TRIANGLES, 0, mNVertices);
 
-	
+
 	// Disable program and unbind vertex array object and element buffer object.
 	mProgram.disable();
 	glBindVertexArray(0);
-	
-	
+
+
 }

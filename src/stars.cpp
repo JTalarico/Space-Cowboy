@@ -53,7 +53,7 @@ void Stars::draw(const Camera& camera) const {
 
 	// Enable shader program.
 	mProgram.enable();
-
+	glUniform1i(mProgram.getUniformLocation("skybox"), 0);
 	// Set view and projection matrices.
 	glm::mat4 projection = camera.projection();
 	glm::mat4 view       = glm::mat4(glm::mat3(camera.view()));
@@ -61,12 +61,14 @@ void Stars::draw(const Camera& camera) const {
 	                   glm::value_ptr(projection));
 	glUniformMatrix4fv(mProgram.getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
 
+	
+	//glActiveTexture(GL_TEXTURE3);
 	// Bind the vertex array buffer and texture to current context.
 	glBindVertexArray(mVAO);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, mTextureID);
 
 	// Draw.
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, sVertices.size());
 
 	// Unbind vertex array buffer and texture and re-enable depth writing. Disable program.
 	glBindVertexArray(0);

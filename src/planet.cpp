@@ -1,44 +1,45 @@
 /**
- * @file planet.cpp
- *
- * Implementation file for the Planet class.
- */
+* @file planet.cpp
+*
+* Implementation file for the Planet class.
+*/
 #include "planet.hpp"
+#include <glm/glm.hpp>
 
 namespace {
-// Shader program file paths.
-/** Path to vertex shader source code. */
-constexpr char VERTEX_SHADER_PATH[]   = "shaders/planet_vertex.shader";
-/** Path to fragment shader source code. */
-constexpr char FRAGMENT_SHADER_PATH[] = "shaders/planet_fragment.shader";
-/** Path to texture asset. */
-constexpr char TEXTURES[] = "textures/rock1.jpg";
+	// Shader program file paths.
+	/** Path to vertex shader source code. */
+	constexpr char VERTEX_SHADER_PATH[] = "shaders/planet_vertex.shader";
+	/** Path to fragment shader source code. */
+	constexpr char FRAGMENT_SHADER_PATH[] = "shaders/planet_fragment.shader";
+	/** Path to texture asset. */
+	constexpr char TEXTURES[] = "textures/rock1.jpg";
 
-// Sphere properties.
-/** Number of lines of latitude. */
-constexpr unsigned int N_LATITUDE  = 129;
-/** Number of lines of longitude. */
-constexpr unsigned int N_LONGITUDE = 129;
-/** Smoothness factor*/
-constexpr float N_SMOOTHNESS = 1.2f;
+	// Sphere properties.
+	/** Number of lines of latitude. */
+	constexpr unsigned int N_LATITUDE = 129;
+	/** Number of lines of longitude. */
+	constexpr unsigned int N_LONGITUDE = 129;
+	/** Smoothness factor*/
+	constexpr float N_SMOOTHNESS = 1.2f;
 }
 
 GLuint sphere_texture;
 
 // Constructors.
 Planet::Planet() :
-		mProgram(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH),
-		mScale(),
-		mRotation(),
-		mTranslation(),
-		mAngularVelocity(),
-		mOrbitalAngularVelocity(),
-		mTimeLastStateUpdate(glfwGetTime()) {
+	mProgram(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH),
+	mScale(),
+	mRotation(),
+	mTranslation(),
+	mAngularVelocity(),
+	mOrbitalAngularVelocity(),
+	mTimeLastStateUpdate(glfwGetTime()) {
 	// Create the Sphere object which holds the planet's vertex, normal, and index data. Record
 	// the number of vertex components and indices.
 	Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE, N_SMOOTHNESS);//this constructor creates an imperfect sphere for landscape
 	mNVertices = static_cast<unsigned int>(sphere.vertices.size());
-	mNIndices  = static_cast<unsigned int>(sphere.indices.size());
+	mNIndices = static_cast<unsigned int>(sphere.indices.size());
 
 	// Combine the vertices and normals into a single vector such that each triplet of vertex
 	// components is followed by the components of the vertex's normal.
@@ -77,20 +78,20 @@ Planet::Planet() :
 
 	// Pass vertex and normal data into vertex buffer object.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexBufferData.size(),
-	             static_cast<GLvoid *>(vertexBufferData.data()), GL_STATIC_DRAW);
+		static_cast<GLvoid *>(vertexBufferData.data()), GL_STATIC_DRAW);
 
 	// Pass index data into element buffer object.
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * mNIndices,
-	             static_cast<GLvoid *>(sphere.indices.data()), GL_STATIC_DRAW);
+		static_cast<GLvoid *>(sphere.indices.data()), GL_STATIC_DRAW);
 
 	// Create and enable vertex attribute for vertex data.
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
-	                      reinterpret_cast<GLvoid *>(0));
+		reinterpret_cast<GLvoid *>(0));
 	glEnableVertexAttribArray(0);
 
 	// Create and enable vertex attribute for normal data.
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
-	                      reinterpret_cast<GLvoid *>(3 * sizeof(GLfloat)));
+		reinterpret_cast<GLvoid *>(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
 	// Unbind vertex array buffer, vertex buffer object, and element buffer objects.
@@ -98,8 +99,12 @@ Planet::Planet() :
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	
+
 	sphere.textureSphere(TEXTURES, sphere_texture);
+
+	// Set colour and opacity.
+	//setColour(palette::BLUE);
+	//setOpacity(palette::OPAQUE);
 }
 
 // Destructors.
@@ -137,7 +142,7 @@ void Planet::rotate(float angle, float nx, float ny, float nz) {
 
 void Planet::rotateAroundOrigin(float angle, const glm::vec3& rotationAxis) {
 	glm::mat4 orbitalRotation = glm::rotate(glm::mat4(), angle, rotationAxis);
-	glm::vec3 oldPosition     = position();
+	glm::vec3 oldPosition = position();
 
 	// Translate planet back to origin, rotate the old position vector, and translate back to the
 	// new position.
@@ -159,8 +164,28 @@ void Planet::setAngularVelocity(const glm::vec3& angularVelocity) {
 }
 
 void Planet::setAngularVelocity(float angularVelocity_x, float angularVelocity_y,
-                                float angularVelocity_z) {
+	float angularVelocity_z) {
 	mAngularVelocity = glm::vec3(angularVelocity_x, angularVelocity_y, angularVelocity_z);
+}
+
+void Planet::setColour(GLfloat r, GLfloat g, GLfloat b) const {
+	// Get "objectColour" uniform location, enable program, set uniform value, and disable program.
+	GLint objectColourUniformLocation = mProgram.getUniformLocation("objectColour");
+	mProgram.enable();
+	glUniform3f(objectColourUniformLocation, r, g, b);
+	mProgram.disable();
+}
+
+void Planet::setColour(const std::array<GLfloat, 3>& colour) const {
+	setColour(colour[0], colour[1], colour[2]);
+}
+
+void Planet::setOpacity(GLfloat alpha) const {
+	// Get "objectOpacity" uniform location, enable program, set uniform value, and disable program.
+	GLint objectOpacityUniformLocation = mProgram.getUniformLocation("objectOpacity");
+	mProgram.enable();
+	glUniform1f(objectOpacityUniformLocation, alpha);
+	mProgram.disable();
 }
 
 void Planet::setOrbitalAngularVelocity(const glm::vec3& orbitalAngularVelocity) {
@@ -181,7 +206,7 @@ void Planet::translate(GLfloat x, GLfloat y, GLfloat z) {
 
 void Planet::updateState() {
 	double currentTime = glfwGetTime();
-	float  deltaT      = static_cast<float>(currentTime - mTimeLastStateUpdate);
+	float  deltaT = static_cast<float>(currentTime - mTimeLastStateUpdate);
 
 	// Rotate planet about its own centre according to the planet's angular velocity and time since
 	// last state update.
@@ -200,13 +225,31 @@ void Planet::updateState() {
 	mTimeLastStateUpdate = currentTime;
 }
 
+// TEMPLATE : glm::vec3(camPos.x, camPos.y - 4.0f, camPos.z) + glm::vec3(25 * camDir.x, 25 * camDir.y, 25 * camDir.z)
+
+bool Planet::planetCollision(const Camera &camera) {
+
+	glm::vec3 cameraPosition = camera.position();
+	glm::vec3 camDir = camera.direction();
+	glm::vec3 planetCenter = position();
+	float planetRadius = glm::length(mScale*glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
+
+	if (glm::length(glm::vec3(cameraPosition.x, cameraPosition.y - 4.0f, cameraPosition.z)
+		+ glm::vec3(25 * camDir.x, 25 * camDir.y, 25 * camDir.z) - planetCenter) <= planetRadius*1.1f) {
+		return true;
+	}
+
+	return false;
+
+
+}
 void Planet::draw(const Camera& camera) const {
 	// Enable program.
 	mProgram.enable();
 
 	// Calculate the model-view-projection matrix and set the corresponding uniform.
-	glm::mat4 model      = modelMatrix();
-	glm::mat4 view       = camera.view();
+	glm::mat4 model = modelMatrix();
+	glm::mat4 view = camera.view();
 	glm::mat4 projection = camera.projection();
 
 	glm::mat4 MVP = projection * view * model;
@@ -218,12 +261,12 @@ void Planet::draw(const Camera& camera) const {
 	// Calculate the normal matrix and set the corresponding uniform.
 	glm::mat4 normalMatrix = glm::transpose(glm::inverse(model));
 	glUniformMatrix4fv(mProgram.getUniformLocation("normalMatrix"), 1, GL_FALSE,
-	                   glm::value_ptr(normalMatrix));
+		glm::value_ptr(normalMatrix));
 
-	//probably did this wrong
+	
 	glUniform1i(mProgram.getUniformLocation("planetTexture"), 0); //tell our uniform texture sampler to sample texture unit 0
 
-	// Bind vertex array object and element buffer object to current context.
+																  // Bind vertex array object and element buffer object to current context.
 	glBindVertexArray(mVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mUV_VBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
@@ -232,7 +275,7 @@ void Planet::draw(const Camera& camera) const {
 
 	// Draw.
 	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mNIndices), GL_UNSIGNED_INT,
-	               static_cast<GLvoid *>(0));
+		static_cast<GLvoid *>(0));
 
 	// Disable program and unbind vertex array object and element buffer object.
 	mProgram.disable();

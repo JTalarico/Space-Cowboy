@@ -13,7 +13,7 @@ uniform float objectOpacity;
 vec3 lightColour   = vec3(1.0f);
 vec3 lightPosition = vec3(0);
 
-float ambientStrength = 1.0f;
+float ambientStrength = 0.7f;
 
 uniform sampler2D shipTexture;
 
@@ -32,5 +32,5 @@ void main() {
 
     vec4 final_color = vec4((ambientLight + diffuseLight) * objectColour, objectOpacity); 
 	
-	color = final_color + objectTexture;
+	color = (diffStrength + ambientStrength)  * objectTexture;
 }

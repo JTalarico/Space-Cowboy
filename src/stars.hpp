@@ -8,7 +8,7 @@
 
 #include "camera.hpp"
 #include "program.hpp"
-
+#include <vector>
 #include <array>
 #include <stdexcept>
 #include <string>
@@ -96,6 +96,8 @@ private:
 			-1.0f, -1.0f,  1.0f,
 			 1.0f, -1.0f,  1.0f
 	};
+
+
 	//@formatter:on
 
 	// Helper functions.

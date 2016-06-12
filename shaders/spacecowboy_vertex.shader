@@ -6,7 +6,7 @@ layout (location = 2) in vec2 UV;
 
 out vec3 fragmentPosition;
 out vec3 fragmentNormal;
-//out vec2 outUV;
+out vec2 outUV;
 
 uniform mat4 model;
 uniform mat4 MVP;
@@ -14,7 +14,7 @@ uniform mat4 normalMatrix;
 
 void main() {
     fragmentPosition = vec3(model * vec4(position, 1.0f));
-    fragmentNormal   = vec3(normalMatrix * vec4(normal, 0));
+    fragmentNormal   = vec3(normalMatrix * vec4(normal, 0.0f));
 	gl_Position      = MVP * vec4(position, 1.0f);
-	//outUV = UV;
+	outUV = UV;
 }

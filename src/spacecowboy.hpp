@@ -1,5 +1,5 @@
 /**
-* @file spaceship.hpp
+* @file spacecowboy.hpp
 *
 * Interface file for the spacecowboy class.
 */
@@ -11,6 +11,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <soil/soil.h>
 
 #include "objloader.hpp"
 #include "camera.hpp"
@@ -24,7 +25,7 @@ class Spacecowboy {
 public:
 	// Constructors.
 	/**
-	* Creates a stationary spacecowboy centred at the origin.
+	* Creates a stationary spacecowboy.
 	*/
 	Spacecowboy();
 
@@ -99,7 +100,7 @@ public:
 	/**
 	* Updates the spacecowboy state based on its state of motion.
 	*/
-	void updateState();
+	void updateState(const Camera& camera);
 	/**
 	* Renders the spacecowboy.
 	*
@@ -123,11 +124,16 @@ private:
 	GLuint  mVAO;
 	/** Reference ID of vertex buffer object. */
 	GLuint  mVBO;
-	/** Reference ID of element buffer object. */
-	GLuint  mEBO;
 
 	/** Reference ID of vertex uv buffer. */
 	GLuint  mUV_VBO;
+	/**Reference ID of vertex normal buffer*/
+	GLuint mN_VBO;
+
+	/**Reference ID of ship texture*/
+	GLuint spacecowboy_texture;
+
+
 
 	/** Number of vertices in the spacecowboy's mesh data. */
 	unsigned int mNVertices;

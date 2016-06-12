@@ -1,8 +1,8 @@
 /**
- * @file spaceship.hpp
- *
- * Interface file for the Spaceship class.
- */
+* @file spaceship.hpp
+*
+* Interface file for the Spaceship class.
+*/
 #ifndef SPACE_COWBOY_SPACESHIP_HPP
 #define SPACE_COWBOY_SPACESHIP_HPP
 
@@ -19,37 +19,37 @@
 #include "palette.hpp"
 
 /**
- * Represents a user-controlled spaceship.
- */
+* Represents a user-controlled spaceship.
+*/
 class Spaceship {
 public:
 	// Constructors.
 	/**
-	 * Creates a stationary spaceship centred at the origin.
-	 */
+	* Creates a stationary spaceship centred at the origin.
+	*/
 	Spaceship();
 
 	// Accessor functions.
 	/**
-	 * Returns the position of the spaceship.
-	 *
-	 * @return Position of spaceship.
-	 */
+	* Returns the position of the spaceship.
+	*
+	* @return Position of spaceship.
+	*/
 	glm::vec3 position() const;
 
 	/**
-	 * Returns the velocity of the spaceship.
-	 *
-	 * @return Velocity of spaceship.
-	 */
+	* Returns the velocity of the spaceship.
+	*
+	* @return Velocity of spaceship.
+	*/
 	glm::vec3 velocity() const;
 
 	// Mutator functions.
 	/**
-	 * Sets the velocity of the spaceship.
-	 *
-	 * @param velocity New spaceship velocity.
-	 */
+	* Sets the velocity of the spaceship.
+	*
+	* @param velocity New spaceship velocity.
+	*/
 	void setVelocity(const glm::vec3& velocity);
 
 	/**
@@ -76,10 +76,10 @@ public:
 	void setOpacity(GLfloat alpha) const;
 
 	/**
-	 * Translates the spaceship in space.
-	 *
-	 * @param displacement Spaceship displacement.
-	 */
+	* Translates the spaceship in space.
+	*
+	* @param displacement Spaceship displacement.
+	*/
 
 	void translate(const glm::vec3& displacement);
 
@@ -98,8 +98,8 @@ public:
 	void scale(float scaleFactor);
 
 	/**
-	 * Updates the spaceships state based on its state of motion.
-	 */
+	* Updates the spaceships state based on its state of motion.
+	*/
 	void updateState(const Camera& camera);
 	/**
 	* Renders the spaceship.
@@ -115,7 +115,8 @@ public:
 	*/
 	glm::mat4 modelMatrix() const;
 
-	void rotateShip();
+	void pointNose(const Camera &camera);
+
 
 private:
 	// Data members.
@@ -159,9 +160,10 @@ private:
 	glm::vec3 mOldCamDir;
 	glm::vec3 mNewCamDir;
 
-	
-	
+
+
 
 };
 
 #endif
+

@@ -42,7 +42,7 @@ Window::Window(int width, int height, const std::string& title) {
 	glViewport(0, 0, static_cast<GLsizei>(width_pixels), static_cast<GLsizei>(height_pixels));
 
 	// Don't show cursor + make sure cursor cant leave window.
-	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Set callback functions.
 	glfwSetCursorPosCallback(mWindow, cursorCallback);
@@ -155,7 +155,17 @@ void Window::cursorCallback(GLFWwindow *, double xpos, double ypos) {
 	xoffset *= MOVE_SENSITIVITY;
 	yoffset *= MOVE_SENSITIVITY;
 
-	sMouseYaw += xoffset;
+	bool lTilt = sPCamera->getTiltLeft();
+	bool rTilt = sPCamera->getTiltRight();
+	
+	if((lTilt && xoffset < 0) || (rTilt && xoffset > 0))
+		sMouseYaw += xoffset;
+	else if((lTilt && xoffset > 0) || (rTilt && xoffset < 0))
+		sMouseYaw += xoffset / 6.0f;
+	else 
+		sMouseYaw += xoffset/3.0f;
+
+		
 	sMousePitch += yoffset;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped

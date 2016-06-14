@@ -21,7 +21,9 @@ std::vector<Planet> generatePlanets() {
 	}
 
 	// Change Color
-	// Procedurally generated textures
+	for (Planet& planet : planets) {
+		planet.setPlanetTextureType(Planet::GASEOUS);
+	}
 
 
 	// Change orbit

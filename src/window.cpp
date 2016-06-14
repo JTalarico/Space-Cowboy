@@ -49,6 +49,7 @@ Window::Window(int width, int height, const std::string& title) {
 	glfwSetKeyCallback(mWindow, keyCallback);
 	glfwSetScrollCallback(mWindow, scrollCallback);
 	glfwSetMouseButtonCallback(mWindow, mouse_button_callback);
+	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 }
 

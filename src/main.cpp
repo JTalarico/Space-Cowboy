@@ -100,8 +100,6 @@ int main() {
 				window.setCollisison(true);
 				window.setBounce(glm::normalize(glm::vec3(camera.position()) * 2.0f));
 			}
-
-			
 			
 			// Draw stars.
 			stars.draw(camera);

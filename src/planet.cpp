@@ -5,41 +5,44 @@
  */
 #include "planet.hpp"
 #include <glm/glm.hpp>
+#include <random>
 
 namespace {
-	// Shader program file paths.
-	/** Path to vertex shader source code. */
-	constexpr char VERTEX_SHADER_PATH[] = "shaders/planet_vertex.shader";
-	/** Path to fragment shader source code. */
-	constexpr char FRAGMENT_SHADER_PATH[] = "shaders/planet_fragment.shader";
-	/** Path to texture asset. */
-	constexpr char TEXTURES[] = "textures/rock1.jpg";
+// Shader program file paths.
+/** Path to vertex shader source code. */
+constexpr char VERTEX_SHADER_PATH[]   = "shaders/planet_vertex.shader";
+/** Path to fragment shader source code. */
+constexpr char FRAGMENT_SHADER_PATH[] = "shaders/planet_fragment.shader";
+/** Path to texture asset. */
+constexpr char TEXTURES[]             = "textures/rock1.jpg";
 
-	// Sphere properties.
-	/** Number of lines of latitude. */
-	constexpr unsigned int N_LATITUDE = 129;
-	/** Number of lines of longitude. */
-	constexpr unsigned int N_LONGITUDE = 129;
-	/** Smoothness factor*/
-	constexpr float N_SMOOTHNESS = 1.2f;
+// Sphere properties.
+/** Number of lines of latitude. */
+constexpr unsigned int N_LATITUDE   = 129;
+/** Number of lines of longitude. */
+constexpr unsigned int N_LONGITUDE  = 129;
+/** Smoothness factor*/
+constexpr float        N_SMOOTHNESS = 1.2f;
 }
 
 GLuint sphere_texture;
 
 // Constructors.
 Planet::Planet() :
-	mProgram(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH),
-	mScale(),
-	mRotation(),
-	mTranslation(),
-	mAngularVelocity(),
-	mOrbitalAngularVelocity(),
-	mTimeLastStateUpdate(glfwGetTime()) {
+		mProgram(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH),
+		mScale(),
+		mRotation(),
+		mTranslation(),
+		mAngularVelocity(),
+		mOrbitalAngularVelocity(),
+		mTimeLastStateUpdate(glfwGetTime()) {
 	// Create the Sphere object which holds the planet's vertex, normal, and index data. Record
 	// the number of vertex components and indices.
-	Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE, N_SMOOTHNESS);//this constructor creates an imperfect sphere for landscape
+	Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE,
+	              N_SMOOTHNESS);//this constructor creates an imperfect sphere for landscape
 	mNVertices = static_cast<unsigned int>(sphere.vertices.size());
-	mNIndices = static_cast<unsigned int>(sphere.indices.size());
+	mNIndices  = static_cast<unsigned int>(sphere.indices.size());
+	mNColors   = static_cast<unsigned int>(sphere.colors.size());
 
 	// Combine the vertices and normals into a single vector such that each triplet of vertex
 	// components is followed by the components of the vertex's normal.
@@ -56,50 +59,52 @@ Planet::Planet() :
 		vertexBufferData.push_back(sphere.normals[i]);
 		vertexBufferData.push_back(sphere.normals[i + 1]);
 		vertexBufferData.push_back(sphere.normals[i + 2]);
-
 	}
+
+	// Set color
+	mVertexColors = sphere.colors;
 
 	// Create vertex array buffer, vertex buffer object, and element buffer objects and bind them to
 	// current OpenGL context.
 	glGenVertexArrays(1, &mVAO);
 	glGenBuffers(1, &mVBO);
+	glGenBuffers(1, &mColorVBO);
 	glGenBuffers(1, &mEBO);
 	glBindVertexArray(mVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
 
-	//create uv buffer object and add data to it give in location of 2 in shaders
-	glGenBuffers(1, &mUV_VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, mUV_VBO);
-	glBufferData(GL_ARRAY_BUFFER, sphere.uvs.size() * sizeof(GLfloat), &sphere.uvs.front(), GL_STATIC_DRAW);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<GLvoid *>(0));
-	glEnableVertexAttribArray(2);
-
-
 	// Pass vertex and normal data into vertex buffer object.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexBufferData.size(),
-		static_cast<GLvoid *>(vertexBufferData.data()), GL_STATIC_DRAW);
+	             static_cast<GLvoid *>(vertexBufferData.data()), GL_STATIC_DRAW);
 
 	// Pass index data into element buffer object.
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * mNIndices,
-		static_cast<GLvoid *>(sphere.indices.data()), GL_STATIC_DRAW);
+	             static_cast<GLvoid *>(sphere.indices.data()), GL_STATIC_DRAW);
 
 	// Create and enable vertex attribute for vertex data.
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
-		reinterpret_cast<GLvoid *>(0));
+	                      reinterpret_cast<GLvoid *>(0));
 	glEnableVertexAttribArray(0);
 
 	// Create and enable vertex attribute for normal data.
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
-		reinterpret_cast<GLvoid *>(3 * sizeof(GLfloat)));
+	                      reinterpret_cast<GLvoid *>(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
+
+	// Create and enable vertex attribute for color data.
+	glBindBuffer(GL_ARRAY_BUFFER, mColorVBO);
+	// Pass color data into array buffer object.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mNColors,
+	             static_cast<GLvoid *>(mVertexColors.data()), GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
+	                      reinterpret_cast<GLvoid *>(0));
+	glEnableVertexAttribArray(2);
 
 	// Unbind vertex array buffer, vertex buffer object, and element buffer objects.
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	sphere.textureSphere(TEXTURES, sphere_texture);
 }
 
 // Destructors.
@@ -137,7 +142,7 @@ void Planet::rotate(float angle, float nx, float ny, float nz) {
 
 void Planet::rotateAroundOrigin(float angle, const glm::vec3& rotationAxis) {
 	glm::mat4 orbitalRotation = glm::rotate(glm::mat4(), angle, rotationAxis);
-	glm::vec3 oldPosition = position();
+	glm::vec3 oldPosition     = position();
 
 	// Translate planet back to origin, rotate the old position vector, and translate back to the
 	// new position.
@@ -159,7 +164,7 @@ void Planet::setAngularVelocity(const glm::vec3& angularVelocity) {
 }
 
 void Planet::setAngularVelocity(float angularVelocity_x, float angularVelocity_y,
-	float angularVelocity_z) {
+                                float angularVelocity_z) {
 	mAngularVelocity = glm::vec3(angularVelocity_x, angularVelocity_y, angularVelocity_z);
 }
 
@@ -181,7 +186,7 @@ void Planet::translate(GLfloat x, GLfloat y, GLfloat z) {
 
 void Planet::updateState() {
 	double currentTime = glfwGetTime();
-	float  deltaT = static_cast<float>(currentTime - mTimeLastStateUpdate);
+	float  deltaT      = static_cast<float>(currentTime - mTimeLastStateUpdate);
 
 	// Rotate planet about its own centre according to the planet's angular velocity and time since
 	// last state update.
@@ -200,15 +205,16 @@ void Planet::updateState() {
 	mTimeLastStateUpdate = currentTime;
 }
 
-bool Planet::planetCollision(const Camera &camera) {
+bool Planet::planetCollision(const Camera& camera) {
 
 	glm::vec3 cameraPosition = camera.position();
-	glm::vec3 camDir = camera.direction();
-	glm::vec3 planetCenter = position();
-	float planetRadius = glm::length(mScale*glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
+	glm::vec3 camDir         = camera.direction();
+	glm::vec3 planetCenter   = position();
+	float     planetRadius   = glm::length(mScale * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
 
 	if (glm::length(glm::vec3(cameraPosition.x, cameraPosition.y - 4.0f, cameraPosition.z)
-		+ glm::vec3(25 * camDir.x, 25 * camDir.y, 25 * camDir.z) - planetCenter) <= planetRadius*1.1f) {
+	                + glm::vec3(25 * camDir.x, 25 * camDir.y, 25 * camDir.z) - planetCenter) <=
+	    planetRadius * 1.1f) {
 		return true;
 	}
 
@@ -216,13 +222,14 @@ bool Planet::planetCollision(const Camera &camera) {
 
 
 }
+
 void Planet::draw(const Camera& camera) const {
 	// Enable program.
 	mProgram.enable();
 
 	// Calculate the model-view-projection matrix and set the corresponding uniform.
-	glm::mat4 model = modelMatrix();
-	glm::mat4 view = camera.view();
+	glm::mat4 model      = modelMatrix();
+	glm::mat4 view       = camera.view();
 	glm::mat4 projection = camera.projection();
 
 	glm::mat4 MVP = projection * view * model;
@@ -234,25 +241,149 @@ void Planet::draw(const Camera& camera) const {
 	// Calculate the normal matrix and set the corresponding uniform.
 	glm::mat4 normalMatrix = glm::transpose(glm::inverse(model));
 	glUniformMatrix4fv(mProgram.getUniformLocation("normalMatrix"), 1, GL_FALSE,
-		glm::value_ptr(normalMatrix));
+	                   glm::value_ptr(normalMatrix));
 
-	
-	glUniform1i(mProgram.getUniformLocation("planetTexture"), 0); //tell our uniform texture sampler to sample texture unit 0
-
-																  // Bind vertex array object and element buffer object to current context.
+	// Bind vertex array object and element buffer object to current context.
 	glBindVertexArray(mVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, mUV_VBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-
-	glBindTexture(GL_TEXTURE_2D, sphere_texture);
 
 	// Draw.
 	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mNIndices), GL_UNSIGNED_INT,
-		static_cast<GLvoid *>(0));
+	               static_cast<GLvoid *>(0));
 
 	// Disable program and unbind vertex array object and element buffer object.
 	mProgram.disable();
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
+void Planet::setPlanetTextureType(TERRAIN_TYPE terrain) {
+	if (terrain == ROCKY) {
+		setRockyTexture();
+	}
+	else if (terrain == GASEOUS) {
+		setGaseousTexture();
+	}
+	else if (terrain == EARTH_LIKE) {
+		setEarthLikeTexture();
+	}
+	else {
+		std::cerr << "Error: Unknown planet type." << std::endl;
+	}
+
+	updateBuffers();
+}
+
+void Planet::setRockyTexture() {
+	for (int i = 2; i < mNColors; i+=3) {
+			mVertexColors.at(i) = 0;
+	}
+}
+
+void Planet::setGaseousTexture() {
+	//glm::vec3 primaryColor = {1.0f, 1.0f, 1.0f};
+	//glm::vec3 secondaryColor = {0.0f, 0.0f, 0.0f};
+	glm::vec3 primaryColor = {1.0f, 0.6f, 0.0f};
+	glm::vec3 secondaryColor = {0.4f, 0.2f, 0.0f};
+
+	std::vector<std::vector<GLfloat>> noiseMatrix (N_LATITUDE, std::vector<GLfloat>(N_LONGITUDE));
+	noiseMatrix = generateNoiseMatrix();
+
+
+	//xPeriod and yPeriod together define the angle of the lines
+	//xPeriod and yPeriod both 0 ==> it becomes a normal clouds or turbulence pattern
+	double xPeriod = 5.0; //defines repetition of marble lines in x direction
+	double yPeriod = 10.0; //defines repetition of marble lines in y direction
+	//turbPower = 0 ==> it becomes a normal sine pattern
+	double turbPower = 10.0; //makes twists
+	double turbSize = 32.0; //initial size of the turbulence
+
+	// First make striped pattern
+	for(int i = 0; i < N_LATITUDE; i++)
+		for(int j = 0; j < N_LONGITUDE; j++) {
+			//factor = noiseMatrix[i][j] * pow(glm::cos( 2.0f * static_cast<float>(M_PI) * i / 20.0f), 2);
+			double xyValue = i * xPeriod / N_LONGITUDE +
+			                 j * yPeriod / N_LATITUDE +
+							 turbPower * turbulence(i, j, turbSize,  noiseMatrix) / 256.0;
+
+			double sineValue = pow(cos(xyValue * 3.14159),2);
+			//double sineValue = xyValue/20;
+
+			float factor = static_cast<float>(sineValue);
+
+			mVertexColors[3 * (j + N_LATITUDE * i)] = factor * primaryColor.x + (1 - factor) * secondaryColor.x ;
+			mVertexColors[3 * (j + N_LATITUDE * i) + 1] = factor * primaryColor.y + (1 - factor) * secondaryColor.y ;
+			mVertexColors[3 * (j + N_LATITUDE * i) + 2] = factor * primaryColor.z + (1 - factor) * secondaryColor.z ;
+		}
+
+}
+
+void Planet::setEarthLikeTexture() {
+
+}
+
+void Planet::updateBuffers() {
+	// Create and enable vertex attribute for color data.
+	glBindBuffer(GL_ARRAY_BUFFER, mColorVBO);
+	// Pass color data into array buffer object.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mNColors,
+	             static_cast<GLvoid *>(mVertexColors.data()), GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
+	                      reinterpret_cast<GLvoid *>(0));
+	glEnableVertexAttribArray(2);
+}
+
+std::vector<std::vector<GLfloat>> generateNoiseMatrix() {
+	std::random_device rd;
+	std::mt19937       e2(rd());
+
+// Generate random noise
+	std::uniform_real_distribution<float> randomNoise(0.0f, 1.0f);
+
+	std::vector<std::vector<GLfloat>> noiseMatrix(N_LATITUDE, std::vector<GLfloat>(N_LONGITUDE));
+
+// Create noise
+	for (int i = 0; i < N_LATITUDE; i++)
+		for (int j = 0; j < N_LONGITUDE; j++)
+			noiseMatrix[i][j] = randomNoise(e2);
+
+	return noiseMatrix;
+}
+
+float smoothNoise(float x, float y, const std::vector<std::vector<GLfloat>> &noise) {
+	//get fractional part of x and y
+	double fractX = x - floor(x);
+	double fractY = y - floor(y);
+
+	//wrap around
+	int x1 = (static_cast<int>(x) + N_LONGITUDE) % N_LONGITUDE;
+	int y1 = (static_cast<int>(y) + N_LATITUDE) % N_LATITUDE;
+
+	//neighbor values
+	int x2 = (x1 + N_LONGITUDE - 1) % N_LONGITUDE;
+	int y2 = (y1 + N_LATITUDE - 1) % N_LATITUDE;
+
+	//smooth the noise with bilinear interpolation
+	float value = 0.0;
+	value += fractX     * fractY     * noise[y1][x1];
+	value += (1 - fractX) * fractY     * noise[y1][x2];
+	value += fractX     * (1 - fractY) * noise[y2][x1];
+	value += (1 - fractX) * (1 - fractY) * noise[y2][x2];
+
+	return value;
+}
+
+double turbulence(double x, double y, double size, const std::vector<std::vector<GLfloat>> &noise)
+{
+	double value = 0.0, initialSize = size;
+
+	while(size >= 1)
+	{
+		value += smoothNoise(x / size, y / size, noise) * size;
+		size /= 2.0;
+	}
+
+	return(128.0 * value / initialSize);
 }

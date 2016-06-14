@@ -17,12 +17,18 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <cmath>
 
 /**
  * Represents a planet.
  */
 class Planet {
 public:
+	// Enumerated texture types
+	enum TERRAIN_TYPE {
+		ROCKY, GASEOUS, EARTH_LIKE
+	};
+
 	// Constructors.
 	/**
 	 * Creates a unit sphere centred at the origin.
@@ -183,6 +189,30 @@ public:
 
 	bool planetCollision(const Camera& camera);
 
+	/**
+	 * Changes the planet texture based on an enumerated type.
+	 * Then updates the VBO
+	 */
+	void setPlanetTextureType(TERRAIN_TYPE terrain);
+
+	/**
+	 * Changes the planet texture to rocky.
+	 * Color VBO must be updated immediately after.
+	 */
+	void setRockyTexture();
+
+	/**
+	 * Changes the planet texture to gaseous.
+	 * Color VBO must be updated immediately after.
+	 */
+	void setGaseousTexture();
+
+	/**
+	 * Changes the planet texture to earth like.
+	 * Color VBO must be updated immediately after.
+	 */
+	void setEarthLikeTexture();
+
 private:
 	// Data members.
 	/** Shader program. */
@@ -191,16 +221,20 @@ private:
 	GLuint  mVAO;
 	/** Reference ID of vertex buffer object. */
 	GLuint  mVBO;
+	/** Reference ID of vertex buffer object. */
+	GLuint  mColorVBO;
 	/** Reference ID of element buffer object. */
 	GLuint  mEBO;
-
-	/** Reference ID of vertex uv buffer. */
-	GLuint mUV_VBO;
 
 	/** Number of vertices in the planet's mesh data. */
 	unsigned int mNVertices;
 	/** Number of indices in the planet's element buffer. */
 	unsigned int mNIndices;
+	/** Number of colors in the planet's array buffer. */
+	unsigned int mNColors;
+
+	/** Color of each vertex in the sphere */
+	std::vector<GLfloat> mVertexColors;
 
 	/** Scale matrix. */
 	glm::mat4 mScale;
@@ -215,7 +249,15 @@ private:
 	glm::vec3 mOrbitalAngularVelocity;
 	/** Time in seconds since last state update. */
 	double    mTimeLastStateUpdate;
+
+	// Functions
+	/** Update buffers related to the planet */
+	void updateBuffers();
 };
+
+float smoothNoise(float x, float y, const std::vector<std::vector<GLfloat>> &noise);
+std::vector<std::vector<GLfloat>> generateNoiseMatrix();
+double turbulence(double x, double y, double size, const std::vector<std::vector<GLfloat>> &noise);
 
 #endif
 

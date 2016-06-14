@@ -1,8 +1,8 @@
 /**
-* @file spaceship.cpp
-*
-* Implementation file for the Spaceship class.
-*/
+ * @file spaceship.cpp
+ *
+ * Implementation file for the Spaceship class.
+ */
 #include "spaceship.hpp"
 #include <iostream>
 namespace {
@@ -102,10 +102,6 @@ Spaceship::Spaceship() :
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ship_texture_width, ship_texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, ship_image);
 
 	SOIL_free_image_data(ship_image); //free resources
-
-									  //setColour(palette::BLUE);
-	setOpacity(palette::OPAQUE);
-
 }
 
 // Accessor functions.
@@ -219,8 +215,8 @@ void Spaceship::pointNose(const Camera& camera) {
 	}else{
 	
 	}
-	
-	mRotation = tiltRotation* rotation2 * rotation1;
+
+	mRotation = tiltRotation * rotation2 * rotation1;
 
 	//---------------------Here an attempt was made for Tilt. -----------------------
 	/*
@@ -244,28 +240,6 @@ void Spaceship::pointNose(const Camera& camera) {
 
 }
 
-
-
-void Spaceship::setColour(GLfloat r, GLfloat g, GLfloat b) const {
-	// Get "objectColour" uniform location, enable program, set uniform value, and disable program.
-	GLint objectColourUniformLocation = mProgram.getUniformLocation("objectColour");
-	mProgram.enable();
-	glUniform3f(objectColourUniformLocation, r, g, b);
-	mProgram.disable();
-}
-
-void Spaceship::setColour(const std::array<GLfloat, 3>& colour) const {
-	setColour(colour[0], colour[1], colour[2]);
-}
-
-void Spaceship::setOpacity(GLfloat alpha) const {
-	// Get "objectOpacity" uniform location, enable program, set uniform value, and disable program.
-	GLint objectOpacityUniformLocation = mProgram.getUniformLocation("objectOpacity");
-	mProgram.enable();
-	glUniform1f(objectOpacityUniformLocation, alpha);
-	mProgram.disable();
-}
-
 void Spaceship::setPosition(const glm::vec3& position) {
 	mPosition = position;
 }
@@ -273,7 +247,6 @@ void Spaceship::setPosition(const glm::vec3& position) {
 void Spaceship::scale(float scaleFactor) {
 	mScale = glm::scale(mScale, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
 }
-
 
 void Spaceship::draw(const Camera& camera) const
 {

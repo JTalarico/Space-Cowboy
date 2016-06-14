@@ -1,8 +1,8 @@
 /**
-* @file sun.cpp
-*
-* Implementation file for the Sun class.
-*/
+ * @file sun.cpp
+ *
+ * Implementation file for the Sun class.
+ */
 #include "sun.hpp"
 
 namespace {
@@ -12,7 +12,7 @@ namespace {
 	/** Path to fragment shader source code. */
 	constexpr char FRAGMENT_SHADER_PATH[] = "shaders/sun_fragment.shader";
 
-	constexpr char SUN_TEXTURE[] = "textures/Sun/Textures/Agni-Baume-land.jpg";
+constexpr char SUN_TEXTURE[] = "textures/sun/Textures/Agni-Baume-land.jpg";
 
 	// Sphere properties.
 	/** Number of lines of latitude. */
@@ -69,12 +69,6 @@ Sun::Sun() :
 
 
 	sphere.textureSphere(SUN_TEXTURE, sun_texture);
-
-	// Set colour and opacity.
-	//setColour(palette::YELLOW);
-	setOpacity(palette::OPAQUE);
-
-
 }
 
 // Destructors.
@@ -92,26 +86,6 @@ glm::mat4 Sun::modelMatrix() const {
 // Modifier functions.
 void Sun::scale(float scaleFactor) {
 	mScale = glm::scale(mScale, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
-}
-
-void Sun::setColour(GLfloat r, GLfloat g, GLfloat b) const {
-	// Get "objectColour" uniform location, enable program, set uniform value, and disable program.
-	GLint objectColourUniformLocation = mProgram.getUniformLocation("objectColour");
-	mProgram.enable();
-	glUniform3f(objectColourUniformLocation, r, g, b);
-	mProgram.disable();
-}
-
-void Sun::setColour(const std::array<GLfloat, 3>& colour) const {
-	setColour(colour[0], colour[1], colour[2]);
-}
-
-void Sun::setOpacity(GLfloat alpha) const {
-	// Get "objectOpacity" uniform location, enable program, set uniform value, and disable program.
-	GLint objectOpacityUniformLocation = mProgram.getUniformLocation("objectOpacity");
-	mProgram.enable();
-	glUniform1f(objectOpacityUniformLocation, alpha);
-	mProgram.disable();
 }
 
 bool Sun::sunCollision(const Camera &camera) {

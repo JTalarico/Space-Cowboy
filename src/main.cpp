@@ -13,7 +13,6 @@ int main() {
 	srand(time(NULL));//seed random num generator
 
 	try {
-
 		// Create an OpenGL context by initializing GLFW. Note that this step exploits RAII: the
 		// constructor for the GLFWGuard class calls the various GLFW initialization functions,
 		// while GLFWGuard's destructor calls glfwTerminate to terminate GLFW. This ensures that
@@ -52,9 +51,8 @@ int main() {
 		sun.scale(SUN_SIZE);
 
 		// Create planets useing procedural generation.
-		std::vector <Planet> planets = generatePlanets();
+		std::vector<Planet> planets = generatePlanets();
 
-		
 		Spaceship spaceship;
 
 		Spacecowboy spacecowboy;

@@ -1,8 +1,8 @@
 /**
-* @file planet.cpp
-*
-* Implementation file for the Planet class.
-*/
+ * @file planet.cpp
+ *
+ * Implementation file for the Planet class.
+ */
 #include "planet.hpp"
 #include <glm/glm.hpp>
 
@@ -99,12 +99,7 @@ Planet::Planet() :
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-
 	sphere.textureSphere(TEXTURES, sphere_texture);
-
-	// Set colour and opacity.
-	//setColour(palette::BLUE);
-	//setOpacity(palette::OPAQUE);
 }
 
 // Destructors.
@@ -168,26 +163,6 @@ void Planet::setAngularVelocity(float angularVelocity_x, float angularVelocity_y
 	mAngularVelocity = glm::vec3(angularVelocity_x, angularVelocity_y, angularVelocity_z);
 }
 
-void Planet::setColour(GLfloat r, GLfloat g, GLfloat b) const {
-	// Get "objectColour" uniform location, enable program, set uniform value, and disable program.
-	GLint objectColourUniformLocation = mProgram.getUniformLocation("objectColour");
-	mProgram.enable();
-	glUniform3f(objectColourUniformLocation, r, g, b);
-	mProgram.disable();
-}
-
-void Planet::setColour(const std::array<GLfloat, 3>& colour) const {
-	setColour(colour[0], colour[1], colour[2]);
-}
-
-void Planet::setOpacity(GLfloat alpha) const {
-	// Get "objectOpacity" uniform location, enable program, set uniform value, and disable program.
-	GLint objectOpacityUniformLocation = mProgram.getUniformLocation("objectOpacity");
-	mProgram.enable();
-	glUniform1f(objectOpacityUniformLocation, alpha);
-	mProgram.disable();
-}
-
 void Planet::setOrbitalAngularVelocity(const glm::vec3& orbitalAngularVelocity) {
 	mOrbitalAngularVelocity = orbitalAngularVelocity;
 }
@@ -224,8 +199,6 @@ void Planet::updateState() {
 
 	mTimeLastStateUpdate = currentTime;
 }
-
-// TEMPLATE : glm::vec3(camPos.x, camPos.y - 4.0f, camPos.z) + glm::vec3(25 * camDir.x, 25 * camDir.y, 25 * camDir.z)
 
 bool Planet::planetCollision(const Camera &camera) {
 

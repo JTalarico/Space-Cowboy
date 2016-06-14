@@ -1,8 +1,8 @@
 /**
-* @file spaceship.hpp
-*
-* Interface file for the Spaceship class.
-*/
+ * @file spaceship.hpp
+ *
+ * Interface file for the Spaceship class.
+ */
 #ifndef SPACE_COWBOY_SPACESHIP_HPP
 #define SPACE_COWBOY_SPACESHIP_HPP
 
@@ -11,7 +11,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <soil/soil.h>
+#include <SOIL/SOIL.h>
 
 #include "objloader.hpp"
 #include "camera.hpp"
@@ -19,108 +19,82 @@
 #include "palette.hpp"
 
 /**
-* Represents a user-controlled spaceship.
-*/
+ * Represents a user-controlled spaceship.
+ */
 class Spaceship {
 public:
 	// Constructors.
 	/**
-	* Creates a stationary spaceship centred at the origin.
-	*/
+	 * Creates a stationary spaceship centred at the origin.
+	 */
 	Spaceship();
 
 	// Accessor functions.
 	/**
-	* Returns the position of the spaceship.
-	*
-	* @return Position of spaceship.
-	*/
+	 * Returns the position of the spaceship.
+	 *
+	 * @return Position of spaceship.
+	 */
 	glm::vec3 position() const;
 
 	/**
-	* Returns the velocity of the spaceship.
-	*
-	* @return Velocity of spaceship.
-	*/
+	 * Returns the velocity of the spaceship.
+	 *
+	 * @return Velocity of spaceship.
+	 */
 	glm::vec3 velocity() const;
 
 	// Mutator functions.
 	/**
-	* Sets the velocity of the spaceship.
-	*
-	* @param velocity New spaceship velocity.
-	*/
+	 * Sets the velocity of the spaceship.
+	 *
+	 * @param velocity New spaceship velocity.
+	 */
 	void setVelocity(const glm::vec3& velocity);
 
 	/**
-	* Sets the colour of the Planet in RGB colour space.
-	*
-	* @param r Red value. Should be between 0.0 and 1.0.
-	* @param g Green value. Should be between 0.0 and 1.0.
-	* @param b Blue value. Should be between 0.0 and 1.0.
-	*/
-	void setColour(GLfloat r, GLfloat g, GLfloat b) const;
-
-	/**
-	* Sets the colour of the Planet in RGB colour space.
-	*
-	* @param colour RGB values.
-	*/
-	void setColour(const palette::rgb_t& colour) const;
-
-	/**
-	* Sets the opacity of the spaceship.
-	*
-	* @param alpha Alpha value of opacity.
-	*/
-	void setOpacity(GLfloat alpha) const;
-
-	/**
-	* Translates the spaceship in space.
-	*
-	* @param displacement Spaceship displacement.
-	*/
-
+	 * Translates the spaceship in space.
+	 *
+	 * @param displacement Spaceship displacement.
+	 */
 	void translate(const glm::vec3& displacement);
 
 	/**
-	* Sets the spaceship's position.
-	*
-	* @param position spaceships's new position.
-	*/
+	 * Sets the spaceship's position.
+	 *
+	 * @param position spaceships's new position.
+	 */
 	void setPosition(const glm::vec3& position);
 
 	/**
-	* Scales the spaceship uniformly.
-	*
-	* @param scaleFactor Scale factor.
-	*/
+	 * Scales the spaceship uniformly.
+	 *
+	 * @param scaleFactor Scale factor.
+	 */
 	void scale(float scaleFactor);
 
 	/**
-	* Updates the spaceships state based on its state of motion.
-	*/
+	 * Updates the spaceships state based on its state of motion.
+	 */
 	void updateState(const Camera& camera);
 	/**
-	* Renders the spaceship.
-	*
-	* @param camera Camera object used to render the spaceship.
-	*/
+	 * Renders the spaceship.
+	 *
+	 * @param camera Camera object used to render the spaceship.
+	 */
 	void draw(const Camera& camera) const;
 
 	/**
-	* Returns the model matrix of the spaceship.
-	*
-	* @return Spaceship's model matrix.
-	*/
+	 * Returns the model matrix of the spaceship.
+	 *
+	 * @return Spaceship's model matrix.
+	 */
 	glm::mat4 modelMatrix() const;
 
 	void pointNose(const Camera &camera);
 
-
 private:
 	// Data members.
-
 	/** Shader program. */
 	Program mProgram;
 	/** Reference ID of vertex array buffer. */
@@ -160,11 +134,6 @@ private:
 	glm::vec3 mOldCamDir;
 	glm::vec3 mNewCamDir;
 	glm::mat4 tiltRotation;
-
-
-
-
 };
 
 #endif
-

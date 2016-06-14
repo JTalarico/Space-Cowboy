@@ -50,16 +50,21 @@ int main() {
 		Sun sun;
 		sun.scale(SUN_SIZE);
 
-		// Create planets useing procedural generation.
+		// Create planets using procedural generation.
 		std::vector<Planet> planets = generatePlanets();
 
-		Spaceship spaceship;
+		Moon moon;
+		moon.setPrimary(&planets[0]);
+		moon.translate(planets[0].position() + glm::vec3(200.0f, 0.0f, 0.0f));
+		moon.setOrbitalAngularVelocity(0.0f, 10.0f, 0.0f);
+		moon.scale(50.0f);
 
+		// Create spaceship and spacecowboy.
+		Spaceship spaceship;
 		Spacecowboy spacecowboy;
 
 		// Game loop.
 		while (not window.shouldClose()) {
-
 			// Set time difference between last and current frame
 			window.updateDeltaTime();
 			window.updatePosition();
@@ -79,6 +84,9 @@ int main() {
 			// Update planet's state.
 			for(Planet& planet : planets)
 				planet.updateState();
+
+			// Update moons.
+			moon.updateState();
 
 			// Update spaceships's and spacecowboy's state.
 			spaceship.updateState(camera);
@@ -101,8 +109,6 @@ int main() {
 				window.setBounce(glm::normalize(glm::vec3(camera.position()) * 2.0f));
 			}
 
-			
-			
 			// Draw stars.
 			stars.draw(camera);
 
@@ -116,7 +122,10 @@ int main() {
 			// Draw the planets.
 			for(const Planet& planet : planets)
 				planet.draw(camera);
-			
+
+			// Draw the moons.
+			moon.draw(camera);
+
 			//Assets (Space Ship & DeadPool) loaded with a CCW orientation
 			glFrontFace(GL_CCW);
 
@@ -126,7 +135,6 @@ int main() {
 			// Draw the spacecowboy.
 			spacecowboy.draw(camera);
 	
-		
 			// Swap the front and back buffers.
 			window.swapBuffers();
 		}

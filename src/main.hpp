@@ -6,6 +6,7 @@
  */
 #include "camera.hpp"
 #include "glfw_guard.hpp"
+#include "moon.hpp"
 #include "palette.hpp"
 #include "planet.hpp"
 #include "program.hpp"

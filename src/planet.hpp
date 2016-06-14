@@ -183,7 +183,7 @@ public:
 
 	bool planetCollision(const Camera& camera);
 
-private:
+protected:
 	// Data members.
 	/** Shader program. */
 	Program mProgram;

@@ -122,6 +122,14 @@ public:
 	 */
 	void setUp(const glm::vec3& up);
 
+	bool getTiltLeft() const;
+
+	bool getTiltRight() const;
+
+	void setTiltLeft(bool tilt) ;
+
+	void setTiltRight(bool tilt) ;
+
 private:
 	/** Camera field of view. */
 	float mFOV;
@@ -132,6 +140,8 @@ private:
 	/** Far clipping plane is the distance to the back side of the viewing frustum. */
 	float mFarClippingPlane;
 
+	bool shipTiltLeft;
+	bool shipTiltRight;
 	/** Camera position. */
 	glm::vec3 mPosition;
 	/** Direction camera is facing. */

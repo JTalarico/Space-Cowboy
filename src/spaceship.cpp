@@ -36,6 +36,8 @@ Spaceship::Spaceship() :
 	mRotation = glm::rotate(glm::mat4(1.0f), -3.14159f / 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	scale(0.2f);
+	tiltDegree = 0.0f;
+	tiltRotation = glm::mat4(1.0f);
 
 	loadOBJ(DARK_FIGHTER_6, vertices, normals, UVs);
 
@@ -187,10 +189,38 @@ void Spaceship::pointNose(const Camera& camera) {
 	else
 		rotation2 = glm::rotate(identity, -phi, rotationAxis);
 
-
+	std::cout << camera.getTiltLeft() << std::endl;
 	// The rotation matrix needed for the model is the combination of these two Rotations
 
-	mRotation = rotation2 * rotation1;
+	
+	if (camera.getTiltLeft()) {
+		
+		if (tiltDegree >= -3.14159f / 2.0f) 
+			tiltDegree -= 0.1f;
+
+		tiltRotation = glm::rotate(identity, tiltDegree, camDir);
+				
+	}
+	
+	else if (camera.getTiltRight()) {
+
+		if (tiltDegree <= 3.14159f / 2.0f)
+			tiltDegree += 0.1f;
+
+		tiltRotation = glm::rotate(identity, tiltDegree, camDir);
+	}
+	else if (!(camera.getTiltLeft() || camera.getTiltRight())) {
+
+		if (tiltDegree != 0)
+			tiltDegree *= 0.9f;
+		
+		tiltRotation = glm::rotate(identity, tiltDegree, camDir);
+
+	}else{
+	
+	}
+	
+	mRotation = tiltRotation* rotation2 * rotation1;
 
 	//---------------------Here an attempt was made for Tilt. -----------------------
 	/*

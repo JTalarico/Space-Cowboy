@@ -156,9 +156,10 @@ private:
 	glm::vec3 mVelocity;
 	/** Time in seconds of last frame. */
 	double    mTimeLastFrame;
-
+	float tiltDegree;
 	glm::vec3 mOldCamDir;
 	glm::vec3 mNewCamDir;
+	glm::mat4 tiltRotation;
 
 
 

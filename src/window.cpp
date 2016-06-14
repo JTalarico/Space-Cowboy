@@ -42,12 +42,13 @@ Window::Window(int width, int height, const std::string& title) {
 	glViewport(0, 0, static_cast<GLsizei>(width_pixels), static_cast<GLsizei>(height_pixels));
 
 	// Don't show cursor + make sure cursor cant leave window.
-	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	// Set callback functions.
 	glfwSetCursorPosCallback(mWindow, cursorCallback);
 	glfwSetKeyCallback(mWindow, keyCallback);
 	glfwSetScrollCallback(mWindow, scrollCallback);
+	glfwSetMouseButtonCallback(mWindow, mouse_button_callback);
 
 }
 
@@ -177,6 +178,7 @@ void Window::cursorCallback(GLFWwindow *, double xpos, double ypos) {
 	}
 }
 
+
 void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 	if (action == GLFW_PRESS) {
 		keysPressed[key] = true;
@@ -184,6 +186,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 	if (action == GLFW_RELEASE) {
 		keysPressed[key] = false;
 	}
+
 
 	// If ESC is pressed, close window.
 	if (keysPressed[GLFW_KEY_ESCAPE]) {
@@ -212,6 +215,21 @@ void Window::scrollCallback(GLFWwindow *, double, double) {
 	// Nothing for now. May add a FOV changer
 }
 
+void Window::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+	
+	if (button == GLFW_MOUSE_BUTTON_LEFT)
+		if(action == GLFW_PRESS)
+			sPCamera->setTiltLeft(true);
+		else if(action == GLFW_RELEASE)
+			sPCamera->setTiltLeft(false);
+
+	if (button == GLFW_MOUSE_BUTTON_RIGHT)
+		if (action == GLFW_PRESS)
+			sPCamera->setTiltRight(true);
+		else if (action == GLFW_RELEASE)
+			sPCamera->setTiltRight(false);
+
+}
 void Window::updateDeltaTime() {
 	GLfloat currentFrame = static_cast<float> (glfwGetTime());
 	deltaTime = currentFrame - lastFrame;
@@ -270,6 +288,8 @@ void Window::moveCamera() {
 	if (keysPressed[GLFW_KEY_SPACE]) {
 		currentVelocity = 0;
 	}
+
+
 
 	// Added strafing for less awkward movement
 	if (keysPressed[GLFW_KEY_A]) {

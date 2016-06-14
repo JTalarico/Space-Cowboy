@@ -13,7 +13,10 @@ Camera::Camera() :
 		mFarClippingPlane(100.0f),
 		mPosition(glm::vec3(0, 0, 0)),
 		mDirection(glm::vec3(0, 0, -1.0f)),
-		mUp(glm::vec3(0, 1, 0)) { }
+		mUp(glm::vec3(0, 1, 0)),
+		shipTiltLeft(false),
+		shipTiltRight(false){ }
+	
 
 Camera::Camera(float fov, float aspectRatio, float nearClippingPlane, float farClippingPlane,
                const glm::vec3& position, const glm::vec3& direction, const glm::vec3& up) :
@@ -23,7 +26,9 @@ Camera::Camera(float fov, float aspectRatio, float nearClippingPlane, float farC
 		mFarClippingPlane(farClippingPlane),
 		mPosition(position),
 		mDirection(direction),
-		mUp(up) { }
+		mUp(up),
+		shipTiltLeft(false),
+		shipTiltRight(false) { }
 
 // Accessor functions.
 glm::vec3 Camera::position() const {
@@ -73,4 +78,24 @@ void Camera::setDirection(const glm::vec3& direction) {
 
 void Camera::setUp(const glm::vec3& up) {
 	mUp = up;
+}
+
+bool Camera::getTiltLeft() const {
+
+	return shipTiltLeft;
+}
+
+bool Camera::getTiltRight() const {
+
+	return shipTiltRight;
+
+}
+
+void Camera::setTiltLeft(bool tilt) {
+	
+	shipTiltLeft = tilt;
+}
+
+void Camera::setTiltRight(bool tilt) {
+	shipTiltRight = tilt;
 }

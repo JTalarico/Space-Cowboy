@@ -25,9 +25,9 @@
 
 // Window properties.
 /** Window width in pixels. */
-constexpr int  WINDOW_WIDTH   = 1300;
+constexpr int  WINDOW_WIDTH   = 2600;
 /** Window height in pixels. */
-constexpr int  WINDOW_HEIGHT  = 800;
+constexpr int  WINDOW_HEIGHT  = 1600;
 /** Window title. */
 constexpr char WINDOW_TITLE[] = "Space Cowboy";
 

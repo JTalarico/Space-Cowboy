@@ -34,14 +34,14 @@ public:
 	Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude);//perfect sphere for sun
 
 	/**
-	* Constructs an imperfect sphere with the given parameters.
-	*
-	* @param radius Radius of the sphere.
-	* @param nLatitude Lines of latitude.
-	* @param nLongitude Lines of longitude.
-	* @param smoothness Smoothness of the terrain.
-	*/
-	Sphere(float radius, unsigned int nLatitide, unsigned int nLongitude, float smoothness);//imperfect sphere for planets
+	 * Constructs an imperfect sphere with the given parameters.
+	 *
+	 * @param radius Radius of the sphere.
+	 * @param nLatitude Lines of latitude.
+	 * @param nLongitude Lines of longitude.
+	 * @param smoothness Smoothness of the terrain.
+	 */
+	Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, float smoothness);
 
 	// Data members.
 	/** Vertices of the sphere. Each triplet of numbers is a sphere vertex. */
@@ -64,9 +64,6 @@ public:
 	void polarize(std::vector<std::vector<float>> &heightMap);
 	/**apply texture to sphere based on generated heightmap*/
 	void textureSphere(const char* textSrc, GLuint &sphere_texture);
-
-
-
 };
 
 #endif

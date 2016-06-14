@@ -5,10 +5,8 @@
  */
 #include "sphere.hpp"
 
- // Constructors.
-//constructor for imperfect sphere
+// Constructors.
 Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, float smoothness) {
-
 	// Assertions to check that input parameters make sense.
 	assert(radius > 0);
 	assert(nLatitude > 2);
@@ -23,26 +21,25 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, fl
 	// deltaTheta is the angle between lines of latitude. deltaPhi is the angle between lines of
 	// longitude.
 	const double deltaTheta = M_PI / (nLatitude - 1);
-	const double deltaPhi = 2 * M_PI / (nLongitude);
+	const double deltaPhi   = 2 * M_PI / (nLongitude);
 
-	heightMap.resize(nLatitude, std::vector<float>(nLongitude));/*********************figure out resizing**********************/
+	heightMap.resize(nLatitude, std::vector<float>(
+			nLongitude));/*********************figure out resizing**********************/
 
 	//call diamond square and fill heightmap
 	diamondSquare(heightMap, 0, 0, (nLongitude) / 2, 0, smoothness);
 	polarize(heightMap);
 
-	unsigned int longitude = 0;
-
 	// Fill the vertices and normals.
 	for (unsigned int latitude = 0; latitude < nLatitude; ++latitude) {
 		const float n_y = static_cast<float>(cos(latitude * deltaTheta));
-		const float y = (radius + heightMap[latitude][0]) * n_y;
+		const float y   = (radius + heightMap[latitude][0]) * n_y;
 
-		for (longitude = 0; longitude < nLongitude; ++longitude) {
+		for (unsigned int longitude = 0; longitude < nLongitude; ++longitude) {
 			const float n_x = static_cast<float>(sin(longitude * deltaPhi)) *
-				static_cast<float>(sin(latitude * deltaTheta));
+			                  static_cast<float>(sin(latitude * deltaTheta));
 			const float n_z = static_cast<float>(cos(longitude * deltaPhi)) *
-				static_cast<float>(sin(latitude * deltaTheta));
+			                  static_cast<float>(sin(latitude * deltaTheta));
 
 			const float x = (radius + heightMap[latitude][longitude]) * n_x;
 			const float z = (radius + heightMap[latitude][longitude]) * n_z;
@@ -55,14 +52,13 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, fl
 			normals.push_back(n_y);
 			normals.push_back(n_z);
 
-			//
-
 			//create UVS here, why normals pushed back n_x vs x for vertices, which to push here?
 			uvs.push_back(static_cast <float> (rand()) / static_cast <float>(RAND_MAX));
 			uvs.push_back(static_cast <float> (rand()) / static_cast <float>(RAND_MAX));
-			
-			if (longitude == 256)
+
+			if (longitude == 256) {
 				break;
+			}
 		}
 	}
 
@@ -80,7 +76,7 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, fl
 	}
 
 	//Using the indices we need to readjust the normals
-	for (int i = 0; i < indices.size(); i += 3) {
+	for (unsigned int i = 0; i < indices.size(); i += 3) {
 
 		//Find the corresponding vertices that make up a triangle using Indice data
 		float x1 = vertices[3 * indices[i]];
@@ -104,20 +100,19 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, fl
 		cross = glm::normalize(cross);
 
 		//Remap the normals to their new data
-		normals[3 * indices[i]] = cross.x;
+		normals[3 * indices[i]]     = cross.x;
 		normals[3 * indices[i] + 1] = cross.y;
 		normals[3 * indices[i] + 2] = cross.z;
 
-		normals[3 * indices[i + 1]] = cross.x;
+		normals[3 * indices[i + 1]]     = cross.x;
 		normals[3 * indices[i + 1] + 1] = cross.y;
 		normals[3 * indices[i + 1] + 2] = cross.z;
 
-		normals[3 * indices[i + 2]] = cross.x;
+		normals[3 * indices[i + 2]]     = cross.x;
 		normals[3 * indices[i + 2] + 1] = cross.y;
 		normals[3 * indices[i + 2] + 2] = cross.z;
 
 		//While we have each individual triangle we shall assign the UV data as well
-
 		glm::vec3 p1 = glm::vec3(x1, y1, z1);
 		glm::vec3 p2 = glm::vec3(x2, y2, z2);
 		glm::vec3 p3 = glm::vec3(x3, y3, z3);
@@ -131,14 +126,17 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, fl
 
 		float lengthMax = 0;
 
-		if (v1_magnitude > lengthMax)
+		if (v1_magnitude > lengthMax) {
 			lengthMax = v1_magnitude;
+		}
 
-		if (v2_magnitude > lengthMax)
+		if (v2_magnitude > lengthMax) {
 			lengthMax = v2_magnitude;
+		}
 
-		if (v3_magnitude > lengthMax)
+		if (v3_magnitude > lengthMax) {
 			lengthMax = v3_magnitude;
+		}
 
 		p1 = p1 / lengthMax;
 		p2 = p2 / lengthMax;
@@ -148,58 +146,51 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, fl
 
 		if (glm::length(p2 - p1) == 1) {
 
-			uvs[2 * indices[i]] = 0.0f;
+			uvs[2 * indices[i]]     = 0.0f;
 			uvs[2 * indices[i] + 1] = 0.0f;
 
-			uvs[2 * indices[i + 1]] = 1.0f;
+			uvs[2 * indices[i + 1]]     = 1.0f;
 			uvs[2 * indices[i + 1] + 1] = 0.0f;
 
-			float theta = glm::acos(glm::dot((p2 - p1), (p3 - p1)) / (glm::length((p2 - p1))*glm::length((p3 - p1))));
+			float theta = glm::acos(glm::dot((p2 - p1), (p3 - p1)) /
+			                        (glm::length((p2 - p1)) * glm::length((p3 - p1))));
 
-			uvs[2 * indices[i + 2]] = glm::length(p3 - p1) * glm::cos(theta);
+			uvs[2 * indices[i + 2]]     = glm::length(p3 - p1) * glm::cos(theta);
 			uvs[2 * indices[i + 2] + 1] = glm::length(p3 - p1) * glm::sin(theta);
 
 		}
 		if (glm::length(p3 - p1) == 1) {
-
-			uvs[2 * indices[i]] = 0.0f;
+			uvs[2 * indices[i]]     = 0.0f;
 			uvs[2 * indices[i] + 1] = 0.0f;
 
-			uvs[2 * indices[i + 2]] = 1.0f;
+			uvs[2 * indices[i + 2]]     = 1.0f;
 			uvs[2 * indices[i + 2] + 1] = 0.0f;
 
-			float theta = glm::acos(glm::dot((p3 - p1), (p2 - p1)) / (glm::length((p3 - p1))*glm::length((p2 - p1))));
+			float theta = glm::acos(glm::dot((p3 - p1), (p2 - p1)) /
+			                        (glm::length((p3 - p1)) * glm::length((p2 - p1))));
 
-			uvs[2 * indices[i + 1]] = glm::length(p2 - p1) * glm::cos(theta);
+			uvs[2 * indices[i + 1]]     = glm::length(p2 - p1) * glm::cos(theta);
 			uvs[2 * indices[i + 1] + 1] = glm::length(p2 - p1) * glm::sin(theta);
-
-		}if (glm::length(p3 - p2) == 1) {
-
-			uvs[2 * indices[i + 1]] = 0.0f;
-			uvs[2 * indices[i + 1] + 1] = 0.0f;
-
-			uvs[2 * indices[i + 2]] = 1.0f;
-			uvs[2 * indices[i + 2] + 1] = 0.0f;
-
-			float theta = glm::acos(glm::dot((p3 - p2), (p1 - p2)) / (glm::length((p3 - p2))*glm::length((p1 - p2))));
-
-			uvs[2 * indices[i]] = glm::length(p1 - p2) * glm::cos(theta);
-			uvs[2 * indices[i] + 1] = glm::length(p1 - p2) * glm::sin(theta);
 
 		}
 
+		if (glm::length(p3 - p2) == 1) {
+			uvs[2 * indices[i + 1]]     = 0.0f;
+			uvs[2 * indices[i + 1] + 1] = 0.0f;
 
+			uvs[2 * indices[i + 2]]     = 1.0f;
+			uvs[2 * indices[i + 2] + 1] = 0.0f;
 
+			float theta = glm::acos(glm::dot((p3 - p2), (p1 - p2)) /
+			                        (glm::length((p3 - p2)) * glm::length((p1 - p2))));
 
+			uvs[2 * indices[i]]     = glm::length(p1 - p2) * glm::cos(theta);
+			uvs[2 * indices[i] + 1] = glm::length(p1 - p2) * glm::sin(theta);
+		}
 	}
-
 }
 
-// Constructors.
 Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude) {
-
-	
-
 	// Assertions to check that input parameters make sense.
 	assert(radius > 0);
 	assert(nLatitude > 2);
@@ -220,7 +211,7 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude) {
 	// Fill the vertices and normals.
 	for (unsigned int latitude = 0; latitude < nLatitude; ++latitude) {
 		const float n_y = static_cast<float>(cos(latitude * deltaTheta));
-		const float y   = radius  * n_y ;
+		const float y   = radius * n_y;
 
 		for (unsigned int longitude = 0; longitude < nLongitude; ++longitude) {
 			const float n_x = static_cast<float>(sin(longitude * deltaPhi)) *
@@ -240,8 +231,8 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude) {
 			normals.push_back(n_z);
 
 			//create UVS here, why normals pushed back n_x vs x for vertices, which to push here?
-			uvs.push_back(static_cast <float> (rand()) / static_cast <float>(RAND_MAX));
-			uvs.push_back(static_cast <float> (rand()) / static_cast <float>(RAND_MAX));
+			uvs.push_back(static_cast<float> (rand()) / static_cast<float>(RAND_MAX));
+			uvs.push_back(static_cast<float> (rand()) / static_cast<float>(RAND_MAX));
 		}
 	}
 
@@ -258,40 +249,45 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude) {
 		}
 	}
 }
-float Sphere::getRand(float smoothness, int iteration)
-{
-	float r = static_cast <float> (rand()) / static_cast <float>(RAND_MAX);
-	float randNum = static_cast <float> ((1.0 * r - 0.5) /pow(smoothness,iteration)/10);
+
+float Sphere::getRand(float smoothness, int iteration) {
+	float r       = static_cast <float> (rand()) / static_cast <float>(RAND_MAX);
+	float randNum = static_cast <float> ((1.0 * r - 0.5) / pow(smoothness, iteration) / 10);
 	return randNum;
 }
 
 
 //NOTE arraylength must be square 2D with each side length of 2^n+1
-void Sphere::diamondSquare(std::vector<std::vector<float>> &heightMap, int x, int y, int stride, int iteration, float smoothness)
-{
+void Sphere::diamondSquare(std::vector<std::vector<float>>& heightMap, int x, int y, int stride,
+                           int iteration, float smoothness) {
 
-	if (stride > 0)
-	{
-		float topLeft = heightMap[x][y];
-		float topRight = heightMap[x + 2 * stride][y];
-		float bottomLeft = heightMap[x][y + 2 * stride];
+	if (stride > 0) {
+		float topLeft     = heightMap[x][y];
+		float topRight    = heightMap[x + 2 * stride][y];
+		float bottomLeft  = heightMap[x][y + 2 * stride];
 		float bottomRight = heightMap[x + 2 * stride][y + 2 * stride];
 
 		int midx = x + stride;
 		int midy = y + stride;
 
 		//assign midpoint value
-		heightMap[midx][midy] = static_cast <float>((topLeft + topRight + bottomLeft + bottomRight) / 4 + getRand(smoothness, iteration));
+		heightMap[midx][midy] = static_cast <float>(
+				(topLeft + topRight + bottomLeft + bottomRight) / 4 +
+				getRand(smoothness, iteration));
 
 
 		if (!(midx + stride == heightMap.size() - 1 || midx - stride == 0)) {
-			heightMap[midx + stride][midy] = (topRight + bottomRight) / 2 + getRand(smoothness + 1.0f, iteration);
-			heightMap[midx - stride][midy] = (topLeft + bottomLeft) / 2 + getRand(smoothness + 1.0f, iteration);
+			heightMap[midx + stride][midy] =
+					(topRight + bottomRight) / 2 + getRand(smoothness + 1.0f, iteration);
+			heightMap[midx - stride][midy] =
+					(topLeft + bottomLeft) / 2 + getRand(smoothness + 1.0f, iteration);
 		}
 
 		if (!(midy + stride == heightMap.size() - 1 || midy - stride == 0)) {
-			heightMap[midx][midy + stride] = (bottomLeft + bottomRight) / 2 + getRand(smoothness + 1.0f, iteration);
-			heightMap[midx][midy - stride] = (topLeft + topRight) / 2 + getRand(smoothness + 1.0f, iteration);
+			heightMap[midx][midy + stride] =
+					(bottomLeft + bottomRight) / 2 + getRand(smoothness + 1.0f, iteration);
+			heightMap[midx][midy - stride] =
+					(topLeft + topRight) / 2 + getRand(smoothness + 1.0f, iteration);
 		}
 
 
@@ -306,22 +302,20 @@ void Sphere::diamondSquare(std::vector<std::vector<float>> &heightMap, int x, in
 }
 
 //Since we want to make onto a sphere we make the north and south pole mappings all the same value
-void Sphere::polarize(std::vector<std::vector<float>> &heightMap)
-{
+void Sphere::polarize(std::vector<std::vector<float>>& heightMap) {
 	//make the northpole the same value as southpole
-	
+
 
 	for (int i = 0; i < heightMap.size(); i++) {
 
-		heightMap[0][i] = 0.0f;
+		heightMap[0][i]                    = 0.0f;
 		heightMap[heightMap.size() - 1][i] = 0.0f;
 
 	}
 
 }
 
-void Sphere::textureSphere(const char* textSrc, GLuint &sphere_texture)
-{
+void Sphere::textureSphere(const char *textSrc, GLuint& sphere_texture) {
 	glActiveTexture(GL_TEXTURE0); //select texture unit 0
 
 	//GLuint sphere_texture;
@@ -339,13 +333,15 @@ void Sphere::textureSphere(const char* textSrc, GLuint &sphere_texture)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Load image, create texture and generate mipmaps
-	int sphere_texture_width, sphere_texture_height;
-	unsigned char* sphere_image = SOIL_load_image(textSrc, &sphere_texture_width, &sphere_texture_height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sphere_texture_width, sphere_texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, sphere_image);
+	int           sphere_texture_width, sphere_texture_height;
+	unsigned char *sphere_image = SOIL_load_image(textSrc, &sphere_texture_width,
+	                                              &sphere_texture_height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sphere_texture_width, sphere_texture_height, 0, GL_RGB,
+	             GL_UNSIGNED_BYTE, sphere_image);
 
 	SOIL_free_image_data(sphere_image); //free resources
 
-										//unbind for safety
+	//unbind for safety
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 

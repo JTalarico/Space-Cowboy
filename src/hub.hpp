@@ -1,8 +1,8 @@
 /**
-* @file planet.hpp
-*
-* Interface file for the Planet class.
-*/
+ * @file hub.hpp
+ *
+ * Interface file for the Hub class.
+ */
 #ifndef SPACE_COWBOY_HUB_HPP
 #define SPACE_COWBOY_HUB_HPP
 
@@ -16,7 +16,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <soil/SOIL.h>
+#include <SOIL/SOIL.h>
 
 
 class Hub {
@@ -26,7 +26,6 @@ public:
 	* Creates a unit sphere centred at the origin.
 	*/
 	Hub();
-
 
 	void draw(const Camera& camera) const;
 

@@ -10,7 +10,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
+#include <random>
 /**
  * Represents a Moon.
  */
@@ -38,6 +38,10 @@ public:
 	 */
 	void updateState();
 
+	/**
+	 * Sets the moon's texture, and updates the buffers.
+	 */
+	void setMoonTexture();
 private:
 	// Data members.
 	/** Pointer to planet the moon is orbiting. */

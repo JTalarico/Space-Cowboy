@@ -88,6 +88,9 @@ std::vector<Moon> generateMoons(std::vector<Planet>& planets) {
 		for (unsigned int k = 0; k < nMoons; ++k) {
 			Moon& moon = moons[i + k];
 
+			// Set moon's texture.
+			moon.setMoonTexture();
+
 			// Set planet.
 			moon.setPrimary(&planet);
 

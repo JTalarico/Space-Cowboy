@@ -65,6 +65,10 @@ int main() {
 		//choose random planet on which to spawn spacecowboy
 		int randomPlanet = rand() % gaseousPlanets.size();
 
+		#if PLAY_MUSIC
+			system("mplayer ./music/interstellar.mp3  </dev/null >/dev/null 2>&1 &");
+		#endif
+
 		// Game loop.
 		while (not window.shouldClose()) {
 			// Set time difference between last and current frame
@@ -189,8 +193,10 @@ int main() {
 			// Swap the front and back buffers.
 			window.swapBuffers();
 		}
+		#if PLAY_MUSIC
+			system("kill -9 $(pgrep -f \"mplayer\")");
+		#endif
 
-		return 0;
 	}
 	catch (const std::exception& e) {
 		// Print error message to stderr and exit.

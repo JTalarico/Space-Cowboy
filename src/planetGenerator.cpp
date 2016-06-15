@@ -11,13 +11,23 @@ std::vector<Planet> generatePlanets() {
 	                                                    SDEV_NUMBER_OF_PLANETS);
 
 	unsigned long numberOfPlanets = static_cast<unsigned long>(planetNumberDistribution(e2));
-	std::vector<Planet> planets(numberOfPlanets);
 
-	std::normal_distribution<> rockeyPlanetNumberDistribution(numberOfPlanets/3,
+	std::normal_distribution<> rockeyPlanetNumberDistribution(numberOfPlanets/4,
 	                                                          numberOfPlanets/6);
 
 	unsigned long numberOfRocky = static_cast<unsigned long>(rockeyPlanetNumberDistribution(e2));
 
+	// Make rocky planets
+	std::vector<Planet> planets (numberOfPlanets);
+	/*
+	for(int i = 0; i < numberOfPlanets; i++) {
+		if(i == numberOfRocky)
+			Planet::makeRocky = false;  // Turn off rockieness. Then make gas.
+		planets.push_back(Planet());
+	}
+	 Planet::makeRocky = true;   // Turn rockiness back on for moon generation.
+
+	*/
 	// Change Size of each planet
 	std::normal_distribution<float> rockyPlanetSizeDistribution(MEAN_ROCKY_PLANET_SIZE, SDEV_ROCKY_PLANET_SIZE);
 	std::normal_distribution<float> gaseousplanetSizeDistribution(MEAN_GASEOUS_PLANET_SIZE, SDEV_GASEOUS_PLANET_SIZE);

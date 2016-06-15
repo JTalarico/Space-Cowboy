@@ -226,6 +226,10 @@ public:
 	 */
 	void generateTexture(glm::vec3 brightColor, glm::vec3 darkColor, double xPeriod, double yPeriod,
 	                     double turbPower, double trubSize);
+	/**
+	 * Cheap hack turn rockyness off for gaseous planets.
+	 */
+	static bool makeRocky;
 
 protected:
 	// Data members.

@@ -6,7 +6,9 @@
 #include "planet.hpp"
 #include <glm/glm.hpp>
 #include <random>
+
 float colorSTD = 10;
+bool Planet::makeRocky = true;
 
 namespace {
 // Shader program file paths.
@@ -23,7 +25,7 @@ constexpr unsigned int N_LATITUDE   = 129;
 /** Number of lines of longitude. */
 constexpr unsigned int N_LONGITUDE  = 129;
 /** Smoothness factor*/
-constexpr float        N_SMOOTHNESS = 1.2f;
+float        N_SMOOTHNESS;
 }
 
 
@@ -38,8 +40,20 @@ Planet::Planet() :
 		mTimeLastStateUpdate(glfwGetTime()) {
 	// Create the Sphere object which holds the planet's vertex, normal, and index data. Record
 	// the number of vertex components and indices.
+	if (makeRocky) {
+		std::random_device rd;
+		std::mt19937       e2(rd());
+
+		std::normal_distribution<float> randomRockiness(1.1f, 0.1f);
+		N_SMOOTHNESS = randomRockiness(e2);
+	}
+	else {
+		N_SMOOTHNESS = 5;
+	}
+
 	Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE,
 	              N_SMOOTHNESS);//this constructor creates an imperfect sphere for landscape
+
 	mNVertices = static_cast<unsigned int>(sphere.vertices.size());
 	mNIndices  = static_cast<unsigned int>(sphere.indices.size());
 	mNColors   = static_cast<unsigned int>(sphere.colors.size());
@@ -284,8 +298,8 @@ void Planet::setRockyTexture() {
 	glm::vec3 primaryColor   = getDarkColor();
 	glm::vec3 secondaryColor = getDarkColor();
 
-	double xPeriod   = 0;
-	double yPeriod   = 0;
+	double xPeriod = 0;
+	double yPeriod = 0;
 
 	double turbPower = 100.0;
 	double turbSize  = 32.0;
@@ -297,8 +311,8 @@ void Planet::setGaseousTexture() {
 	glm::vec3 primaryColor   = getBrightColor();
 	glm::vec3 secondaryColor = getDarkColor();
 
-	double xPeriod   = 5.0;
-	double yPeriod   = 10.0;
+	double xPeriod = 5.0;
+	double yPeriod = 10.0;
 
 	double turbPower = 10.0;
 	double turbSize  = 32.0;
@@ -308,11 +322,11 @@ void Planet::setGaseousTexture() {
 
 void Planet::setEarthLikeTexture() {
 	setRockyTexture();  // Keeping it rocky for now.
-						// Might make earth in the future
+	// Might make earth in the future
 }
 
-void Planet::generateTexture(glm::vec3 primaryColor, glm::vec3 secondaryColor, double xPeriod, double yPeriod, double turbPower, double turbSize)
-{
+void Planet::generateTexture(glm::vec3 primaryColor, glm::vec3 secondaryColor, double xPeriod,
+                             double yPeriod, double turbPower, double turbSize) {
 	std::vector<std::vector<GLfloat>> noiseMatrix(N_LATITUDE, std::vector<GLfloat>(N_LONGITUDE));
 	noiseMatrix = generateNoiseMatrix();
 
@@ -412,12 +426,12 @@ glm::vec3 getBrightColor() {
 
 	glm::vec3 colorChoice;
 
-	std::vector <glm::vec3> colorChoices {
-			glm::vec3 { 102, 204, 255},
-			glm::vec3{ 236, 121, 154},
-			glm::vec3{ 224, 204, 151},
-			glm::vec3{ 225, 179, 120},
-			glm::vec3{ 244, 170, 262}
+	std::vector<glm::vec3>             colorChoices {
+			glm::vec3 { 102, 204, 255 },
+			glm::vec3{ 236, 121, 154 },
+			glm::vec3{ 224, 204, 151 },
+			glm::vec3{ 225, 179, 120 },
+			glm::vec3{ 244, 170, 262 }
 	};
 	std::uniform_int_distribution<int> randomColor(0, colorChoices.size() - 1);
 
@@ -427,7 +441,7 @@ glm::vec3 getBrightColor() {
 	std::normal_distribution<float> randomG(colorChoice.y, colorSTD);
 	std::normal_distribution<float> randomB(colorChoice.z, colorSTD);
 
-	return glm::vec3{ randomR(e2)/255, randomG(e2)/255, randomB(e2)/255};
+	return glm::vec3{ randomR(e2) / 255, randomG(e2) / 255, randomB(e2) / 255 };
 }
 
 // Same code as above except for dark colors
@@ -439,12 +453,12 @@ glm::vec3 getDarkColor() {
 
 	glm::vec3 colorChoice;
 
-	std::vector <glm::vec3> colorChoices {
-			glm::vec3{121, 72, 59},
-			glm::vec3{73, 99, 141},
-			glm::vec3{184, 41, 30},
-			glm::vec3{56, 132, 65},
-			glm::vec3{70, 117, 118}
+	std::vector<glm::vec3>             colorChoices {
+			glm::vec3{ 121, 72, 59 },
+			glm::vec3{ 73, 99, 141 },
+			glm::vec3{ 184, 41, 30 },
+			glm::vec3{ 56, 132, 65 },
+			glm::vec3{ 70, 117, 118 }
 	};
 	std::uniform_int_distribution<int> randomColor(0, colorChoices.size() - 1);
 
@@ -454,5 +468,5 @@ glm::vec3 getDarkColor() {
 	std::normal_distribution<float> randomG(colorChoice.y, colorSTD);
 	std::normal_distribution<float> randomB(colorChoice.z, colorSTD);
 
-	return glm::vec3{ randomR(e2)/255, randomG(e2)/255, randomB(e2)/255};
+	return glm::vec3{ randomR(e2) / 255, randomG(e2) / 255, randomB(e2) / 255 };
 }

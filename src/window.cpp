@@ -7,6 +7,7 @@
 
 // Declare static data members.
 Camera *Window::sPCamera = nullptr;
+Camera Window::sPInitialCamera;
 
 float Window::sLastCursorXPos = 0.0f;
 float Window::sLastCursorYPos = 0.0f;
@@ -84,7 +85,7 @@ int Window::height() const {
 // Mutator functions.
 void Window::setCamera(Camera *pCamera) {
 	sPCamera = pCamera;
-
+	sPInitialCamera = *sPCamera;
 	// Now that we have a camera:
 	oldCameraFront = pCamera->direction();
 }
@@ -157,9 +158,14 @@ void Window::cursorCallback(GLFWwindow *, double xpos, double ypos) {
 	xoffset *= MOVE_SENSITIVITY;
 	yoffset *= MOVE_SENSITIVITY;
 
-	bool lTilt = sPCamera->getTiltLeft();
-	bool rTilt = sPCamera->getTiltRight();
-	
+	bool lTilt = false;
+	bool rTilt =  false;
+
+	if (!keysPressed[GLFW_KEY_LEFT_CONTROL]) {  // Dont move ship position if you're holding ctrl
+		lTilt = sPCamera->getTiltLeft();
+		rTilt = sPCamera->getTiltRight();
+	}
+
 	if((lTilt && xoffset < 0) || (rTilt && xoffset > 0))
 		sMouseYaw += xoffset;
 	else if((lTilt && xoffset > 0) || (rTilt && xoffset < 0))
@@ -167,7 +173,6 @@ void Window::cursorCallback(GLFWwindow *, double xpos, double ypos) {
 	else 
 		sMouseYaw += xoffset/3.0f;
 
-		
 	sMousePitch += yoffset;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
@@ -200,7 +205,6 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 		keysPressed[key] = false;
 	}
 
-
 	// If ESC is pressed, close window.
 	if (keysPressed[GLFW_KEY_ESCAPE]) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
@@ -222,6 +226,13 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
+	if (keysPressed[GLFW_KEY_BACKSPACE]) {
+		//firstMouse      = true;
+		*sPCamera = sPInitialCamera;
+		currentVelocity = 0;
+
+	}
+
 	if (key == GLFW_KEY_LEFT_CONTROL) {
 		
 		if (action == GLFW_PRESS) {
@@ -235,10 +246,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 		}
 		
 	}
-		
-
-		sPCamera->setDirection(oldCameraFront);
-
+	sPCamera->setDirection(oldCameraFront);
 	moveCamera();
 }
 

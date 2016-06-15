@@ -183,7 +183,8 @@ private:
 
 	/** Pointer to the camera object that window will control. */
 	static Camera *sPCamera;
-
+	/** Copy of the camera object in the initial state. */
+	static Camera sPInitialCamera;
 	/** x coordinate of last cursor. */
 	static float sLastCursorXPos;
 	/** y coordinate of last cursor. */

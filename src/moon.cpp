@@ -47,3 +47,24 @@ void Moon::updateState() {
 
 	mTimeLastStateUpdate = currentTime;
 }
+
+void Moon::setMoonTexture() {
+	std::random_device rd;
+	std::mt19937       e2(rd());
+
+	// Generate random noise
+	std::normal_distribution<float> randomLight(0.7f, 0.2f);
+	std::normal_distribution<float> randomDark(0.3f, 0.2f);
+
+	glm::vec3 primaryColor {randomLight(e2)};
+	glm::vec3 secondaryColor {randomDark(e2)};
+
+	double xPeriod   = 0;
+	double yPeriod   = 0;
+
+	double turbPower = 100.0;
+	double turbSize  = 32.0;
+
+	generateTexture(primaryColor, secondaryColor, xPeriod, yPeriod, turbPower, turbSize);
+	updateBuffers();
+}

@@ -316,7 +316,7 @@ void Planet::generateTexture(glm::vec3 primaryColor, glm::vec3 secondaryColor, d
 	std::vector<std::vector<GLfloat>> noiseMatrix(N_LATITUDE, std::vector<GLfloat>(N_LONGITUDE));
 	noiseMatrix = generateNoiseMatrix();
 
-	// First make striped pattern
+	// Generate random noise and pattern.
 	for (int i = 0; i < N_LATITUDE; i++) {
 		for (int j = 0; j < N_LONGITUDE; j++) {
 			double xyValue = i * xPeriod / N_LONGITUDE +
@@ -368,6 +368,7 @@ std::vector<std::vector<GLfloat>> generateNoiseMatrix() {
 	return noiseMatrix;
 }
 
+// This code was made with the help of http://lodev.org/cgtutor/randomnoise.html
 float smoothNoise(float x, float y, const std::vector<std::vector<GLfloat>>& noise) {
 	//get fractional part of x and y
 	double fractX = x - floor(x);
@@ -391,6 +392,7 @@ float smoothNoise(float x, float y, const std::vector<std::vector<GLfloat>>& noi
 	return value;
 }
 
+// This code was made with the help of http://lodev.org/cgtutor/randomnoise.html
 double turbulence(double x, double y, double size, const std::vector<std::vector<GLfloat>>& noise) {
 	double value = 0.0, initialSize = size;
 

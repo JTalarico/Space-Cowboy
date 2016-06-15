@@ -11,20 +11,31 @@ std::vector<Planet> generatePlanets() {
 	                                                    SDEV_NUMBER_OF_PLANETS);
 
 	unsigned long numberOfPlanets = static_cast<unsigned long>(planetNumberDistribution(e2));
-
 	std::vector<Planet> planets(numberOfPlanets);
 
+	std::normal_distribution<> rockeyPlanetNumberDistribution(numberOfPlanets/3,
+	                                                          numberOfPlanets/6);
+
+	unsigned long numberOfRocky = static_cast<unsigned long>(rockeyPlanetNumberDistribution(e2));
+
 	// Change Size of each planet
-	std::normal_distribution<float> planetSizeDistribution(MEAN_PLANET_SIZE, SDEV_PLANET_SIZE);
-	for (Planet& planet : planets) {
-		planet.scale(planetSizeDistribution(e2));
+	std::normal_distribution<float> rockyPlanetSizeDistribution(MEAN_ROCKY_PLANET_SIZE, SDEV_ROCKY_PLANET_SIZE);
+	std::normal_distribution<float> gaseousplanetSizeDistribution(MEAN_GASEOUS_PLANET_SIZE, SDEV_GASEOUS_PLANET_SIZE);
+
+	for (int i = 0; i < numberOfPlanets; i++) {
+		if(i < numberOfRocky)
+			planets[i].scale(rockyPlanetSizeDistribution(e2));
+		else
+			planets[i].scale(gaseousplanetSizeDistribution(e2));
 	}
 
 	// Change Color
-	for (Planet& planet : planets) {
-		planet.setPlanetTextureType(Planet::GASEOUS);
+	for (int i = 0; i < numberOfPlanets; i++) {
+		if(i < numberOfRocky)
+			planets[i].setPlanetTextureType(Planet::ROCKY);
+		else
+			planets[i].setPlanetTextureType(Planet::GASEOUS);
 	}
-
 
 	// Change orbit
 	std::normal_distribution<float>       planetOrbitDistribution(MEAN_PLANET_DISTANCE,
@@ -68,7 +79,7 @@ std::vector<Moon> generateMoons(std::vector<Planet>& planets) {
 	std::vector<int>  nMoonsPerPlanet(planets.size());
 	for (unsigned int i = 0; i < nMoonsPerPlanet.size(); ++i) {
 		nMoonsPerPlanet[i] = static_cast<int>(NUM_MOONS_AVERAGE_PLANET * planets[i].size() /
-		                                      MEAN_PLANET_SIZE);
+		                                      MEAN_ROCKY_PLANET_SIZE);
 	}
 
 	// Get total number of moons.
@@ -87,6 +98,9 @@ std::vector<Moon> generateMoons(std::vector<Planet>& planets) {
 
 		for (unsigned int k = 0; k < nMoons; ++k) {
 			Moon& moon = moons[i + k];
+
+			// Set moon's texture.
+			moon.setMoonTexture();
 
 			// Set planet.
 			moon.setPrimary(&planet);

@@ -26,12 +26,15 @@
 constexpr float MEAN_NUMBER_OF_PLANETS = 15.0f;
 constexpr float SDEV_NUMBER_OF_PLANETS = 5.0f;
 
-constexpr float MEAN_PLANET_SIZE = 120.0f;
-constexpr float SDEV_PLANET_SIZE = 50.0f;
+constexpr float MEAN_ROCKY_PLANET_SIZE = 120.0f;
+constexpr float SDEV_ROCKY_PLANET_SIZE = 50.0f;
 
-constexpr float MEAN_PLANET_DISTANCE    = 10.0f * MEAN_PLANET_SIZE;
-constexpr float SDEV_PLANET_DISTANCE    = 2.0f * MEAN_PLANET_SIZE;
-constexpr float MIN_PLANET_ORBIT_RADIUS = 2.0f * MEAN_PLANET_SIZE;
+constexpr float MEAN_GASEOUS_PLANET_SIZE = 300.0f;
+constexpr float SDEV_GASEOUS_PLANET_SIZE = 50.0f;
+
+constexpr float MEAN_PLANET_DISTANCE    = 10.0f * MEAN_GASEOUS_PLANET_SIZE;
+constexpr float SDEV_PLANET_DISTANCE    = 2.0f * MEAN_GASEOUS_PLANET_SIZE;
+constexpr float MIN_PLANET_ORBIT_RADIUS = 2.0f * MEAN_GASEOUS_PLANET_SIZE;
 
 constexpr float MEAN_ANGULAR_VELOCITY = 0.2f;
 constexpr float SDEV_ANGULAR_VELOCITY = 0.1f;

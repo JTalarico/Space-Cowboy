@@ -81,6 +81,13 @@ public:
 	 */
 	glm::vec3 position() const;
 
+	/**
+     * Returns the planet's size.
+     *
+     * @return Planet's size.
+     */
+	float size() const;
+
 	// Planet modifier functions.
 	/**
 	 * Rotates the planet.
@@ -212,13 +219,15 @@ public:
 	 * Color VBO must be updated immediately after.
 	 */
 	void setEarthLikeTexture();
+
 	/**
 	 * Generates the texture of the planet based on input parameters
 	 * Color VBO must be updated immediately after.
 	 */
-	void generateTexture(glm::vec3 brightColor, glm::vec3 darkColor, double xPeriod, double yPeriod, double turbPower, double trubSize);
+	void generateTexture(glm::vec3 brightColor, glm::vec3 darkColor, double xPeriod, double yPeriod,
+	                     double turbPower, double trubSize);
 
-private:
+protected:
 	// Data members.
 	/** Shader program. */
 	Program mProgram;
@@ -260,12 +269,18 @@ private:
 	void updateBuffers();
 };
 
-float smoothNoise(float x, float y, const std::vector<std::vector<GLfloat>> &noise);
+float                             smoothNoise(float x, float y,
+                                              const std::vector<std::vector<GLfloat>>& noise);
+
 std::vector<std::vector<GLfloat>> generateNoiseMatrix();
-double turbulence(double x, double y, double size, const std::vector<std::vector<GLfloat>> &noise);
+
+double                            turbulence(double x, double y, double size,
+                                             const std::vector<std::vector<GLfloat>>& noise);
 
 
 glm::vec3 getBrightColor();
+
 glm::vec3 getDarkColor();
+
 #endif
 

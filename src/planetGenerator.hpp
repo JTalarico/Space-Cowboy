@@ -6,6 +6,7 @@
 #ifndef SPACE_COWBOY_PLANET_GENERATOR_HPP
 #define SPACE_COWBOY_PLANET_GENERATOR_HPP
 
+#include "moon.hpp"
 #include "planet.hpp"
 
 #include <vector>
@@ -22,19 +23,26 @@
 #include <random>
 
 // Constants
-const float MEAN_NUMBER_OF_PLANETS = 15.0f;
-const float SDEV_NUMBER_OF_PLANETS = 5.0f;
+constexpr float MEAN_NUMBER_OF_PLANETS = 15.0f;
+constexpr float SDEV_NUMBER_OF_PLANETS = 5.0f;
 
-const float MEAN_PLANET_SIZE = 120.0f;
-const float SDEV_PLANET_SIZE = 50.0f;
+constexpr float MEAN_PLANET_SIZE = 120.0f;
+constexpr float SDEV_PLANET_SIZE = 50.0f;
 
-const float MEAN_PLANET_DISTANCE    = 10.0f * MEAN_PLANET_SIZE;
-const float SDEV_PLANET_DISTANCE    = 2.0f * MEAN_PLANET_SIZE;
-const float MIN_PLANET_ORBIT_RADIUS = 2.0f * MEAN_PLANET_SIZE;
+constexpr float MEAN_PLANET_DISTANCE    = 10.0f * MEAN_PLANET_SIZE;
+constexpr float SDEV_PLANET_DISTANCE    = 2.0f * MEAN_PLANET_SIZE;
+constexpr float MIN_PLANET_ORBIT_RADIUS = 2.0f * MEAN_PLANET_SIZE;
 
-const float MEAN_ANGULAR_VELOCITY = 0.2f;
-const float SDEV_ANGULAR_VELOCITY = 0.1f;
+constexpr float MEAN_ANGULAR_VELOCITY = 0.2f;
+constexpr float SDEV_ANGULAR_VELOCITY = 0.1f;
 
+constexpr float NUM_MOONS_AVERAGE_PLANET = 2.0f;
+
+constexpr float MIN_MOON_SIZE_FACTOR = 0.05f;
+constexpr float MAX_MOON_SIZE_FACTOR = 0.2f;
+
+constexpr float MIN_MOON_DISTANCE_FACTOR = 2.0f;
+constexpr float MAX_MOON_DISTANCE_FACTOR = 4.0f;
 
 /**
  * Procedurally generates a vector of planets.
@@ -44,9 +52,17 @@ const float SDEV_ANGULAR_VELOCITY = 0.1f;
  * Orbit angular velocity is based on Orbit Radius (through Kepler's third law)
  * Textures are procedurally generated
  *
- * @return Procedurally generated planets with moons.
+ * @return Procedurally generated planets.
  */
 std::vector<Planet> generatePlanets();
+
+/**
+ * Procedurally generates moons for each of the planets.
+ *
+ * @param planets Planets to generate moons for.
+ * @return Procedurally generated moons.
+ */
+std::vector<Moon> generateMoons(std::vector<Planet>& planets);
 
 
 #endif

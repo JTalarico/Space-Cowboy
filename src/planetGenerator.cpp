@@ -23,7 +23,7 @@ std::vector<Planet> generatePlanets() {
 	for(int i = 0; i < numberOfPlanets; i++) {
 		if(i == numberOfRocky)
 			Planet::makeRocky = false;  // Turn off rockieness. Then make gas.
-		planets.push_back(Planet());
+		planets.push_back(Planet());    // This doesnt work
 	}
 	 Planet::makeRocky = true;   // Turn rockiness back on for moon generation.
 

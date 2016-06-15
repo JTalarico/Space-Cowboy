@@ -62,7 +62,6 @@ void Stars::draw(const Camera& camera) const {
 	glUniformMatrix4fv(mProgram.getUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(view));
 
 	
-	//glActiveTexture(GL_TEXTURE3);
 	// Bind the vertex array buffer and texture to current context.
 	glBindVertexArray(mVAO);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, mTextureID);

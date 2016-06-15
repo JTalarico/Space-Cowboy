@@ -52,7 +52,7 @@ Planet::Planet() :
 	}
 
 	Sphere sphere(1.0f, N_LATITUDE, N_LONGITUDE,
-	              N_SMOOTHNESS);//this constructor creates an imperfect sphere for landscape
+	              N_SMOOTHNESS, makeRocky);//this constructor creates an imperfect sphere for landscape
 
 	mNVertices = static_cast<unsigned int>(sphere.vertices.size());
 	mNIndices  = static_cast<unsigned int>(sphere.indices.size());

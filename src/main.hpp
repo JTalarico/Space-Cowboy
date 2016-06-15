@@ -52,7 +52,7 @@ const glm::vec3 INITIAL_UP              = { 0, 1.0f, 0 };
 
 // Sun properties.
 /** Size of Sun. */
-constexpr float SUN_SIZE = 100.5f;
+constexpr float SUN_SIZE = 800.5f;
 
 // Planet properties.
 /** Size of planet. */

@@ -23,16 +23,16 @@
 #include <random>
 
 // Constants
-constexpr float MEAN_NUMBER_OF_PLANETS = 15.0f;
+constexpr float MEAN_NUMBER_OF_PLANETS = 10.0f;
 constexpr float SDEV_NUMBER_OF_PLANETS = 5.0f;
 
-constexpr float MEAN_ROCKY_PLANET_SIZE = 120.0f;
-constexpr float SDEV_ROCKY_PLANET_SIZE = 50.0f;
+constexpr float MEAN_ROCKY_PLANET_SIZE = 200.0f;
+constexpr float SDEV_ROCKY_PLANET_SIZE = 80.0f;
 
-constexpr float MEAN_GASEOUS_PLANET_SIZE = 300.0f;
-constexpr float SDEV_GASEOUS_PLANET_SIZE = 50.0f;
+constexpr float MEAN_GASEOUS_PLANET_SIZE = 500.0f;
+constexpr float SDEV_GASEOUS_PLANET_SIZE = 100.0f;
 
-constexpr float MEAN_PLANET_DISTANCE    = 10.0f * MEAN_GASEOUS_PLANET_SIZE;
+constexpr float MEAN_PLANET_DISTANCE    = 8.0f * MEAN_GASEOUS_PLANET_SIZE;
 constexpr float SDEV_PLANET_DISTANCE    = 2.0f * MEAN_GASEOUS_PLANET_SIZE;
 constexpr float MIN_PLANET_ORBIT_RADIUS = 2.0f * MEAN_GASEOUS_PLANET_SIZE;
 

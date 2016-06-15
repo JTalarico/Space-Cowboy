@@ -6,7 +6,7 @@
 #include "sphere.hpp"
 
 // Constructors.
-Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, float smoothness) {
+Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, float smoothness, bool rockyPlanet) {
 	// Assertions to check that input parameters make sense.
 	assert(radius > 0);
 	assert(nLatitude > 2);
@@ -28,9 +28,10 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, fl
 			nLongitude));/*********************figure out resizing**********************/
 
 	//call diamond square and fill heightmap
-	diamondSquare(heightMap, 0, 0, (nLongitude) / 2, 0, smoothness);
-	polarize(heightMap);
-
+	if (rockyPlanet) {
+		diamondSquare(heightMap, 0, 0, (nLongitude) / 2, 0, smoothness);
+		polarize(heightMap);
+	}
 	// Fill the vertices and normals.
 	for (unsigned int latitude = 0; latitude < nLatitude; ++latitude) {
 		const float n_y = static_cast<float>(cos(latitude * deltaTheta));

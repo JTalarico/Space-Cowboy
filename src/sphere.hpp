@@ -41,7 +41,7 @@ public:
 	 * @param nLongitude Lines of longitude.
 	 * @param smoothness Smoothness of the terrain.
 	 */
-	Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, float smoothness);
+	Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, float smoothness, bool rockyPLanet);
 
 	// Data members.
 	/** Vertices of the sphere. Each triplet of numbers is a sphere vertex. */

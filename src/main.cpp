@@ -50,16 +50,18 @@ int main() {
 		Sun sun;
 		sun.scale(SUN_SIZE);
 
-		// Create planets useing procedural generation.
+		// Create planets using procedural generation.
 		std::vector<Planet> planets = generatePlanets();
 
-		Spaceship spaceship;
+		// Create moons for the planets using procedural generation.
+		std::vector<Moon> moons = generateMoons(planets);
 
+		// Create spaceship and spacecowboy.
+		Spaceship   spaceship;
 		Spacecowboy spacecowboy;
 
 		// Game loop.
 		while (not window.shouldClose()) {
-
 			// Set time difference between last and current frame
 			window.updateDeltaTime();
 			window.updatePosition();
@@ -77,8 +79,14 @@ int main() {
 			// Update all Positions and states of Objects in the game
 
 			// Update planet's state.
-			for(Planet& planet : planets)
+			for (Planet& planet : planets) {
 				planet.updateState();
+			}
+
+			// Update moons.
+			for (Moon& moon : moons) {
+				moon.updateState();
+			}
 
 			// Update spaceships's and spacecowboy's state.
 			spaceship.updateState(camera);
@@ -89,7 +97,8 @@ int main() {
 				if (planet.planetCollision(camera)) {
 
 					window.setCollisison(true);
-					window.setBounce(glm::normalize(glm::vec3(camera.position() - planet.position())*2.0f));
+					window.setBounce(glm::normalize(
+							glm::vec3(camera.position() - planet.position()) * 2.0f));
 					break;
 				}
 				window.setCollisison(false);
@@ -101,32 +110,35 @@ int main() {
 				window.setBounce(glm::normalize(glm::vec3(camera.position()) * 2.0f));
 			}
 
-			
-			
 			// Draw stars.
 			stars.draw(camera);
 
 			// Sun and Planets created from same sphere algorithm therefore same culling orientation
 			glEnable(GL_CULL_FACE);
 			glFrontFace(GL_CW);
-			
+
 			// Draw the Sun.
 			sun.draw(camera);
-			
+
 			// Draw the planets.
-			for(const Planet& planet : planets)
+			for (const Planet& planet : planets) {
 				planet.draw(camera);
-			
+			}
+
+			// Draw the moons.
+			for (const Moon& moon : moons) {
+				moon.draw(camera);
+			}
+
 			//Assets (Space Ship & DeadPool) loaded with a CCW orientation
 			glFrontFace(GL_CCW);
 
 			// Draw the spaceship.
 			spaceship.draw(camera);
-			
+
 			// Draw the spacecowboy.
 			spacecowboy.draw(camera);
-	
-		
+
 			// Swap the front and back buffers.
 			window.swapBuffers();
 		}

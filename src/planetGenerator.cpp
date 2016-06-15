@@ -56,3 +56,67 @@ std::vector<Planet> generatePlanets() {
 
 	return planets;
 }
+
+std::vector<Moon> generateMoons(std::vector<Planet>& planets) {
+	// Create random number engine.
+	std::random_device rd;
+	std::mt19937       rng(rd());
+
+	// Get number of moons for each planet.
+	std::vector<int>  nMoonsPerPlanet(planets.size());
+	for (unsigned int i = 0; i < nMoonsPerPlanet.size(); ++i) {
+		nMoonsPerPlanet[i] = static_cast<int>(NUM_MOONS_AVERAGE_PLANET * planets[i].size() /
+		                                      MEAN_PLANET_SIZE);
+	}
+
+	// Get total number of moons.
+	unsigned int nMoonsTotal = 0;
+	for (int     nMoons : nMoonsPerPlanet) {
+		nMoonsTotal += nMoons;
+	}
+
+	std::vector<Moon> moons(nMoonsTotal);
+
+	// Set properties for each moon.
+	unsigned int      i = 0;
+	for (unsigned int j = 0; j < planets.size(); ++j) {
+		Planet& planet = planets[j];
+		int nMoons = nMoonsPerPlanet[j];
+
+		for (unsigned int k = 0; k < nMoons; ++k) {
+			Moon& moon = moons[i + k];
+
+			// Set planet.
+			moon.setPrimary(&planet);
+
+			// Set moon size.
+			float scaleFactor = std::uniform_real_distribution<float>(MIN_MOON_SIZE_FACTOR,
+			                                                          MAX_MOON_SIZE_FACTOR)(rng);
+			moon.scale(scaleFactor * planet.size());
+
+			// Position the moon.
+			float angle       = std::uniform_real_distribution<float>(
+					0.0f, 2 * static_cast<float>(M_PI))(rng);
+			float orbitRadius = std::uniform_real_distribution<float>(
+					MIN_MOON_DISTANCE_FACTOR * planet.size(),
+					MAX_MOON_DISTANCE_FACTOR * planet.size())(rng);
+			moon.translate(planet.position() +
+			               glm::vec3(orbitRadius * glm::cos(angle), 0.0f,
+			                         orbitRadius * glm::sin(angle)));
+
+			// Set orbital angular velocity.
+			float orbitalAngularSpeed =
+					      15.0f * static_cast<float>(pow(1.0f / orbitRadius, 2.0f / 3.0f));
+			moon.setOrbitalAngularVelocity(0.0f, orbitalAngularSpeed, 0.0f);
+
+			// Set angular velocity.
+			float angularSpeed = std::uniform_real_distribution<float>(-orbitalAngularSpeed,
+			                                                           orbitalAngularSpeed)(rng);
+			moon.setAngularVelocity(0.0f, angularSpeed, 0.0f);
+		}
+
+		i += nMoons;
+	}
+
+	return moons;
+}

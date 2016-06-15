@@ -75,6 +75,13 @@ public:
 	 */
 	glm::vec3 position() const;
 
+	/**
+	 * Returns the planet's size.
+	 *
+	 * @return Planet's size.
+	 */
+	float size() const;
+
 	// Planet modifier functions.
 	/**
 	 * Rotates the planet.
@@ -183,7 +190,7 @@ public:
 
 	bool planetCollision(const Camera& camera);
 
-private:
+protected:
 	// Data members.
 	/** Shader program. */
 	Program mProgram;

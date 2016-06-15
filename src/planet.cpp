@@ -126,6 +126,10 @@ glm::vec3 Planet::position() const {
 	return glm::vec3(mTranslation[3]);
 }
 
+float Planet::size() const {
+	return (mScale[0][0] + mScale[1][1] + mScale[2][2]) / 3;
+}
+
 // Planet modifier functions.
 void Planet::rotate(float angle, const glm::vec3& rotationAxis) {
 	mRotation = glm::rotate(mRotation, angle, rotationAxis);

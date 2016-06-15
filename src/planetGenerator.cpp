@@ -1,7 +1,49 @@
 #include "planetGenerator.hpp"
 
 
-std::vector<Planet> generatePlanets() {
+std::vector<Planet> generatePlanets(Planet::TERRAIN_TYPE planetType, float minDistance) {
+	float MEAN_NUMBER_OF_PLANETS;
+	float SDEV_NUMBER_OF_PLANETS;
+	float MEAN_PLANET_SIZE;
+	float SDEV_PLANET_SIZE;
+	Planet::TERRAIN_TYPE PLANET_TEXTURE;
+	float MEAN_PLANET_DISTANCE;
+	float SDEV_PLANET_DISTANCE;
+	float MIN_PLANET_ORBIT_RADIUS;
+
+	if (planetType == Planet::ROCKY) {
+		MEAN_NUMBER_OF_PLANETS = MEAN_NUMBER_OF_ROCKY_PLANETS;
+		SDEV_NUMBER_OF_PLANETS = SDEV_NUMBER_OF_ROCKY_PLANETS;
+		MEAN_PLANET_SIZE = MEAN_ROCKY_PLANET_SIZE;
+		SDEV_PLANET_SIZE = SDEV_ROCKY_PLANET_SIZE;
+		PLANET_TEXTURE = Planet::ROCKY;
+		MEAN_PLANET_DISTANCE = MEAN_ROCKY_PLANET_DISTANCE;
+		SDEV_PLANET_DISTANCE = SDEV_ROCKY_PLANET_DISTANCE;
+		MIN_PLANET_ORBIT_RADIUS = MIN_ROCKY_PLANET_ORBIT_RADIUS;
+	}
+	else if (planetType == Planet::GASEOUS) {
+		MEAN_NUMBER_OF_PLANETS = MEAN_NUMBER_OF_GASEOUS_PLANETS;
+		SDEV_NUMBER_OF_PLANETS = SDEV_NUMBER_OF_GASEOUS_PLANETS;
+		MEAN_PLANET_SIZE = MEAN_GASEOUS_PLANET_SIZE;
+		SDEV_PLANET_SIZE = SDEV_GASEOUS_PLANET_SIZE;
+		PLANET_TEXTURE = Planet::GASEOUS;
+		MEAN_PLANET_DISTANCE = MEAN_GASEOUS_PLANET_DISTANCE;
+		SDEV_PLANET_DISTANCE = SDEV_GASEOUS_PLANET_DISTANCE;
+		MIN_PLANET_ORBIT_RADIUS = minDistance;
+		Planet::makeRocky = false;
+
+	}
+	else {
+		MEAN_NUMBER_OF_PLANETS = MEAN_NUMBER_OF_GASEOUS_PLANETS;
+		SDEV_NUMBER_OF_PLANETS = SDEV_NUMBER_OF_GASEOUS_PLANETS;
+		MEAN_PLANET_SIZE = MEAN_GASEOUS_PLANET_SIZE;
+		SDEV_PLANET_SIZE = SDEV_GASEOUS_PLANET_SIZE;
+		PLANET_TEXTURE = Planet::GASEOUS;
+		MEAN_PLANET_DISTANCE = MEAN_GASEOUS_PLANET_DISTANCE;
+		SDEV_PLANET_DISTANCE = SDEV_GASEOUS_PLANET_DISTANCE;
+		MIN_PLANET_ORBIT_RADIUS = minDistance;
+		Planet::makeRocky = false;
+	}
 
 	std::random_device rd;
 	std::mt19937       e2(rd());
@@ -9,42 +51,21 @@ std::vector<Planet> generatePlanets() {
 	// Set number of planets
 	std::normal_distribution<> planetNumberDistribution(MEAN_NUMBER_OF_PLANETS,
 	                                                    SDEV_NUMBER_OF_PLANETS);
+	unsigned long              numberOfPlanets = static_cast<unsigned long>(planetNumberDistribution(
+			e2));
 
-	unsigned long numberOfPlanets = static_cast<unsigned long>(planetNumberDistribution(e2));
+	std::vector<Planet> planets(numberOfPlanets);
 
-	std::normal_distribution<> rockeyPlanetNumberDistribution(numberOfPlanets/4,
-	                                                          numberOfPlanets/6);
-
-	unsigned long numberOfRocky = static_cast<unsigned long>(rockeyPlanetNumberDistribution(e2));
-
-	// Make rocky planets
-	std::vector<Planet> planets (numberOfPlanets);
-	/*
-	for(int i = 0; i < numberOfPlanets; i++) {
-		if(i == numberOfRocky)
-			Planet::makeRocky = false;  // Turn off rockieness. Then make gas.
-		planets.push_back(Planet());    // This doesnt work
-	}
-	 Planet::makeRocky = true;   // Turn rockiness back on for moon generation.
-
-	*/
 	// Change Size of each planet
-	std::normal_distribution<float> rockyPlanetSizeDistribution(MEAN_ROCKY_PLANET_SIZE, SDEV_ROCKY_PLANET_SIZE);
-	std::normal_distribution<float> gaseousplanetSizeDistribution(MEAN_GASEOUS_PLANET_SIZE, SDEV_GASEOUS_PLANET_SIZE);
-
-	for (int i = 0; i < numberOfPlanets; i++) {
-		if(i < numberOfRocky)
-			planets[i].scale(rockyPlanetSizeDistribution(e2));
-		else
-			planets[i].scale(gaseousplanetSizeDistribution(e2));
+	std::normal_distribution<float>    planetSizeDistribution(MEAN_PLANET_SIZE, SDEV_PLANET_SIZE);
+	for (std::vector<Planet>::iterator planet  = planets.begin();
+	     planet != planets.end(); ++planet) {
+		planet->scale(planetSizeDistribution(e2));
 	}
 
 	// Change Color
-	for (int i = 0; i < numberOfPlanets; i++) {
-		if(i < numberOfRocky)
-			planets[i].setPlanetTextureType(Planet::ROCKY);
-		else
-			planets[i].setPlanetTextureType(Planet::GASEOUS);
+	for (Planet& planet : planets) {
+		planet.setPlanetTextureType(PLANET_TEXTURE);
 	}
 
 	// Change orbit
@@ -76,6 +97,7 @@ std::vector<Planet> generatePlanets() {
 	for (Planet& planet : planets) {
 		planet.setAngularVelocity({ 0, planetAngularVelocity(e2), 0 });
 	}
+	Planet::makeRocky = true;
 
 	return planets;
 }

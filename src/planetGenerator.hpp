@@ -23,8 +23,11 @@
 #include <random>
 
 // Constants
-constexpr float MEAN_NUMBER_OF_PLANETS = 10.0f;
-constexpr float SDEV_NUMBER_OF_PLANETS = 5.0f;
+constexpr float MEAN_NUMBER_OF_ROCKY_PLANETS = 5.0f;
+constexpr float SDEV_NUMBER_OF_ROCKY_PLANETS = 2.0f;
+
+constexpr float MEAN_NUMBER_OF_GASEOUS_PLANETS = 10.0f;
+constexpr float SDEV_NUMBER_OF_GASEOUS_PLANETS = 3.0f;
 
 constexpr float MEAN_ROCKY_PLANET_SIZE = 200.0f;
 constexpr float SDEV_ROCKY_PLANET_SIZE = 80.0f;
@@ -32,9 +35,12 @@ constexpr float SDEV_ROCKY_PLANET_SIZE = 80.0f;
 constexpr float MEAN_GASEOUS_PLANET_SIZE = 500.0f;
 constexpr float SDEV_GASEOUS_PLANET_SIZE = 100.0f;
 
-constexpr float MEAN_PLANET_DISTANCE    = 8.0f * MEAN_GASEOUS_PLANET_SIZE;
-constexpr float SDEV_PLANET_DISTANCE    = 2.0f * MEAN_GASEOUS_PLANET_SIZE;
-constexpr float MIN_PLANET_ORBIT_RADIUS = 2.0f * MEAN_GASEOUS_PLANET_SIZE;
+constexpr float MEAN_ROCKY_PLANET_DISTANCE    = 8.0f * MEAN_ROCKY_PLANET_SIZE;
+constexpr float SDEV_ROCKY_PLANET_DISTANCE    = 2.0f * MEAN_ROCKY_PLANET_SIZE;
+constexpr float MEAN_GASEOUS_PLANET_DISTANCE    = 8.0f * MEAN_GASEOUS_PLANET_SIZE;
+constexpr float SDEV_GASEOUS_PLANET_DISTANCE    = 2.0f * MEAN_GASEOUS_PLANET_SIZE;
+
+constexpr float MIN_ROCKY_PLANET_ORBIT_RADIUS = 1500.0f;
 
 constexpr float MEAN_ANGULAR_VELOCITY = 0.2f;
 constexpr float SDEV_ANGULAR_VELOCITY = 0.1f;
@@ -55,9 +61,10 @@ constexpr float MAX_MOON_DISTANCE_FACTOR = 4.0f;
  * Orbit angular velocity is based on Orbit Radius (through Kepler's third law)
  * Textures are procedurally generated
  *
+ * @param planetType Planets types to generate.
  * @return Procedurally generated planets.
  */
-std::vector<Planet> generatePlanets();
+std::vector<Planet> generatePlanets(Planet::TERRAIN_TYPE planetType, float minDistance);
 
 /**
  * Procedurally generates moons for each of the planets.

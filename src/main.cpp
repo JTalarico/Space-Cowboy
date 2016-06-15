@@ -51,17 +51,19 @@ int main() {
 		sun.scale(SUN_SIZE);
 
 		// Create planets using procedural generation.
-		std::vector<Planet> planets = generatePlanets();
+		std::vector<Planet> rockyPlanets = generatePlanets(Planet::ROCKY, 0);
+		std::vector<Planet> gaseousPlanets = generatePlanets(Planet::GASEOUS, glm::length(rockyPlanets.back().position()));
 
 		// Create moons for the planets using procedural generation.
-		std::vector<Moon> moons = generateMoons(planets);
+		std::vector<Moon> rockyMoons = generateMoons(rockyPlanets);
+		std::vector<Moon> gaseousMoons = generateMoons(gaseousPlanets);
 
 		// Create spaceship and spacecowboy.
 		Spaceship   spaceship;
 		Spacecowboy spacecowboy;
 
 		//choose random planet on which to spawn spacecowboy
-		int randomPlanet = rand() % planets.size();
+		int randomPlanet = rand() % gaseousPlanets.size();
 
 		// Game loop.
 		while (not window.shouldClose()) {
@@ -82,21 +84,27 @@ int main() {
 			// Update all Positions and states of Objects in the game
 
 			// Update planet's state.
-			for (Planet& planet : planets) {
+			for (Planet& planet : rockyPlanets) {
+				planet.updateState();
+			}
+			for (Planet& planet : gaseousPlanets) {
 				planet.updateState();
 			}
 
 			// Update moons.
-			for (Moon& moon : moons) {
+			for (Moon& moon : rockyMoons) {
+				moon.updateState();
+			}
+			for (Moon& moon : gaseousMoons) {
 				moon.updateState();
 			}
 
 			// Update spaceships's and spacecowboy's state.
 			spaceship.updateState(camera);
-			spacecowboy.updateState(camera, planets[randomPlanet]);
+			spacecowboy.updateState(camera, gaseousPlanets[randomPlanet]);
 
 			//Check for collisions with planets
-			for (Planet& planet : planets) {
+			for (Planet& planet : rockyPlanets) {
 				if (planet.planetCollision(camera)) {
 
 					window.setCollisison(true);
@@ -106,12 +114,32 @@ int main() {
 				//window.setCollisison(false);
 			}
 
-			for (Moon& moon : moons) {
+			for (Planet& planet : gaseousPlanets) {
+				if (planet.planetCollision(camera)) {
+
+					window.setCollisison(true);
+					window.setBounce(glm::normalize(glm::vec3(camera.position() - planet.position()) * 2.0f));
+					break;
+				}
+				//window.setCollisison(false);
+			}
+
+			for (Moon& moon : rockyMoons) {
 				if (moon.moonCollision(camera)) {
 
 					window.setCollisison(true);
 					window.setBounce(glm::normalize(
 						glm::vec3(camera.position() - moon.position()) * 2.0f));
+					break;
+				}
+				//window.setCollisison(false);
+			}
+			for (Moon& moon : gaseousMoons) {
+				if (moon.moonCollision(camera)) {
+
+					window.setCollisison(true);
+					window.setBounce(glm::normalize(
+							glm::vec3(camera.position() - moon.position()) * 2.0f));
 					break;
 				}
 				//window.setCollisison(false);
@@ -134,12 +162,18 @@ int main() {
 			sun.draw(camera);
 
 			// Draw the planets.
-			for (const Planet& planet : planets) {
+			for (const Planet& planet : rockyPlanets) {
+				planet.draw(camera);
+			}
+			for (const Planet& planet : gaseousPlanets) {
 				planet.draw(camera);
 			}
 
 			// Draw the moons.
-			for (const Moon& moon : moons) {
+			for (const Moon& moon : rockyMoons) {
+				moon.draw(camera);
+			}
+			for (const Moon& moon : gaseousMoons) {
 				moon.draw(camera);
 			}
 

@@ -46,7 +46,7 @@ constexpr float FAR_CLIPPING_PLANE  = 1000000.0f;
 /** Point camera is initially looking at. */
 const glm::vec3 INITIAL_CAMERA_FRONT    = { 0, 0, -5.0f };
 /** Initial position of camera. */
-const glm::vec3 INITIAL_CAMERA_POSITION = { 0, 0, 200.0f };
+const glm::vec3 INITIAL_CAMERA_POSITION = { 0, 0, 1300.0f };
 /** Upwards direction of camera view. */
 const glm::vec3 INITIAL_UP              = { 0, 1.0f, 0 };
 

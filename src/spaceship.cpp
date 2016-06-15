@@ -185,10 +185,8 @@ void Spaceship::pointNose(const Camera& camera) {
 	else
 		rotation2 = glm::rotate(identity, -phi, rotationAxis);
 
-	std::cout << camera.getTiltLeft() << std::endl;
 	// The rotation matrix needed for the model is the combination of these two Rotations
 
-	
 	if (camera.getTiltLeft()) {
 		
 		if (tiltDegree >= -3.14159f / 2.0f) 

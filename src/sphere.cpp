@@ -17,6 +17,7 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude, fl
 	normals.reserve(3 * nLatitude * nLongitude);
 	indices.reserve(6 * nLatitude * nLongitude);
 	uvs.reserve(2 * nLatitude * nLongitude);
+	colors = std::vector<GLfloat>(3 * nLatitude * nLongitude, 1.0f);
 
 	// deltaTheta is the angle between lines of latitude. deltaPhi is the angle between lines of
 	// longitude.
@@ -201,6 +202,7 @@ Sphere::Sphere(float radius, unsigned int nLatitude, unsigned int nLongitude) {
 	normals.reserve(3 * nLatitude * nLongitude);
 	indices.reserve(6 * nLatitude * nLongitude);
 	uvs.reserve(2 * nLatitude * nLongitude);
+	colors = std::vector<GLfloat>(3 * nLatitude * nLongitude, 1.0f);
 
 	// deltaTheta is the angle between lines of latitude. deltaPhi is the angle between lines of
 	// longitude.

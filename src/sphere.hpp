@@ -54,6 +54,9 @@ public:
 	std::vector<std::vector<float>> heightMap;
 	/**UV coordinates of the sphere. Each pair of numbers correspond to the texture coordinates of a sphere vertex*/
 	std::vector<GLfloat> uvs;
+	/**Color of each vertex in the sphere*/
+	std::vector<GLfloat> colors;
+
 
 	//functions
 	/** diamond square algorithm used to create heightmap */
@@ -64,6 +67,7 @@ public:
 	void polarize(std::vector<std::vector<float>> &heightMap);
 	/**apply texture to sphere based on generated heightmap*/
 	void textureSphere(const char* textSrc, GLuint &sphere_texture);
+
 };
 
 #endif

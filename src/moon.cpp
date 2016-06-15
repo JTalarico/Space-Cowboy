@@ -68,3 +68,19 @@ void Moon::setMoonTexture() {
 	generateTexture(primaryColor, secondaryColor, xPeriod, yPeriod, turbPower, turbSize);
 	updateBuffers();
 }
+
+bool Moon::moonCollision(const Camera& camera) {
+	
+	glm::vec3 cameraPosition = camera.position();
+	glm::vec3 camDir = camera.direction();
+	glm::vec3 moonCenter = position();
+	float     moonRadius = glm::length(mScale * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
+
+	if (glm::length(glm::vec3(cameraPosition.x, cameraPosition.y - 4.0f, cameraPosition.z)
+		+ glm::vec3(25 * camDir.x, 25 * camDir.y, 25 * camDir.z) - moonCenter) <=
+		moonRadius * 1.1f) {
+		return true;
+	}
+
+	return false;
+}

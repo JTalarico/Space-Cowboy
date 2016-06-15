@@ -287,7 +287,7 @@ void Window::updatePosition() {
 
 	glm::vec3 camPos = sPCamera->position();
 	glm::vec3 camDir = sPCamera->direction();
-
+	
 	if (collision) {
 		newPosition = sPCamera->position() + bounce;
 		bounce      = glm::vec3(0.0f);
@@ -307,7 +307,7 @@ void Window::updatePosition() {
 		}
 	}
 	sPCamera->setPosition(newPosition);
-
+	setCollisison(false);
 }
 
 void Window::setCollisison(bool collisionBool) {

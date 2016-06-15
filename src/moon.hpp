@@ -42,6 +42,9 @@ public:
 	 * Sets the moon's texture, and updates the buffers.
 	 */
 	void setMoonTexture();
+
+	bool moonCollision(const Camera& camera);
+
 private:
 	// Data members.
 	/** Pointer to planet the moon is orbiting. */

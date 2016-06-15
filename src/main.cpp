@@ -100,11 +100,21 @@ int main() {
 				if (planet.planetCollision(camera)) {
 
 					window.setCollisison(true);
-					window.setBounce(glm::normalize(
-							glm::vec3(camera.position() - planet.position()) * 2.0f));
+					window.setBounce(glm::normalize(glm::vec3(camera.position() - planet.position()) * 2.0f));
 					break;
 				}
-				window.setCollisison(false);
+				//window.setCollisison(false);
+			}
+
+			for (Moon& moon : moons) {
+				if (moon.moonCollision(camera)) {
+
+					window.setCollisison(true);
+					window.setBounce(glm::normalize(
+						glm::vec3(camera.position() - moon.position()) * 2.0f));
+					break;
+				}
+				//window.setCollisison(false);
 			}
 
 			// Test for sun collision

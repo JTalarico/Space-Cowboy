@@ -212,6 +212,11 @@ public:
 	 * Color VBO must be updated immediately after.
 	 */
 	void setEarthLikeTexture();
+	/**
+	 * Generates the texture of the planet based on input parameters
+	 * Color VBO must be updated immediately after.
+	 */
+	void generateTexture(glm::vec3 brightColor, glm::vec3 darkColor, double xPeriod, double yPeriod, double turbPower, double trubSize);
 
 private:
 	// Data members.
@@ -259,5 +264,8 @@ float smoothNoise(float x, float y, const std::vector<std::vector<GLfloat>> &noi
 std::vector<std::vector<GLfloat>> generateNoiseMatrix();
 double turbulence(double x, double y, double size, const std::vector<std::vector<GLfloat>> &noise);
 
+
+glm::vec3 getBrightColor();
+glm::vec3 getDarkColor();
 #endif
 

@@ -6,6 +6,7 @@
 #include "planet.hpp"
 #include <glm/glm.hpp>
 #include <random>
+float colorSTD = 10;
 
 namespace {
 // Shader program file paths.
@@ -25,7 +26,6 @@ constexpr unsigned int N_LONGITUDE  = 129;
 constexpr float        N_SMOOTHNESS = 1.2f;
 }
 
-GLuint sphere_texture;
 
 // Constructors.
 Planet::Planet() :
@@ -277,50 +277,60 @@ void Planet::setPlanetTextureType(TERRAIN_TYPE terrain) {
 }
 
 void Planet::setRockyTexture() {
-	for (int i = 2; i < mNColors; i+=3) {
-			mVertexColors.at(i) = 0;
-	}
+	glm::vec3 primaryColor   = getDarkColor();
+	glm::vec3 secondaryColor = getDarkColor();
+
+	double xPeriod   = 0;
+	double yPeriod   = 0;
+
+	double turbPower = 100.0;
+	double turbSize  = 32.0;
+
+	generateTexture(primaryColor, secondaryColor, xPeriod, yPeriod, turbPower, turbSize);
 }
 
 void Planet::setGaseousTexture() {
-	//glm::vec3 primaryColor = {1.0f, 1.0f, 1.0f};
-	//glm::vec3 secondaryColor = {0.0f, 0.0f, 0.0f};
-	glm::vec3 primaryColor = {1.0f, 0.6f, 0.0f};
-	glm::vec3 secondaryColor = {0.4f, 0.2f, 0.0f};
+	glm::vec3 primaryColor   = getBrightColor();
+	glm::vec3 secondaryColor = getDarkColor();
 
-	std::vector<std::vector<GLfloat>> noiseMatrix (N_LATITUDE, std::vector<GLfloat>(N_LONGITUDE));
-	noiseMatrix = generateNoiseMatrix();
+	double xPeriod   = 5.0;
+	double yPeriod   = 10.0;
 
+	double turbPower = 10.0;
+	double turbSize  = 32.0;
 
-	//xPeriod and yPeriod together define the angle of the lines
-	//xPeriod and yPeriod both 0 ==> it becomes a normal clouds or turbulence pattern
-	double xPeriod = 5.0; //defines repetition of marble lines in x direction
-	double yPeriod = 10.0; //defines repetition of marble lines in y direction
-	//turbPower = 0 ==> it becomes a normal sine pattern
-	double turbPower = 10.0; //makes twists
-	double turbSize = 32.0; //initial size of the turbulence
-
-	// First make striped pattern
-	for(int i = 0; i < N_LATITUDE; i++)
-		for(int j = 0; j < N_LONGITUDE; j++) {
-			//factor = noiseMatrix[i][j] * pow(glm::cos( 2.0f * static_cast<float>(M_PI) * i / 20.0f), 2);
-			double xyValue = i * xPeriod / N_LONGITUDE +
-			                 j * yPeriod / N_LATITUDE +
-							 turbPower * turbulence(i, j, turbSize,  noiseMatrix) / 256.0;
-
-			double sineValue = pow(cos(xyValue * 3.14159),2);
-			//double sineValue = xyValue/20;
-
-			float factor = static_cast<float>(sineValue);
-
-			mVertexColors[3 * (j + N_LATITUDE * i)] = factor * primaryColor.x + (1 - factor) * secondaryColor.x ;
-			mVertexColors[3 * (j + N_LATITUDE * i) + 1] = factor * primaryColor.y + (1 - factor) * secondaryColor.y ;
-			mVertexColors[3 * (j + N_LATITUDE * i) + 2] = factor * primaryColor.z + (1 - factor) * secondaryColor.z ;
-		}
-
+	generateTexture(primaryColor, secondaryColor, xPeriod, yPeriod, turbPower, turbSize);
 }
 
 void Planet::setEarthLikeTexture() {
+	setRockyTexture();  // Keeping it rocky for now.
+						// Might make earth in the future
+}
+
+void Planet::generateTexture(glm::vec3 primaryColor, glm::vec3 secondaryColor, double xPeriod, double yPeriod, double turbPower, double turbSize)
+{
+	std::vector<std::vector<GLfloat>> noiseMatrix(N_LATITUDE, std::vector<GLfloat>(N_LONGITUDE));
+	noiseMatrix = generateNoiseMatrix();
+
+	// First make striped pattern
+	for (int i = 0; i < N_LATITUDE; i++) {
+		for (int j = 0; j < N_LONGITUDE; j++) {
+			double xyValue = i * xPeriod / N_LONGITUDE +
+			                 j * yPeriod / N_LATITUDE +
+			                 turbPower * turbulence(i, j, turbSize, noiseMatrix) / 256.0;
+
+			double sineValue = pow(cos(xyValue * M_PI), 2);
+
+			float factor = static_cast<float>(sineValue);
+
+			mVertexColors[3 * (j + N_LATITUDE * i)]     =
+					factor * primaryColor.x + (1 - factor) * secondaryColor.x;
+			mVertexColors[3 * (j + N_LATITUDE * i) + 1] =
+					factor * primaryColor.y + (1 - factor) * secondaryColor.y;
+			mVertexColors[3 * (j + N_LATITUDE * i) + 2] =
+					factor * primaryColor.z + (1 - factor) * secondaryColor.z;
+		}
+	}
 
 }
 
@@ -345,14 +355,16 @@ std::vector<std::vector<GLfloat>> generateNoiseMatrix() {
 	std::vector<std::vector<GLfloat>> noiseMatrix(N_LATITUDE, std::vector<GLfloat>(N_LONGITUDE));
 
 // Create noise
-	for (int i = 0; i < N_LATITUDE; i++)
-		for (int j = 0; j < N_LONGITUDE; j++)
+	for (int i = 0; i < N_LATITUDE; i++) {
+		for (int j = 0; j < N_LONGITUDE; j++) {
 			noiseMatrix[i][j] = randomNoise(e2);
+		}
+	}
 
 	return noiseMatrix;
 }
 
-float smoothNoise(float x, float y, const std::vector<std::vector<GLfloat>> &noise) {
+float smoothNoise(float x, float y, const std::vector<std::vector<GLfloat>>& noise) {
 	//get fractional part of x and y
 	double fractX = x - floor(x);
 	double fractY = y - floor(y);
@@ -367,23 +379,74 @@ float smoothNoise(float x, float y, const std::vector<std::vector<GLfloat>> &noi
 
 	//smooth the noise with bilinear interpolation
 	float value = 0.0;
-	value += fractX     * fractY     * noise[y1][x1];
-	value += (1 - fractX) * fractY     * noise[y1][x2];
-	value += fractX     * (1 - fractY) * noise[y2][x1];
+	value += fractX * fractY * noise[y1][x1];
+	value += (1 - fractX) * fractY * noise[y1][x2];
+	value += fractX * (1 - fractY) * noise[y2][x1];
 	value += (1 - fractX) * (1 - fractY) * noise[y2][x2];
 
 	return value;
 }
 
-double turbulence(double x, double y, double size, const std::vector<std::vector<GLfloat>> &noise)
-{
+double turbulence(double x, double y, double size, const std::vector<std::vector<GLfloat>>& noise) {
 	double value = 0.0, initialSize = size;
 
-	while(size >= 1)
-	{
+	while (size >= 1) {
 		value += smoothNoise(x / size, y / size, noise) * size;
 		size /= 2.0;
 	}
 
-	return(128.0 * value / initialSize);
+	return (128.0 * value / initialSize);
+}
+
+glm::vec3 getBrightColor() {
+	std::random_device rd;
+	std::mt19937       e2(rd());
+
+	// Pick a random color
+
+	glm::vec3 colorChoice;
+
+	std::vector <glm::vec3> colorChoices {
+			glm::vec3 { 102, 204, 255},
+			glm::vec3{ 236, 121, 154},
+			glm::vec3{ 224, 204, 151},
+			glm::vec3{ 225, 179, 120},
+			glm::vec3{ 244, 170, 262}
+	};
+	std::uniform_int_distribution<int> randomColor(0, colorChoices.size() - 1);
+
+	colorChoice = colorChoices[randomColor(e2)];
+
+	std::normal_distribution<float> randomR(colorChoice.x, colorSTD);
+	std::normal_distribution<float> randomG(colorChoice.y, colorSTD);
+	std::normal_distribution<float> randomB(colorChoice.z, colorSTD);
+
+	return glm::vec3{ randomR(e2)/255, randomG(e2)/255, randomB(e2)/255};
+}
+
+// Same code as above except for dark colors
+glm::vec3 getDarkColor() {
+	std::random_device rd;
+	std::mt19937       e2(rd());
+
+	// Pick a random color
+
+	glm::vec3 colorChoice;
+
+	std::vector <glm::vec3> colorChoices {
+			glm::vec3{121, 72, 59},
+			glm::vec3{73, 99, 141},
+			glm::vec3{184, 41, 30},
+			glm::vec3{56, 132, 65},
+			glm::vec3{70, 117, 118}
+	};
+	std::uniform_int_distribution<int> randomColor(0, colorChoices.size() - 1);
+
+	colorChoice = colorChoices[randomColor(e2)];
+
+	std::normal_distribution<float> randomR(colorChoice.x, colorSTD);
+	std::normal_distribution<float> randomG(colorChoice.y, colorSTD);
+	std::normal_distribution<float> randomB(colorChoice.z, colorSTD);
+
+	return glm::vec3{ randomR(e2)/255, randomG(e2)/255, randomB(e2)/255};
 }

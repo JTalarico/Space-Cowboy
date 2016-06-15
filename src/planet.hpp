@@ -24,7 +24,7 @@
  */
 class Planet {
 public:
-	// Enumerated texture types
+	/** Enumerated texture types. */
 	enum TERRAIN_TYPE {
 		ROCKY, GASEOUS, EARTH_LIKE
 	};
@@ -224,8 +224,10 @@ public:
 	 * Generates the texture of the planet based on input parameters
 	 * Color VBO must be updated immediately after.
 	 */
-	void generateTexture(glm::vec3 brightColor, glm::vec3 darkColor, double xPeriod, double yPeriod,
-	                     double turbPower, double trubSize);
+	void        generateTexture(glm::vec3 brightColor, glm::vec3 darkColor, double xPeriod,
+	                            double yPeriod,
+	                            double turbPower, double trubSize);
+
 	/**
 	 * Cheap hack turn rockyness off for gaseous planets.
 	 */
@@ -273,13 +275,13 @@ protected:
 	void updateBuffers();
 };
 
-float                             smoothNoise(float x, float y,
-                                              const std::vector<std::vector<GLfloat>>& noise);
+float smoothNoise(float x, float y,
+                  const std::vector<std::vector<GLfloat>>& noise);
 
 std::vector<std::vector<GLfloat>> generateNoiseMatrix();
 
-double                            turbulence(double x, double y, double size,
-                                             const std::vector<std::vector<GLfloat>>& noise);
+double turbulence(double x, double y, double size,
+                  const std::vector<std::vector<GLfloat>>& noise);
 
 
 glm::vec3 getBrightColor();

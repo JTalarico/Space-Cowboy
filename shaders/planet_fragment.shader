@@ -12,7 +12,7 @@ float K_c = 0.4f;
 float K_l = 0.0001f;
 float K_q = 0.0f;
 
-float ambientStrength = 0.1f;
+float ambientStrength = 0.4f;
 
 void main() {
     // Ambient lighting.

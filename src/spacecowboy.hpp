@@ -17,6 +17,7 @@
 #include "camera.hpp"
 #include "program.hpp"
 #include "palette.hpp"
+#include "planet.hpp"
 
 /**
 * Represents a spacecowboy.
@@ -98,8 +99,9 @@ public:
 
 	/**
 	 * Updates the spacecowboy state based on its state of motion.
+	 * Spacecowboy is drawn orbiting around random planet
 	 */
-	void updateState(const Camera& camera);
+	void updateState(const Camera& camera, const Planet& planet);
 	/**
 	 * Renders the spacecowboy.
 	 *
@@ -113,6 +115,8 @@ public:
 	 * @return spacecowboy's model matrix.
 	 */
 	glm::mat4 modelMatrix() const;
+
+
 
 private:
 	// Data members.

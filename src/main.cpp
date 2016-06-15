@@ -60,6 +60,9 @@ int main() {
 		Spaceship   spaceship;
 		Spacecowboy spacecowboy;
 
+		//choose random planet on which to spawn spacecowboy
+		int randomPlanet = rand() % planets.size();
+
 		// Game loop.
 		while (not window.shouldClose()) {
 			// Set time difference between last and current frame
@@ -90,7 +93,7 @@ int main() {
 
 			// Update spaceships's and spacecowboy's state.
 			spaceship.updateState(camera);
-			spacecowboy.updateState(camera);
+			spacecowboy.updateState(camera, planets[randomPlanet]);
 
 			//Check for collisions with planets
 			for (Planet& planet : planets) {

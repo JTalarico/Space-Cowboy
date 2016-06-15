@@ -125,19 +125,19 @@ void Spacecowboy::translate(const glm::vec3& displacement) {
 	mTranslation = glm::translate(mTranslation, displacement);
 }
 
-void Spacecowboy::updateState(const Camera& camera) {
+void Spacecowboy::updateState(const Camera& camera, const Planet& planet) {
 	double currentTime = glfwGetTime();
 	float  deltaT = static_cast<float>(currentTime - mTimeLastFrame);
 
 	glm::vec3 oldPosition = position();
 
-	glm::vec3 camDir = camera.direction();
-	glm::vec3 camPos = camera.position();
+	glm::vec3 planetPosition = planet.position();
+	float planetScale = planet.size();
 
-	glm::vec3 newPosition = glm::vec3(camPos.x, camPos.y, camPos.z) + glm::vec3(20 * camDir.x, 20 * camDir.y, 20 * camDir.z);
+	//position spacecowboy at planet, but times by scalar so he is not at center
+	glm::vec3 newPosition = glm::vec3(planetPosition * planetScale * 1.2f); 
 	mTranslation = glm::translate(mTranslation, -oldPosition);
 	mTranslation = glm::translate(mTranslation, newPosition);
-
 
 	mTimeLastFrame = currentTime;
 }

@@ -134,8 +134,8 @@ void Spacecowboy::updateState(const Camera& camera, const Planet& planet) {
 	glm::vec3 planetPosition = planet.position();
 	float planetScale = planet.size();
 
-	//position spacecowboy at planet, but times by scalar so he is not at center
-	glm::vec3 newPosition = glm::vec3(planetPosition * planetScale * 1.2f); 
+	//position spacecowboy at top of planet
+	glm::vec3 newPosition = glm::vec3(planetPosition.x, planetPosition.y + planetScale, planetPosition.z);
 	mTranslation = glm::translate(mTranslation, -oldPosition);
 	mTranslation = glm::translate(mTranslation, newPosition);
 

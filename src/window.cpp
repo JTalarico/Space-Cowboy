@@ -14,6 +14,8 @@ float Window::sLastCursorYPos = 0.0f;
 float   Window::lastFrame = 0.0f;
 GLfloat Window::deltaTime = 0.0f;
 
+float Window::sOldMouseYaw = 0.0f;
+float Window::sOldMousePitch = 0.0f;
 float  Window::sMouseYaw        = -90.0f;
 float  Window::sMousePitch      = 0.0f;
 
@@ -50,7 +52,6 @@ Window::Window(int width, int height, const std::string& title) {
 	glfwSetKeyCallback(mWindow, keyCallback);
 	glfwSetScrollCallback(mWindow, scrollCallback);
 	glfwSetMouseButtonCallback(mWindow, mouse_button_callback);
-	glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 }
 
@@ -220,6 +221,24 @@ void Window::keyCallback(GLFWwindow *window, int key, int, int action, int) {
 	if (keysPressed[GLFW_KEY_T]) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+
+	if (key == GLFW_KEY_LEFT_CONTROL) {
+		
+		if (action == GLFW_PRESS) {
+			sOldMousePitch = sMousePitch;
+			sOldMouseYaw = sMouseYaw;
+		}
+		if (action == GLFW_RELEASE) {
+			sPCamera->setDirection(oldCameraFront);
+			sMousePitch = sOldMousePitch;
+			sMouseYaw = sOldMouseYaw;
+		}
+		
+	}
+		
+
+		sPCamera->setDirection(oldCameraFront);
+
 	moveCamera();
 }
 
@@ -267,15 +286,16 @@ void Window::updatePosition() {
 		currentVelocity /= 1.1f;
 	}
 	else {
+
 		if (!keysPressed[GLFW_KEY_LEFT_CONTROL]) {
-			newPosition =
-					sPCamera->position() +
-					sPCamera->direction() * (currentVelocity * deltaTime);
+			newPosition = sPCamera->position() + sPCamera->direction() * (currentVelocity * deltaTime);
+			sPCamera->setFreeCameraMode(false);
 		}
 		else {
-			newPosition =
-					sPCamera->position() +
-					oldCameraFront * (currentVelocity * deltaTime);
+
+			newPosition = sPCamera->position() + oldCameraFront * (currentVelocity * deltaTime);
+			sPCamera->setFreeCameraMode(true);
+			
 		}
 	}
 	sPCamera->setPosition(newPosition);

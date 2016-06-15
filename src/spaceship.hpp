@@ -91,7 +91,7 @@ public:
 	 */
 	glm::mat4 modelMatrix() const;
 
-	void pointNose(const Camera &camera);
+	void updateRotations( const Camera &camera);
 
 private:
 	// Data members.
@@ -133,7 +133,11 @@ private:
 	float tiltDegree;
 	glm::vec3 mOldCamDir;
 	glm::vec3 mNewCamDir;
-	glm::mat4 tiltRotation;
+	
+	glm::mat4 mTilt_Rotation;
+	glm::mat4 mY_Rotation;
+	glm::mat4 mXZ_Rotation;
+
 };
 
 #endif

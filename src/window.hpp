@@ -192,7 +192,11 @@ private:
 	/** Array that keeps track of which keys are pressed*/
 	static bool      keysPressed[1024];  // No need to initialize since static bool arrays are
 										 // false by default.
-										 /** Current mouse yaw */
+					
+	static float	sOldMouseYaw;
+
+	static float	sOldMousePitch;
+	/** Current mouse yaw */
 	static float     sMouseYaw;
 	/** Current mouse pitch */
 	static float     sMousePitch;

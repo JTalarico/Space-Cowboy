@@ -37,7 +37,9 @@ Spaceship::Spaceship() :
 
 	scale(0.2f);
 	tiltDegree = 0.0f;
-	tiltRotation = glm::mat4(1.0f);
+	mTilt_Rotation = glm::mat4(1.0f);
+	mY_Rotation = glm::mat4(1.0f);
+	mXZ_Rotation = glm::mat4(1.0f);
 
 	loadOBJ(DARK_FIGHTER_6, vertices, normals, UVs);
 
@@ -139,60 +141,60 @@ void Spaceship::updateState(const Camera& camera) {
 	mTranslation = glm::translate(mTranslation, newPosition);
 
 	// Rotate the ship so it points in the camera direction
+	if (!camera.isFreeCameraMode())
+		updateRotations(camera);
 
-	pointNose(camera);
+	mRotation = mTilt_Rotation * mY_Rotation * mXZ_Rotation;
+
 
 }
 
-void Spaceship::pointNose(const Camera& camera) {
-
+void Spaceship::updateRotations(const Camera& camera) {
+	
 	// The space ship is loaded pointing in the negative X direction due to object File
 	glm::vec3 spaceShipDir = glm::vec3(-1.0f, 0.0f, 0.0f);
 
 	//Useful Values variable that will come up often
 	glm::vec3 camDir = camera.direction();
 	glm::mat4 identity = glm::mat4(1.0f);
+	
+		
+		// Our first goal is to find the rotation on the XZ plane, to do so we map the camera direction to the xz plane and find the angle theta
 
-	// Our first goal is to find the rotation on the XZ plane, to do so we map the camera direction to the xz plane and find the angle theta
+		float xzDot = glm::dot(spaceShipDir, glm::vec3(camDir.x, 0.0f, camDir.z));
+		float xzLength = glm::length(glm::vec3(camDir.x, 0.0f, camDir.z));
+		float theta = glm::acos(xzDot / xzLength);
 
-	float xzDot = glm::dot(spaceShipDir, glm::vec3(camDir.x, 0.0f, camDir.z));
-	float xzLength = glm::length(glm::vec3(camDir.x, 0.0f, camDir.z));
-	float theta = glm::acos(xzDot / xzLength);
+		// Next we can define the first rotation realising the dot product will never let us rotate more than 180 degrees, we adjust for the
+		// two halves of the xz plane
+		if (camDir.z < 0)
+			mXZ_Rotation = glm::rotate(identity, theta, glm::vec3(0.0f, -1.0f, 0.0f));
+		else
+			mXZ_Rotation = glm::rotate(identity, theta, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	// Next we can define the first rotation realising the dot product will never let us rotate more than 180 degrees, we adjust for the
-	// two halves of the xz plane
-	glm::mat4 rotation1;
-	if (camDir.z < 0)
-		rotation1 = glm::rotate(identity, theta, glm::vec3(0.0f, -1.0f, 0.0f));
-	else
-		rotation1 = glm::rotate(identity, theta, glm::vec3(0.0f, 1.0f, 0.0f));
+		// We find the angle between the xz plane and the camera direction using the dot product between the camera direction and its mapping on the xz plane
+		// The axis of rotation will be the cross product between the two
+		glm::vec3 xzProjection = glm::vec3(camDir.x, 0.0f, camDir.z);
+		glm::vec3 rotationAxis = glm::cross(camDir, xzProjection);
 
-	// We find the angle between the xz plane and the camera direction using the dot product between the camera direction and its mapping on the xz plane
-	// The axis of rotation will be the cross product between the two
-	glm::vec3 xzProjection = glm::vec3(camDir.x, 0.0f, camDir.z);
-	glm::vec3 rotationAxis = glm::cross(camDir, xzProjection);
+		// Similar to above
+		float dot = glm::dot(camDir, xzProjection);
+		float xzpLength = glm::length(xzProjection);
+		float camLength = glm::length(camDir);
+		float phi = glm::acos(dot / (xzpLength*camLength));
 
-	// Similar to above
-	float dot = glm::dot(camDir, xzProjection);
-	float xzpLength = glm::length(xzProjection);
-	float camLength = glm::length(camDir);
-	float phi = glm::acos(dot / (xzpLength*camLength));
-
-	// Adjust the rotation accordingly
-	glm::mat4 rotation2;
-	if (camDir.y > 0)
-		rotation2 = glm::rotate(identity, phi, -rotationAxis);
-	else
-		rotation2 = glm::rotate(identity, -phi, rotationAxis);
-
-	// The rotation matrix needed for the model is the combination of these two Rotations
-
+		// Adjust the rotation accordingly
+		if (camDir.y > 0)
+			mY_Rotation = glm::rotate(identity, phi, -rotationAxis);
+		else
+			mY_Rotation = glm::rotate(identity, -phi, rotationAxis);
+	
 	if (camera.getTiltLeft()) {
 		
 		if (tiltDegree >= -3.14159f / 2.0f) 
 			tiltDegree -= 0.1f;
 
-		tiltRotation = glm::rotate(identity, tiltDegree, camDir);
+		mTilt_Rotation = glm::rotate(identity, tiltDegree, camDir);
 				
 	}
 	
@@ -201,40 +203,19 @@ void Spaceship::pointNose(const Camera& camera) {
 		if (tiltDegree <= 3.14159f / 2.0f)
 			tiltDegree += 0.1f;
 
-		tiltRotation = glm::rotate(identity, tiltDegree, camDir);
+		mTilt_Rotation = glm::rotate(identity, tiltDegree, camDir);
 	}
 	else if (!(camera.getTiltLeft() || camera.getTiltRight())) {
 
 		if (tiltDegree != 0)
 			tiltDegree *= 0.9f;
 		
-		tiltRotation = glm::rotate(identity, tiltDegree, camDir);
+		mTilt_Rotation = glm::rotate(identity, tiltDegree, camDir);
 
 	}else{
 	
 	}
 
-	mRotation = tiltRotation * rotation2 * rotation1;
-
-	//---------------------Here an attempt was made for Tilt. -----------------------
-	/*
-	//Here we will add tilt to the glide of the ship
-
-	glm::vec3 oldXZ = glm::vec3(mOldCamDir.x, 0.0f, mOldCamDir.z);
-
-	float tiltDot = glm::dot(xzProjection, oldXZ);
-	float oldLength = glm::length(oldXZ);
-
-	float psi = glm::acos(tiltDot / (xzpLength*oldLength));
-
-	glm::mat4 rotation3 = glm::rotate(identity, psi, -camDir);
-
-	mRotation = rotation3 * rotation2 * rotation1;
-
-	std::cout << psi << std::endl;
-
-	mOldCamDir = camDir;
-	*/
 
 }
 

@@ -130,6 +130,9 @@ public:
 
 	void setTiltRight(bool tilt) ;
 
+	bool isFreeCameraMode() const;
+
+	void setFreeCameraMode(bool cameraMode);
 private:
 	/** Camera field of view. */
 	float mFOV;
@@ -140,8 +143,11 @@ private:
 	/** Far clipping plane is the distance to the back side of the viewing frustum. */
 	float mFarClippingPlane;
 
-	bool shipTiltLeft;
-	bool shipTiltRight;
+	bool mShipTiltLeft;
+	
+	bool mShipTiltRight;
+
+	bool mFreeCamera_Mode;
 	/** Camera position. */
 	glm::vec3 mPosition;
 	/** Direction camera is facing. */

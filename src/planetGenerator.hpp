@@ -29,10 +29,10 @@ constexpr float SDEV_NUMBER_OF_ROCKY_PLANETS = 2.0f;
 constexpr float MEAN_NUMBER_OF_GASEOUS_PLANETS = 10.0f;
 constexpr float SDEV_NUMBER_OF_GASEOUS_PLANETS = 3.0f;
 
-constexpr float MEAN_ROCKY_PLANET_SIZE = 200.0f;
+constexpr float MEAN_ROCKY_PLANET_SIZE = 1600.0f;
 constexpr float SDEV_ROCKY_PLANET_SIZE = 80.0f;
 
-constexpr float MEAN_GASEOUS_PLANET_SIZE = 500.0f;
+constexpr float MEAN_GASEOUS_PLANET_SIZE = 4000.0f;
 constexpr float SDEV_GASEOUS_PLANET_SIZE = 100.0f;
 
 constexpr float MEAN_ROCKY_PLANET_DISTANCE    = 8.0f * MEAN_ROCKY_PLANET_SIZE;

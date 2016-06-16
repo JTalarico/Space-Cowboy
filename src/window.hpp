@@ -224,9 +224,9 @@ private:
 	/** How far camera moves when scroll wheel is used. */
 	static constexpr float SCROLL_SENSITIVITY = 0.5f;
 	/** How much velocity increases/decreases at each button press */
-	static constexpr float VELOCITY_STEP = 1.0f;
+	static constexpr float VELOCITY_STEP = 10.0f;
 	/** How much velocity increases/decreases at each button press */
-	static constexpr float VELOCITY_CAP = 2000.0f;
+	static constexpr float VELOCITY_CAP = 20000.0f;
 	/** How much camera strafes with each button press */
 	static constexpr float STRAFE_STEP = 0.5f;
 	/** How fast camera moves when moving with the mouse */

@@ -1,4 +1,4 @@
-Space CowBoy
+# Space CowBoy
 
 Project by: James Talerico, Alessandro Power, Michael Monteferrante, David Desmarais-Michaud
 
